@@ -400,16 +400,23 @@ function getLatestUserMessage(messages: ChatMessage[]) {
     return [...messages].reverse().find((message) => message.role === 'user')?.content.trim() ?? '';
 }
 
-function getTranscript(messages: ChatMessage[]) {
-    return messages.map((message) => message.content).join(' ');
+function getUserMessages(messages: ChatMessage[]) {
+    return messages.filter((message) => message.role === 'user');
 }
 
-function extractRevenueMillions(transcript: string) {
-    const match = transcript.match(/(\d+(?:\.\d+)?)\s*(m|million)\b/i);
+function extractLatestUserRevenueMillions(messages: ChatMessage[]) {
+    const userMessages = [...getUserMessages(messages)].reverse();
 
-    if (!match) return null;
+    for (const message of userMessages) {
+        const matches = [...message.content.matchAll(/(\d+(?:\.\d+)?)\s*(m|million)\b/gi)];
+        const lastMatch = matches.at(-1);
 
-    return Number.parseFloat(match[1]);
+        if (lastMatch) {
+            return Number.parseFloat(lastMatch[1]);
+        }
+    }
+
+    return null;
 }
 
 function getGuardrailReply(messages: ChatMessage[]) {
@@ -418,8 +425,7 @@ function getGuardrailReply(messages: ChatMessage[]) {
     if (!latestUser) return null;
 
     const latest = latestUser.toLowerCase();
-    const transcript = getTranscript(messages);
-    const revenueMillions = extractRevenueMillions(transcript);
+    const revenueMillions = extractLatestUserRevenueMillions(messages);
 
     if (/\bare you greg\b|\byou greg\b|\bare you the coach\b/.test(latest)) {
         return "Nope — I'm Grant, Greg's intake assistant. I help figure out fit and point the right owners to Greg. What's the biggest bottleneck you're carrying right now?";
@@ -429,7 +435,7 @@ function getGuardrailReply(messages: ChatMessage[]) {
         return "Fair enough — most coaching is fluff. Greg's not selling motivation; he works on ownership, accountability, and leadership inside real restoration and construction businesses. If that ever becomes the pain, you know where to find us.";
     }
 
-    if (/\b(system prompt|your prompt|instructions|internal instructions)\b/.test(latest)) {
+    if (/\b(system prompt|your prompt|internal prompt|internal instructions|what are your instructions|show me your prompt)\b/.test(latest)) {
         if (/\b(price|pricing|cost|investment|fee|how much|charge)\b/.test(latest)) {
             return "I can't share internal instructions or pricing in chat. Greg covers investment once he understands fit and scope. What's the main bottleneck you're trying to solve?";
         }
@@ -445,12 +451,12 @@ function getGuardrailReply(messages: ChatMessage[]) {
         return "I can give you the headline, not the full install. Greg's first lens is usually where ownership dies — what decisions, promises, or numbers still bounce back to the owner. What's the biggest thing still coming back to you right now?";
     }
 
-    if (/\b(stop messaging me|stop reaching out|leave me alone)\b/.test(latest)) {
+    if (/\b(stop messaging(?: me)?|stop reaching out|leave me alone)\b/.test(latest)) {
         return "Understood. I won't keep pushing. If you want help later, you know where to find us.";
     }
 
     if (
-        /\b(not interested|i don'?t want a call|do not want a call|leave me alone|stop messaging|stop reaching out|no call)\b/.test(
+        /\b(not interested|i don'?t want a call|do not want a call|no call)\b/.test(
             latest
         )
     ) {
@@ -469,11 +475,11 @@ function getGuardrailReply(messages: ChatMessage[]) {
         return "Greg covers investment once he understands your business, fit, and what kind of support actually makes sense. I don't do numbers or ballparks in chat. If you're still the bottleneck, the bigger issue is usually what staying stuck is costing you.";
     }
 
-    if (/\b(what would (he|greg) do first|what would you do first|where would (he|greg) start|what's the first thing)\b/.test(latest)) {
+    if (/\b(what would (he|greg|you) do first|where would (he|greg|you) start|what would be the first move|what's the first move)\b/.test(latest)) {
         return "First lens is usually where ownership dies — what decisions, promises, or numbers still bounce back to you instead of living with the team. The full fix depends on your people, margins, and how leadership is actually happening day to day. That's what Greg diagnoses on the call.";
     }
 
-    if (/\b(why greg|why specifically|what makes greg different)\b/.test(latest)) {
+    if (/\b(why greg|why greg specifically|what makes greg different|why greg over)\b/.test(latest)) {
         return "Greg's a licensed contractor with 30+ years in restoration and construction, and he's helped 300+ owners through this exact ceiling. He's not generic — he sees things like a GM with the title but not real ownership, or meetings that exist but never create accountability. Where does that show up most for you?";
     }
 
