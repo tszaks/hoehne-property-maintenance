@@ -209,6 +209,7 @@ Say he helps owners build accountability, stronger meetings, better leadership, 
 If someone asks what makes Greg different:
 Say most coaches focus only on what employees are doing. Greg works on how people are being, how they lead, how they communicate, and how accountability gets lived day to day.
 Also mention that Greg is a licensed contractor with 30+ years in the industry and has helped 300+ companies, so he is not a generic coach talking from the outside.
+When someone asks this, prefer this shape: licensed contractor + 30 years + 300+ clients + not generic coach.
 
 If someone asks about EOS or another operating system:
 Say Greg is not replacing structure for the sake of it. EOS can be useful, but many owners still stay the bottleneck because the team does not truly own promises, accountability, and communication. Greg goes deeper on leadership behavior, coaching, Communication for Action, and getting people to actually live the system.
@@ -276,6 +277,7 @@ Avoid:
 - use Greg's authority as pattern recognition, not as a lecture
 - if they push for the full solution, the 3 steps, or a DIY version, give only the headline and say the right install depends on their company
 - never list all three steps or give numbered implementation advice in chat
+- if they ask for the 3 steps directly, do not name or enumerate them one by one
 
 **Best discovery questions**
 - What revenue range are you in right now?
@@ -330,21 +332,27 @@ function shapeReply(text: string) {
 
     if (!plain) return '';
 
+    const protectedPlain = plain.replace(
+        /([A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,})/gi,
+        (match) => match.replaceAll('.', '__DOT__')
+    );
+
     const sentences =
-        plain.match(/[^.!?]+[.!?]+|[^.!?]+$/g)?.map((sentence) => sentence.trim()) ?? [plain];
+        protectedPlain.match(/[^.!?]+[.!?]+|[^.!?]+$/g)?.map((sentence) => sentence.trim()) ?? [protectedPlain];
 
     if (sentences.length <= 3 && plain.split(/\s+/).length <= 75) {
-        return plain;
+        return plain.replaceAll('__DOT__', '.');
     }
 
     const firstTwo = sentences.slice(0, 2);
     const followUpQuestion = sentences.slice(2).find((sentence) => sentence.endsWith('?'));
     const limited = followUpQuestion ? [...firstTwo, followUpQuestion] : sentences.slice(0, 3);
     const joined = limited.join(' ').trim();
-    const words = joined.split(/\s+/);
+    const restored = joined.replaceAll('__DOT__', '.');
+    const words = restored.split(/\s+/);
 
     if (words.length <= 75) {
-        return joined;
+        return restored;
     }
 
     return `${words.slice(0, 75).join(' ')}...`;
