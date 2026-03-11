@@ -82,6 +82,37 @@ function buildFallbackSummary(session: ChatSessionRecord, reason: FinalizeReason
     };
 }
 
+function normalizeSummary(summary: Partial<ChatSummary>, fallback: ChatSummary): ChatSummary {
+    const fit = summary.fit === 'high' || summary.fit === 'medium' || summary.fit === 'low' ? summary.fit : fallback.fit;
+    const disposition =
+        summary.disposition === 'booked' ||
+        summary.disposition === 'follow_up' ||
+        summary.disposition === 'not_a_fit' ||
+        summary.disposition === 'unknown'
+            ? summary.disposition
+            : fallback.disposition;
+
+    const pick = (value: unknown, fallbackValue: string) =>
+        typeof value === 'string' && value.trim() ? value.trim() : fallbackValue;
+
+    return {
+        authorityHook: pick(summary.authorityHook, fallback.authorityHook),
+        companyClues: pick(summary.companyClues, fallback.companyClues),
+        disposition,
+        dominantLossFrame: pick(summary.dominantLossFrame, fallback.dominantLossFrame),
+        fit,
+        nextStep: pick(summary.nextStep, fallback.nextStep),
+        noteToGreg: pick(summary.noteToGreg, fallback.noteToGreg),
+        noteToImproveGrant: pick(summary.noteToImproveGrant, fallback.noteToImproveGrant),
+        objection: pick(summary.objection, fallback.objection),
+        ownerPain: pick(summary.ownerPain, fallback.ownerPain),
+        reactancePosture: pick(summary.reactancePosture, fallback.reactancePosture),
+        serviceInterest: pick(summary.serviceInterest, fallback.serviceInterest),
+        subjectLine: pick(summary.subjectLine, fallback.subjectLine),
+        summary: pick(summary.summary, fallback.summary),
+    };
+}
+
 function extractJsonObject(text: string) {
     const match = text.match(/\{[\s\S]*\}/);
     if (!match) {
@@ -93,8 +124,10 @@ function extractJsonObject(text: string) {
 
 async function generateChatSummary(session: ChatSessionRecord, reason: FinalizeReason) {
     const client = getAnthropicClient();
+    const fallback = buildFallbackSummary(session, reason);
+
     if (!client) {
-        return buildFallbackSummary(session, reason);
+        return fallback;
     }
 
     const response = await client.messages.create({
@@ -145,9 +178,9 @@ ${formatTranscript(session)}`,
     const text = response.content[0]?.type === 'text' ? response.content[0].text : '';
 
     try {
-        return extractJsonObject(text);
+        return normalizeSummary(extractJsonObject(text), fallback);
     } catch {
-        return buildFallbackSummary(session, reason);
+        return fallback;
     }
 }
 
