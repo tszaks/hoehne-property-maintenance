@@ -15,6 +15,7 @@ import ScrollProgress from '../components/industrial/ScrollProgress.svelte';
 import MouseTrail from '../components/industrial/MouseTrail.svelte';
 import SectionIndicator from '../components/industrial/SectionIndicator.svelte';
 import Preloader from '../components/industrial/Preloader.svelte';
+import ChatBot from '../components/industrial/ChatBot.svelte';
 ---
 
 <IndustrialLayout title="Industrial Capabilities | GNA Works">
@@ -49,4 +50,6 @@ import Preloader from '../components/industrial/Preloader.svelte';
 		
 		<Footer client:visible />
 	</main>
+
+	<ChatBot client:load />
 </IndustrialLayout>
