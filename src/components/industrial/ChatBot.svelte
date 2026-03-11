@@ -180,6 +180,7 @@
             <div
                 bind:this={messagesEl}
                 class="flex-1 overflow-y-auto p-4 space-y-4 scroll-smooth"
+                data-lenis-prevent
             >
                 {#each messages as msg}
                     <div class="flex gap-3 {msg.role === 'user' ? 'flex-row-reverse' : ''}">
