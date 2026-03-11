@@ -1,0 +1,124 @@
+@import "tailwindcss";
+
+:root {
+    --background: #fdfdfc;
+    --foreground: #0a0a0a;
+    --accent: #e5b94c;
+    /* Attnos-inspired gold accent */
+    --apple-gray-50: #f5f5f7;
+    --apple-gray-100: #e8e8ed;
+    --apple-gray-200: #d2d2d7;
+    --apple-gray-300: #b0b0b5;
+    --apple-gray-400: #86868b;
+    --apple-gray-500: #6e6e73;
+    --apple-gray-600: #424245;
+    --apple-gray-700: #323234;
+    --apple-gray-800: #1d1d1f;
+    --apple-gray-900: #161617;
+}
+
+@theme {
+    --color-apple-50: var(--apple-gray-50);
+    --color-apple-100: var(--apple-gray-100);
+    --color-apple-200: var(--apple-gray-200);
+    --color-apple-300: var(--apple-gray-300);
+    --color-apple-400: var(--apple-gray-400);
+    --color-apple-500: var(--apple-gray-500);
+    --color-apple-600: var(--apple-gray-600);
+    --color-apple-700: var(--apple-gray-700);
+    --color-apple-800: var(--apple-gray-800);
+    --color-apple-900: var(--apple-gray-900);
+    --color-accent: var(--accent);
+}
+
+@layer base {
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+
+    body {
+        background-color: var(--bg);
+        color: var(--fg);
+        font-family: 'Inter', sans-serif;
+        overflow-x: hidden;
+        line-height: 1.5;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        @apply font-bold tracking-[-0.05em];
+    }
+}
+
+/* Elite Noise Overlay */
+.noise-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 9998;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+@layer components {
+    .serif {
+        font-family: "Playfair Display", serif;
+    }
+
+    .low-tracking {
+        letter-spacing: -0.04em;
+    }
+
+    .glass {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        border: 1px solid rgba(0, 0, 0, 0.04);
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.02);
+    }
+
+    .text-premium {
+        @apply text-[#0a0a0a];
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+
+    .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+}
+
+/* Custom Animations */
+@keyframes bounce-slow {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-15px);
+    }
+}
+
+.animate-bounce-slow {
+    animation: bounce-slow 4s ease-in-out infinite;
+}
+
+/* Tracking for that Attnos/Apple feel */
+.tracking-tightest {
+    letter-spacing: -0.07em;
+}
+
+/* GSAP Scroll Progress Fix */
+.progress-bar {
+    transform-origin: left;
+}

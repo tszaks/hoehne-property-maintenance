@@ -1,0 +1,284 @@
+@import "tailwindcss";
+
+:root {
+  --background-ind: #0a0a0a;
+  /* Deep dark background */
+  --foreground-ind: #f3f4f6;
+  /* Off-white text */
+  --accent-ind: #ff5a00;
+  /* Hazard orange/Industrial orange */
+  --surface-ind: #171717;
+  /* Slightly lighter dark for cards */
+  --border-ind: #262626;
+  /* Subtle borders */
+  --steel-ind: #9ca3af;
+  /* Steel gray */
+}
+
+@theme {
+  --color-ind-bg: var(--background-ind);
+  --color-ind-fg: var(--foreground-ind);
+  --color-ind-accent: var(--accent-ind);
+  --color-ind-surface: var(--surface-ind);
+  --color-ind-border: var(--border-ind);
+  --color-ind-steel: var(--steel-ind);
+}
+
+.industrial-theme {
+  background-color: var(--background-ind);
+  color: var(--foreground-ind);
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+  line-height: 1.5;
+  min-height: 100vh;
+  scroll-snap-type: y proximity;
+}
+
+.industrial-theme>main>section,
+.industrial-theme>main>footer {
+  scroll-snap-align: start;
+}
+
+.industrial-theme h1,
+.industrial-theme h2,
+.industrial-theme h3,
+.industrial-theme h4,
+.industrial-theme h5,
+.industrial-theme h6 {
+  font-weight: 800;
+  /* Extra bold for industrial feel */
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
+  /* Often used in industrial */
+}
+
+.industrial-noise {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9998;
+  opacity: 0.06;
+  /* Slightly more visible noise */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+}
+
+.ind-glass {
+  background: rgba(23, 23, 23, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.ind-button {
+  background-color: var(--accent-ind);
+  color: #000;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.ind-button::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: all 0.5s ease;
+}
+
+.ind-button:hover::after {
+  left: 100%;
+}
+
+/* 1. Crosshairs & Grid Intersections */
+.ind-crosshair {
+  position: absolute;
+  width: 1rem;
+  height: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.ind-crosshair::before,
+.ind-crosshair::after {
+  content: '';
+  position: absolute;
+  background-color: var(--border-ind);
+}
+
+.ind-crosshair::before {
+  width: 100%;
+  height: 1px;
+}
+
+.ind-crosshair::after {
+  height: 100%;
+  width: 1px;
+}
+
+/* 2. Technical Metadata */
+.ind-metadata {
+  font-family: 'SF Mono', ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--steel-ind);
+  opacity: 0.7;
+}
+
+/* 3. Exposed Fasteners */
+.ind-fastener {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background-color: var(--steel-ind);
+  border-radius: 50%;
+  opacity: 0.5;
+}
+
+/* 5. Subtle Blueprint Overlay */
+.ind-blueprint {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-position: center center;
+}
+
+/* 6. Measurement Ticks / Rulers */
+.ind-ruler-x {
+  height: 4px;
+  background-image: linear-gradient(90deg, var(--border-ind) 1px, transparent 1px);
+  background-size: 20px 4px;
+}
+
+.ind-ruler-y {
+  width: 4px;
+  background-image: linear-gradient(var(--border-ind) 1px, transparent 1px);
+  background-size: 4px 20px;
+}
+
+
+/* 8. Staggered grid cascade */
+@keyframes grid-cascade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(30px);
+    filter: blur(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0);
+  }
+}
+
+/* 9. Reveal Line Animation */
+.ind-reveal-line {
+  position: relative;
+  overflow: hidden;
+}
+
+.ind-reveal-line::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--accent-ind);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ind-reveal-line.is-visible::after {
+  transform: scaleX(1);
+}
+
+/* 10. Image Curtain Reveal */
+.ind-curtain-reveal {
+  position: relative;
+  overflow: hidden;
+}
+
+.ind-curtain-reveal::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--accent-ind);
+  z-index: 5;
+  transform: translateX(-101%);
+}
+
+.ind-curtain-reveal.is-visible::before {
+  animation: curtain-wipe 1.2s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+}
+
+@keyframes curtain-wipe {
+  0% {
+    transform: translateX(-101%);
+  }
+
+  50% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(101%);
+  }
+}
+
+/* 11. Footer Rule Expansion */
+.ind-footer-rule {
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ind-footer-rule.is-visible {
+  transform: scaleX(1);
+}
+
+/* 12. Rivet / Bolt Patterns */
+.ind-rivet {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #555, #1a1a1a);
+  border: 1px solid #333;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.08), 0 1px 2px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+
+/* 13. Steel Plate / Beveled Edges */
+.ind-steel-plate {
+  background: var(--surface-ind);
+  border: 1px solid var(--border-ind);
+  box-shadow:
+    inset 1px 1px 0 rgba(255, 255, 255, 0.04),
+    inset -1px -1px 0 rgba(0, 0, 0, 0.3),
+    0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* 14. Grid Paper / Technical Drawing Background */
+.ind-gridpaper {
+  background-image:
+    linear-gradient(rgba(255, 90, 0, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 90, 0, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
