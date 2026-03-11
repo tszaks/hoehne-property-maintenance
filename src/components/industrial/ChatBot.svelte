@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { tick } from "svelte";
+    import { onMount, tick } from "svelte";
     import { MessageSquare, X, Send, ChevronDown } from "lucide-svelte";
 
     type Message = { role: "user" | "assistant"; content: string };
@@ -50,8 +50,10 @@
     ]);
     let inputValue = $state("");
     let isLoading = $state(false);
+    let lastBookedDraft = $state<BookingState["draft"] | null>(null);
     let messagesEl: HTMLElement;
     let inputEl: HTMLTextAreaElement;
+    let sessionId = $state("");
     let booking = $state<BookingState>({
         active: false,
         choices: [],
@@ -71,6 +73,12 @@
     function getBrowserTimezone() {
         return Intl.DateTimeFormat().resolvedOptions().timeZone || "America/New_York";
     }
+
+    onMount(() => {
+        const storedSessionId = window.localStorage.getItem("grant-chat-session-id");
+        sessionId = storedSessionId || crypto.randomUUID();
+        window.localStorage.setItem("grant-chat-session-id", sessionId);
+    });
 
     function isValidEmail(value: string) {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
@@ -96,6 +104,43 @@
 
     function addAssistantMessage(content: string) {
         messages = [...messages, { role: "assistant", content }];
+    }
+
+    async function persistSession() {
+        if (!sessionId || !messages.length) return;
+
+        const bookingState = lastBookedDraft
+            ? {
+                  active: false,
+                  booked: true,
+                  draft: lastBookedDraft,
+                  phase: "booked",
+              }
+            : {
+                  active: booking.active,
+                  booked: false,
+                  draft: booking.draft,
+                  phase: booking.phase,
+              };
+
+        try {
+            await fetch("/api/chat/session", {
+                body: JSON.stringify({
+                    booking: bookingState,
+                    messages,
+                    sessionId,
+                }),
+                headers: { "Content-Type": "application/json" },
+                keepalive: true,
+                method: "POST",
+            });
+        } catch {
+            // Let the chat continue even if persistence fails.
+        } finally {
+            if (lastBookedDraft) {
+                lastBookedDraft = null;
+            }
+        }
     }
 
     function inferServiceInterest() {
@@ -247,6 +292,8 @@
             return;
         }
 
+        const completedDraft = { ...booking.draft };
+        lastBookedDraft = completedDraft;
         resetBooking();
         addAssistantMessage(
             `You're booked for ${slotLabel}. Calendly will send the invite to ${email}, and that email will include the reschedule link.`
@@ -412,6 +459,7 @@
             ];
         }
 
+        await persistSession();
         isLoading = false;
         await scrollToBottom();
     }
@@ -444,6 +492,7 @@
         };
 
         addAssistantMessage("Let's get you on Greg's calendar. What's your full name?");
+        await persistSession();
         await scrollToBottom();
     }
 
