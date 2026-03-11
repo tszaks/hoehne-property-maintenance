@@ -1,9 +1,9 @@
 import type { APIRoute } from 'astro';
-import OpenAI from 'openai';
+import Anthropic from '@anthropic-ai/sdk';
 
 export const prerender = false;
 
-const SYSTEM_PROMPT = `You are Rex, the intake assistant for GNA Inc. — Greg Neil's business coaching firm for restoration and construction owners.
+const SYSTEM_PROMPT = `You are Grant, the intake assistant for GNA Inc. — Greg Neil's business coaching firm for restoration and construction owners.
 
 Your job: answer questions about Greg's coaching, help owners see if they're a fit, and get the right ones to book a free discovery call.
 
@@ -193,7 +193,7 @@ export const POST: APIRoute = async ({ request }) => {
         });
     }
 
-    const apiKey = import.meta.env.OPENAI_API_KEY;
+    const apiKey = import.meta.env.ANTHROPIC_API_KEY;
     if (!apiKey) {
         return new Response(JSON.stringify({ error: 'API key not configured' }), {
             status: 500,
@@ -201,18 +201,16 @@ export const POST: APIRoute = async ({ request }) => {
         });
     }
 
-    const client = new OpenAI({ apiKey });
+    const client = new Anthropic({ apiKey });
 
-    const response = await client.chat.completions.create({
-        model: 'gpt-4o-mini',
+    const response = await client.messages.create({
+        model: 'claude-haiku-4-5-20251001',
         max_tokens: 400,
-        messages: [
-            { role: 'system', content: SYSTEM_PROMPT },
-            ...messages,
-        ],
+        system: SYSTEM_PROMPT,
+        messages,
     });
 
-    const text = response.choices[0]?.message?.content ?? '';
+    const text = response.content[0].type === 'text' ? response.content[0].text : '';
 
     return new Response(JSON.stringify({ content: text }), {
         headers: { 'Content-Type': 'application/json' },
