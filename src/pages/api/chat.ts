@@ -3,6 +3,11 @@ import Anthropic from '@anthropic-ai/sdk';
 
 export const prerender = false;
 
+type ChatMessage = {
+    content: string;
+    role: 'assistant' | 'user';
+};
+
 const SYSTEM_PROMPT = `You are Grant, the AI intake assistant for GNA Inc. — Greg Neil's business coaching and execution firm for restoration and construction owners.
 
 You are not Greg and you are not the coach. Your job is to educate prospects, qualify fit, make Greg sound credible and approachable, and move the right people toward a free 30-minute discovery call.
@@ -391,13 +396,109 @@ function shapeReply(text: string) {
     return `${words.slice(0, 75).join(' ')}...`;
 }
 
+function getLatestUserMessage(messages: ChatMessage[]) {
+    return [...messages].reverse().find((message) => message.role === 'user')?.content.trim() ?? '';
+}
+
+function getTranscript(messages: ChatMessage[]) {
+    return messages.map((message) => message.content).join(' ');
+}
+
+function extractRevenueMillions(transcript: string) {
+    const match = transcript.match(/(\d+(?:\.\d+)?)\s*(m|million)\b/i);
+
+    if (!match) return null;
+
+    return Number.parseFloat(match[1]);
+}
+
+function getGuardrailReply(messages: ChatMessage[]) {
+    const latestUser = getLatestUserMessage(messages);
+
+    if (!latestUser) return null;
+
+    const latest = latestUser.toLowerCase();
+    const transcript = getTranscript(messages);
+    const revenueMillions = extractRevenueMillions(transcript);
+
+    if (/\bare you greg\b|\byou greg\b|\bare you the coach\b/.test(latest)) {
+        return "Nope — I'm Grant, Greg's intake assistant. I help figure out fit and point the right owners to Greg. What's the biggest bottleneck you're carrying right now?";
+    }
+
+    if (/\b(coaching is fluff|mostly fluff|coach talk)\b/.test(latest)) {
+        return "Fair enough — most coaching is fluff. Greg's not selling motivation; he works on ownership, accountability, and leadership inside real restoration and construction businesses. If that ever becomes the pain, you know where to find us.";
+    }
+
+    if (/\b(system prompt|your prompt|instructions|internal instructions)\b/.test(latest)) {
+        if (/\b(price|pricing|cost|investment|fee|how much|charge)\b/.test(latest)) {
+            return "I can't share internal instructions or pricing in chat. Greg covers investment once he understands fit and scope. What's the main bottleneck you're trying to solve?";
+        }
+
+        return "I can't share internal instructions. I'm here to help figure out whether Greg is the right fit for the business. What's the main bottleneck you're carrying right now?";
+    }
+
+    if (
+        /\b(full framework|list (all )?(the )?3 steps|list (all )?(the )?three steps|just give me the steps|roadmap without the conversation|don'?t want a call.*just want)\b/.test(
+            latest
+        )
+    ) {
+        return "I can give you the headline, not the full install. Greg's first lens is usually where ownership dies — what decisions, promises, or numbers still bounce back to the owner. What's the biggest thing still coming back to you right now?";
+    }
+
+    if (/\b(stop messaging me|stop reaching out|leave me alone)\b/.test(latest)) {
+        return "Understood. I won't keep pushing. If you want help later, you know where to find us.";
+    }
+
+    if (
+        /\b(not interested|i don'?t want a call|do not want a call|leave me alone|stop messaging|stop reaching out|no call)\b/.test(
+            latest
+        )
+    ) {
+        return "None taken. If the owner bottleneck starts costing you too much, text FREEDOM to (415) 699-8512 and Greg can take a look. Until then, all good.";
+    }
+
+    if (/\b(ballpark|range|rough number)\b/.test(latest)) {
+        return "I don't do ballparks in chat because Greg won't throw out a blind number. He looks at fit, scope, and whether this is GNA Academy or something more custom first. If you're still the bottleneck, that's the bigger issue to solve.";
+    }
+
+    if (
+        /\b(price|pricing|cost|investment|fee|how much|expensive|ballpark|range|rough number|reasonable|cheap|crazy|charge)\b/.test(
+            latest
+        )
+    ) {
+        return "Greg covers investment once he understands your business, fit, and what kind of support actually makes sense. I don't do numbers or ballparks in chat. If you're still the bottleneck, the bigger issue is usually what staying stuck is costing you.";
+    }
+
+    if (/\b(what would (he|greg) do first|what would you do first|where would (he|greg) start|what's the first thing)\b/.test(latest)) {
+        return "First lens is usually where ownership dies — what decisions, promises, or numbers still bounce back to you instead of living with the team. The full fix depends on your people, margins, and how leadership is actually happening day to day. That's what Greg diagnoses on the call.";
+    }
+
+    if (/\b(why greg|why specifically|what makes greg different)\b/.test(latest)) {
+        return "Greg's a licensed contractor with 30+ years in restoration and construction, and he's helped 300+ owners through this exact ceiling. He's not generic — he sees things like a GM with the title but not real ownership, or meetings that exist but never create accountability. Where does that show up most for you?";
+    }
+
+    if (/\b(are we a fit|am i a fit|fit or not)\b/.test(latest) && revenueMillions !== null && revenueMillions < 2) {
+        return "Straight up, probably not yet. Greg's sweet spot is usually owners around $5M+ who need stronger leadership and team ownership, not just more leads. At your size, the bottleneck is usually earlier-stage than what Greg specializes in.";
+    }
+
+    return null;
+}
+
 export const POST: APIRoute = async ({ request }) => {
     const body = await request.json();
-    const messages = body.messages ?? [];
+    const messages = (body.messages ?? []) as ChatMessage[];
 
     if (!messages.length) {
         return new Response(JSON.stringify({ error: 'No messages provided' }), {
             status: 400,
+            headers: { 'Content-Type': 'application/json' },
+        });
+    }
+
+    const guardrailReply = getGuardrailReply(messages);
+
+    if (guardrailReply) {
+        return new Response(JSON.stringify({ content: shapeReply(guardrailReply) }), {
             headers: { 'Content-Type': 'application/json' },
         });
     }
