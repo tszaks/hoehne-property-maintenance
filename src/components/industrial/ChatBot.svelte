@@ -10,7 +10,7 @@
         {
             role: "assistant",
             content:
-                "Hey — I'm Rex, Greg's intake assistant. You running a restoration or construction company? Tell me what's going on and I'll tell you straight whether Greg can help.",
+                "Hey — I'm Grant, Greg's intake assistant. You running a restoration or construction company? Tell me what's going on and I'll tell you straight whether Greg can help.",
         },
     ]);
     let inputValue = $state("");
@@ -60,7 +60,7 @@
                 {
                     role: "assistant",
                     content:
-                        "Connection issue. Refresh the page and try again — or text Greg directly at (415) 699-8512.",
+                        "Connection issue. Refresh and try again — or text Greg directly at (415) 699-8512.",
                 },
             ];
         }
@@ -91,21 +91,22 @@
     <button
         onclick={openChat}
         class="fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-ind-accent text-black font-bold pl-4 pr-5 py-3 shadow-2xl hover:bg-white transition-all duration-300 group"
-        aria-label="Chat with Rex"
+        aria-label="Chat with Grant"
     >
+        <!-- "G" avatar -->
         <div class="relative shrink-0">
-            <img
-                src="/greg-headshot.png"
-                alt="Rex"
-                class="w-8 h-8 rounded-full object-cover object-top grayscale group-hover:grayscale-0 transition-all duration-300"
-            />
+            <div
+                class="w-8 h-8 rounded-full bg-black flex items-center justify-center font-black text-ind-accent text-sm group-hover:text-black group-hover:bg-ind-accent transition-all duration-300 border border-ind-accent/40"
+            >
+                G
+            </div>
             <span
                 class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-400 rounded-full border-2 border-black"
             ></span>
         </div>
         <div class="text-left">
             <div class="text-[0.6rem] uppercase tracking-[0.15em] opacity-70 leading-none mb-0.5">ASK</div>
-            <div class="text-sm uppercase tracking-wider leading-none">Rex</div>
+            <div class="text-sm uppercase tracking-wider leading-none">Grant</div>
         </div>
         <MessageSquare size={16} class="ml-1 opacity-70" />
     </button>
@@ -126,26 +127,23 @@
             onkeydown={(e) => e.key === "Enter" && (isMinimized = !isMinimized)}
             aria-label={isMinimized ? "Expand chat" : "Minimize chat"}
         >
+            <!-- "G" avatar -->
             <div class="relative shrink-0">
-                <img
-                    src="/greg-headshot.png"
-                    alt="Rex"
-                    class="w-9 h-9 rounded-full object-cover object-top grayscale"
-                />
+                <div
+                    class="w-9 h-9 rounded-full bg-ind-accent flex items-center justify-center font-black text-black text-sm"
+                >
+                    G
+                </div>
                 <span
                     class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-400 rounded-full border-2 border-[#111]"
                 ></span>
             </div>
 
             <div class="flex-1 min-w-0">
-                <div
-                    class="text-white font-bold uppercase tracking-wider text-sm leading-none"
-                >
-                    Rex
+                <div class="text-white font-bold uppercase tracking-wider text-sm leading-none">
+                    Grant
                 </div>
-                <div
-                    class="text-[0.6rem] uppercase tracking-[0.12em] text-ind-accent mt-0.5 leading-none"
-                >
+                <div class="text-[0.6rem] uppercase tracking-[0.12em] text-ind-accent mt-0.5 leading-none">
                     GNA Inc. Intake
                 </div>
             </div>
@@ -161,9 +159,7 @@
                 >
                     <ChevronDown
                         size={16}
-                        class="transition-transform duration-300 {isMinimized
-                            ? 'rotate-180'
-                            : ''}"
+                        class="transition-transform duration-300 {isMinimized ? 'rotate-180' : ''}"
                     />
                 </button>
                 <button
@@ -186,21 +182,16 @@
                 class="flex-1 overflow-y-auto p-4 space-y-4 scroll-smooth"
             >
                 {#each messages as msg}
-                    <div
-                        class="flex gap-3 {msg.role === 'user'
-                            ? 'flex-row-reverse'
-                            : ''}"
-                    >
+                    <div class="flex gap-3 {msg.role === 'user' ? 'flex-row-reverse' : ''}">
                         {#if msg.role === "assistant"}
-                            <img
-                                src="/greg-headshot.png"
-                                alt="Rex"
-                                class="w-7 h-7 rounded-full object-cover object-top grayscale shrink-0 mt-0.5"
-                            />
+                            <div
+                                class="w-7 h-7 rounded-full bg-ind-accent flex items-center justify-center font-black text-black text-xs shrink-0 mt-0.5"
+                            >
+                                G
+                            </div>
                         {/if}
                         <div
-                            class="max-w-[78%] px-3 py-2.5 text-sm leading-relaxed {msg.role ===
-                            'user'
+                            class="max-w-[78%] px-3 py-2.5 text-sm leading-relaxed {msg.role === 'user'
                                 ? 'bg-ind-accent text-black font-medium ml-auto'
                                 : 'bg-[#1a1a1a] text-ind-fg border border-ind-border/40'}"
                         >
@@ -211,26 +202,17 @@
 
                 {#if isLoading}
                     <div class="flex gap-3">
-                        <img
-                            src="/greg-headshot.png"
-                            alt="Rex"
-                            class="w-7 h-7 rounded-full object-cover object-top grayscale shrink-0 mt-0.5"
-                        />
+                        <div
+                            class="w-7 h-7 rounded-full bg-ind-accent flex items-center justify-center font-black text-black text-xs shrink-0 mt-0.5"
+                        >
+                            G
+                        </div>
                         <div
                             class="bg-[#1a1a1a] border border-ind-border/40 px-3 py-2.5 flex items-center gap-1.5"
                         >
-                            <span
-                                class="w-1.5 h-1.5 bg-ind-accent rounded-full animate-bounce"
-                                style="animation-delay: 0ms"
-                            ></span>
-                            <span
-                                class="w-1.5 h-1.5 bg-ind-accent rounded-full animate-bounce"
-                                style="animation-delay: 150ms"
-                            ></span>
-                            <span
-                                class="w-1.5 h-1.5 bg-ind-accent rounded-full animate-bounce"
-                                style="animation-delay: 300ms"
-                            ></span>
+                            <span class="w-1.5 h-1.5 bg-ind-accent rounded-full animate-bounce" style="animation-delay: 0ms"></span>
+                            <span class="w-1.5 h-1.5 bg-ind-accent rounded-full animate-bounce" style="animation-delay: 150ms"></span>
+                            <span class="w-1.5 h-1.5 bg-ind-accent rounded-full animate-bounce" style="animation-delay: 300ms"></span>
                         </div>
                     </div>
                 {/if}
@@ -242,7 +224,7 @@
                     bind:this={inputEl}
                     bind:value={inputValue}
                     onkeydown={handleKeydown}
-                    placeholder="Ask Rex anything..."
+                    placeholder="Ask Grant anything..."
                     rows="1"
                     class="flex-1 bg-[#1a1a1a] border border-ind-border/50 text-ind-fg placeholder-ind-steel/50 text-sm px-3 py-2 resize-none focus:outline-none focus:border-ind-accent/60 transition-colors leading-relaxed"
                     style="min-height: 38px; max-height: 80px;"
@@ -258,9 +240,7 @@
             </div>
 
             <!-- Footer note -->
-            <div
-                class="text-center text-[0.55rem] uppercase tracking-[0.12em] text-ind-steel/40 pb-2 shrink-0"
-            >
+            <div class="text-center text-[0.55rem] uppercase tracking-[0.12em] text-ind-steel/40 pb-2 shrink-0">
                 Powered by GNA Inc.
             </div>
         {/if}
