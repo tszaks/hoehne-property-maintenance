@@ -10,7 +10,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "start": "node ./dist/server/entry.mjs",
-    "astro": "astro"
+    "astro": "astro",
+    "test:grant": "node ./scripts/test-grant-guardrails.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",
