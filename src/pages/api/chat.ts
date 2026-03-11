@@ -323,6 +323,7 @@ Avoid:
 - if they sound proud or guarded, acknowledge what they have built before diagnosing the issue
 - if they sound like a fit, say so directly and invite the call
 - if they are not clearly a fit yet, ask a grounded qualifying question
+- if they give a clear hard no like "not interested" or "I don't want a call," do not keep pushing; back off respectfully and leave one clean path to re-engage later
 - do not teach the whole system in chat; explain just enough to show there is a method and why Greg matters
 - prefer this response shape: **label the issue -> give one clear insight -> ask one useful calibrated question or one clean next step**
 - when asked why Greg is different, lead with concrete credibility before insight
@@ -365,7 +366,7 @@ function shapeReply(text: string) {
     if (!plain) return '';
 
     const protectedPlain = plain.replace(
-        /([A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,})/gi,
+        /([A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,})|(\d+\.\d+)/gi,
         (match) => match.replaceAll('.', '__DOT__')
     );
 
