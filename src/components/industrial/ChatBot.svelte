@@ -3,6 +3,41 @@
     import { MessageSquare, X, Send, ChevronDown } from "lucide-svelte";
 
     type Message = { role: "user" | "assistant"; content: string };
+    type BookingPhase = "idle" | "name" | "email" | "challenge" | "service" | "slot" | "confirm";
+    type ServiceInterest =
+        | "Online Mastermind Groups"
+        | "GNA Academy Self-Guided Online Curriculum"
+        | "1-on-1 Coaching"
+        | "Exit Strategy / Preparing for Sale";
+    type Slot = {
+        inviteesRemaining: number;
+        schedulingUrl: string;
+        startTime: string;
+        status: string;
+    };
+    type Choice = { label: string; value: string };
+    type BookingState = {
+        active: boolean;
+        choices: Choice[];
+        draft: {
+            challenge: string;
+            email: string;
+            name: string;
+            serviceInterest: string;
+            startTime: string;
+            timezone: string;
+        };
+        phase: BookingPhase;
+        slots: Slot[];
+        suggestedService: ServiceInterest;
+    };
+
+    const SERVICE_OPTIONS: ServiceInterest[] = [
+        "Online Mastermind Groups",
+        "GNA Academy Self-Guided Online Curriculum",
+        "1-on-1 Coaching",
+        "Exit Strategy / Preparing for Sale",
+    ];
 
     let isOpen = $state(false);
     let isMinimized = $state(false);
@@ -17,6 +52,140 @@
     let isLoading = $state(false);
     let messagesEl: HTMLElement;
     let inputEl: HTMLTextAreaElement;
+    let booking = $state<BookingState>({
+        active: false,
+        choices: [],
+        draft: {
+            challenge: "",
+            email: "",
+            name: "",
+            serviceInterest: "",
+            startTime: "",
+            timezone: getBrowserTimezone(),
+        },
+        phase: "idle",
+        slots: [],
+        suggestedService: "1-on-1 Coaching",
+    });
+
+    function getBrowserTimezone() {
+        return Intl.DateTimeFormat().resolvedOptions().timeZone || "America/New_York";
+    }
+
+    function isValidEmail(value: string) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+    }
+
+    function resetBooking() {
+        booking = {
+            active: false,
+            choices: [],
+            draft: {
+                challenge: "",
+                email: "",
+                name: "",
+                serviceInterest: "",
+                startTime: "",
+                timezone: getBrowserTimezone(),
+            },
+            phase: "idle",
+            slots: [],
+            suggestedService: "1-on-1 Coaching",
+        };
+    }
+
+    function addAssistantMessage(content: string) {
+        messages = [...messages, { role: "assistant", content }];
+    }
+
+    function inferServiceInterest() {
+        const transcript = messages
+            .filter((message) => message.role === "user")
+            .map((message) => message.content.toLowerCase())
+            .join(" ");
+
+        if (
+            transcript.includes("exit") ||
+            transcript.includes("sale") ||
+            transcript.includes("succession")
+        ) {
+            return "Exit Strategy / Preparing for Sale";
+        }
+
+        if (transcript.includes("mastermind") || transcript.includes("peer group")) {
+            return "Online Mastermind Groups";
+        }
+
+        if (
+            transcript.includes("academy") ||
+            transcript.includes("curriculum") ||
+            transcript.includes("training") ||
+            transcript.includes("self guided") ||
+            transcript.includes("self-guided")
+        ) {
+            return "GNA Academy Self-Guided Online Curriculum";
+        }
+
+        return "1-on-1 Coaching";
+    }
+
+    function buildServiceChoices(suggestedService: ServiceInterest) {
+        return [
+            { label: `Use ${suggestedService}`, value: suggestedService },
+            ...SERVICE_OPTIONS.filter((option) => option !== suggestedService).map((option) => ({
+                label: option,
+                value: option,
+            })),
+        ];
+    }
+
+    function formatSlot(startTime: string) {
+        return new Intl.DateTimeFormat("en-US", {
+            hour: "numeric",
+            minute: "2-digit",
+            month: "short",
+            day: "numeric",
+            timeZone: booking.draft.timezone,
+            weekday: "short",
+        }).format(new Date(startTime));
+    }
+
+    function resolveServiceChoice(value: string) {
+        const normalized = value.trim().toLowerCase();
+
+        if (
+            normalized === "yes" ||
+            normalized === "y" ||
+            normalized === "use that" ||
+            normalized === "sounds right"
+        ) {
+            return booking.suggestedService;
+        }
+
+        return (
+            SERVICE_OPTIONS.find((option) => {
+                const optionValue = option.toLowerCase();
+                return optionValue === normalized || optionValue.includes(normalized);
+            }) ?? null
+        );
+    }
+
+    function resolveSlotChoice(value: string) {
+        const trimmed = value.trim();
+        const normalized = trimmed.toLowerCase();
+
+        if (trimmed.startsWith("202")) {
+            return booking.slots.find((slot) => slot.startTime === trimmed) ?? null;
+        }
+
+        if (normalized.includes("first")) return booking.slots[0] ?? null;
+        if (normalized.includes("second")) return booking.slots[1] ?? null;
+        if (normalized.includes("third")) return booking.slots[2] ?? null;
+        if (normalized.includes("fourth")) return booking.slots[3] ?? null;
+        if (normalized.includes("fifth")) return booking.slots[4] ?? null;
+
+        return null;
+    }
 
     async function scrollToBottom() {
         await tick();
@@ -25,8 +194,182 @@
         }
     }
 
-    async function sendMessage() {
-        const text = inputValue.trim();
+    async function loadAvailability() {
+        booking.choices = [];
+
+        const response = await fetch("/api/calendly/availability", {
+            body: JSON.stringify({ timezone: booking.draft.timezone }),
+            headers: { "Content-Type": "application/json" },
+            method: "POST",
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.slots?.length) {
+            resetBooking();
+            addAssistantMessage(
+                data.error ??
+                    "I’m not seeing open times right now. Text FREEDOM to (415) 699-8512 and we’ll get you sorted."
+            );
+            return;
+        }
+
+        booking.phase = "slot";
+        booking.slots = data.slots;
+        booking.choices = data.slots.map((slot: Slot) => ({
+            label: formatSlot(slot.startTime),
+            value: slot.startTime,
+        }));
+        addAssistantMessage("Here are Greg's next openings. Pick the slot that works best.");
+    }
+
+    async function bookSlot() {
+        const email = booking.draft.email;
+        const slotLabel = formatSlot(booking.draft.startTime);
+
+        const response = await fetch("/api/calendly/book", {
+            body: JSON.stringify(booking.draft),
+            headers: { "Content-Type": "application/json" },
+            method: "POST",
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            booking.phase = "slot";
+            booking.choices = booking.slots.map((slot) => ({
+                label: formatSlot(slot.startTime),
+                value: slot.startTime,
+            }));
+            addAssistantMessage(
+                data.error ?? "That slot just disappeared. Pick another time and I’ll try again."
+            );
+            return;
+        }
+
+        resetBooking();
+        addAssistantMessage(
+            `You're booked for ${slotLabel}. Calendly will send the invite to ${email}, and that email will include the reschedule link.`
+        );
+    }
+
+    async function handleBookingReply(value: string) {
+        const normalized = value.trim().toLowerCase();
+
+        if (
+            normalized === "cancel" ||
+            normalized === "stop" ||
+            normalized === "never mind" ||
+            normalized === "nevermind"
+        ) {
+            resetBooking();
+            addAssistantMessage("No problem. If you want the slot later, hit Book Breakthrough with Greg.");
+            return;
+        }
+
+        switch (booking.phase) {
+            case "name":
+                if (value.trim().length < 2) {
+                    addAssistantMessage("I need the name Greg should see on the invite. What's your full name?");
+                    return;
+                }
+
+                booking.draft.name = value.trim();
+                booking.phase = "email";
+                addAssistantMessage("Good. What's the best email for the invite?");
+                return;
+
+            case "email":
+                if (!isValidEmail(value.trim())) {
+                    addAssistantMessage("That email looks off. What's the best email for the invite?");
+                    return;
+                }
+
+                booking.draft.email = value.trim().toLowerCase();
+                booking.phase = "challenge";
+                addAssistantMessage("What's the biggest challenge you want Greg to understand before the call?");
+                return;
+
+            case "challenge":
+                if (value.trim().length < 10) {
+                    addAssistantMessage(
+                        "Give me a little more so Greg has real context. What's the biggest challenge right now?"
+                    );
+                    return;
+                }
+
+                booking.draft.challenge = value.trim();
+                booking.suggestedService = inferServiceInterest();
+                booking.phase = "service";
+                booking.choices = buildServiceChoices(booking.suggestedService);
+                addAssistantMessage(
+                    `Sounds like ${booking.suggestedService} is the closest fit. Want me to use that for Greg's prep?`
+                );
+                return;
+
+            case "service": {
+                const selectedService = resolveServiceChoice(value);
+
+                if (!selectedService) {
+                    addAssistantMessage(
+                        "Use the buttons or tell me Academy, 1-on-1, Mastermind, or Exit Strategy."
+                    );
+                    return;
+                }
+
+                booking.draft.serviceInterest = selectedService;
+                await loadAvailability();
+                return;
+            }
+
+            case "slot": {
+                const selectedSlot = resolveSlotChoice(value);
+
+                if (!selectedSlot) {
+                    addAssistantMessage("Use one of the slot buttons so I book the right time.");
+                    return;
+                }
+
+                booking.draft.startTime = selectedSlot.startTime;
+                booking.phase = "confirm";
+                booking.choices = [
+                    { label: "Yes, book it", value: "yes" },
+                    { label: "Pick a different time", value: "change-time" },
+                ];
+                addAssistantMessage(
+                    `I’ve got ${formatSlot(selectedSlot.startTime)} for ${booking.draft.name}. Want me to lock it in?`
+                );
+                return;
+            }
+
+            case "confirm":
+                if (
+                    normalized === "yes" ||
+                    normalized === "book it" ||
+                    normalized === "book" ||
+                    normalized === "confirm"
+                ) {
+                    booking.choices = [];
+                    addAssistantMessage("Locking it in now.");
+                    await bookSlot();
+                    return;
+                }
+
+                if (normalized === "change-time" || normalized === "change time" || normalized === "no") {
+                    await loadAvailability();
+                    return;
+                }
+
+                addAssistantMessage("Say yes to book it, or pick a different time.");
+                return;
+
+            default:
+                return;
+        }
+    }
+
+    async function submitUserInput(content: string, value = content) {
+        const text = content.trim();
         if (!text || isLoading) return;
 
         messages = [...messages, { role: "user", content: text }];
@@ -35,25 +378,29 @@
         await scrollToBottom();
 
         try {
-            const res = await fetch("/api/chat", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    messages: messages.map((m) => ({
-                        role: m.role,
-                        content: m.content,
-                    })),
-                }),
-            });
+            if (booking.active && booking.phase !== "idle") {
+                await handleBookingReply(value);
+            } else {
+                const response = await fetch("/api/chat", {
+                    body: JSON.stringify({
+                        messages: messages.map((message) => ({
+                            content: message.content,
+                            role: message.role,
+                        })),
+                    }),
+                    headers: { "Content-Type": "application/json" },
+                    method: "POST",
+                });
 
-            const data = await res.json();
-            messages = [
-                ...messages,
-                {
-                    role: "assistant",
-                    content: data.content ?? "Something went wrong. Try again.",
-                },
-            ];
+                const data = await response.json();
+                messages = [
+                    ...messages,
+                    {
+                        role: "assistant",
+                        content: data.content ?? "Something went wrong. Try again.",
+                    },
+                ];
+            }
         } catch {
             messages = [
                 ...messages,
@@ -66,6 +413,37 @@
         }
 
         isLoading = false;
+        await scrollToBottom();
+    }
+
+    async function sendMessage() {
+        await submitUserInput(inputValue);
+    }
+
+    async function chooseChoice(choice: Choice) {
+        await submitUserInput(choice.label, choice.value);
+    }
+
+    async function startBooking() {
+        if (isLoading || booking.active) return;
+
+        booking = {
+            active: true,
+            choices: [],
+            draft: {
+                challenge: "",
+                email: "",
+                name: "",
+                serviceInterest: "",
+                startTime: "",
+                timezone: getBrowserTimezone(),
+            },
+            phase: "name",
+            slots: [],
+            suggestedService: inferServiceInterest(),
+        };
+
+        addAssistantMessage("Let's get you on Greg's calendar. What's your full name?");
         await scrollToBottom();
     }
 
@@ -86,14 +464,12 @@
     }
 </script>
 
-<!-- Floating trigger button -->
 {#if !isOpen}
     <button
         onclick={openChat}
         class="fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-ind-accent text-black font-bold pl-4 pr-5 py-3 shadow-2xl hover:bg-white transition-all duration-300 group"
         aria-label="Chat with Grant"
     >
-        <!-- "G" avatar -->
         <div class="relative shrink-0">
             <div
                 class="w-8 h-8 rounded-full bg-black flex items-center justify-center font-black text-ind-accent text-sm group-hover:text-black group-hover:bg-ind-accent transition-all duration-300 border border-ind-accent/40"
@@ -112,13 +488,11 @@
     </button>
 {/if}
 
-<!-- Chat panel -->
 {#if isOpen}
     <div
         class="fixed bottom-6 right-6 z-50 w-[360px] max-w-[calc(100vw-2rem)] flex flex-col shadow-2xl border border-ind-border bg-[#0d0d0d]"
         style="height: {isMinimized ? 'auto' : '520px'};"
     >
-        <!-- Header -->
         <div
             class="flex items-center gap-3 px-4 py-3 bg-[#111] border-b border-ind-border shrink-0 cursor-pointer"
             onclick={() => (isMinimized = !isMinimized)}
@@ -127,7 +501,6 @@
             onkeydown={(e) => e.key === "Enter" && (isMinimized = !isMinimized)}
             aria-label={isMinimized ? "Expand chat" : "Minimize chat"}
         >
-            <!-- "G" avatar -->
             <div class="relative shrink-0">
                 <div
                     class="w-9 h-9 rounded-full bg-ind-accent flex items-center justify-center font-black text-black text-sm"
@@ -176,7 +549,6 @@
         </div>
 
         {#if !isMinimized}
-            <!-- Messages -->
             <div
                 bind:this={messagesEl}
                 class="flex-1 overflow-y-auto p-4 space-y-4 scroll-smooth"
@@ -219,28 +591,58 @@
                 {/if}
             </div>
 
-            <!-- Input -->
-            <div class="border-t border-ind-border shrink-0 p-3 flex gap-2 bg-[#0d0d0d]">
-                <textarea
-                    bind:this={inputEl}
-                    bind:value={inputValue}
-                    onkeydown={handleKeydown}
-                    placeholder="Ask Grant anything..."
-                    rows="1"
-                    class="flex-1 bg-[#1a1a1a] border border-ind-border/50 text-ind-fg placeholder-ind-steel/50 text-sm px-3 py-2 resize-none focus:outline-none focus:border-ind-accent/60 transition-colors leading-relaxed"
-                    style="min-height: 38px; max-height: 80px;"
-                ></textarea>
-                <button
-                    onclick={sendMessage}
-                    disabled={isLoading || !inputValue.trim()}
-                    class="shrink-0 w-10 h-10 bg-ind-accent hover:bg-white text-black flex items-center justify-center transition-colors duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
-                    aria-label="Send message"
-                >
-                    <Send size={15} />
-                </button>
+            <div class="border-t border-ind-border shrink-0 bg-[#0d0d0d]">
+                {#if !booking.active}
+                    <div class="px-3 pt-3">
+                        <button
+                            onclick={startBooking}
+                            class="w-full border border-ind-accent/50 text-ind-accent hover:bg-ind-accent hover:text-black transition-colors duration-200 text-[0.65rem] uppercase tracking-[0.14em] font-bold px-3 py-3"
+                        >
+                            Book Breakthrough with Greg
+                        </button>
+                    </div>
+                {/if}
+
+                {#if booking.active && booking.choices.length}
+                    <div class="px-3 pt-3 flex flex-wrap gap-2">
+                        {#each booking.choices as choice}
+                            <button
+                                onclick={() => chooseChoice(choice)}
+                                class="text-xs border border-ind-border/60 bg-[#1a1a1a] text-ind-fg hover:border-ind-accent hover:text-ind-accent transition-colors px-3 py-2"
+                            >
+                                {choice.label}
+                            </button>
+                        {/each}
+                        <button
+                            onclick={() => chooseChoice({ label: "Cancel booking", value: "cancel" })}
+                            class="text-xs border border-ind-border/30 text-ind-steel hover:text-white transition-colors px-3 py-2"
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                {/if}
+
+                <div class="p-3 flex gap-2">
+                    <textarea
+                        bind:this={inputEl}
+                        bind:value={inputValue}
+                        onkeydown={handleKeydown}
+                        placeholder={booking.active ? "Reply to Grant..." : "Ask Grant anything..."}
+                        rows="1"
+                        class="flex-1 bg-[#1a1a1a] border border-ind-border/50 text-ind-fg placeholder-ind-steel/50 text-sm px-3 py-2 resize-none focus:outline-none focus:border-ind-accent/60 transition-colors leading-relaxed"
+                        style="min-height: 38px; max-height: 80px;"
+                    ></textarea>
+                    <button
+                        onclick={sendMessage}
+                        disabled={isLoading || !inputValue.trim()}
+                        class="shrink-0 w-10 h-10 bg-ind-accent hover:bg-white text-black flex items-center justify-center transition-colors duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
+                        aria-label="Send message"
+                    >
+                        <Send size={15} />
+                    </button>
+                </div>
             </div>
 
-            <!-- Footer note -->
             <div class="text-center text-[0.55rem] uppercase tracking-[0.12em] text-ind-steel/40 pb-2 shrink-0">
                 Powered by GNA Inc.
             </div>
