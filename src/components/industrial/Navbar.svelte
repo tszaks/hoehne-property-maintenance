@@ -47,16 +47,13 @@
 >
     <div class="max-w-7xl mx-auto flex items-center justify-between">
         <!-- Logo -->
-        <a href="/industrial" class="flex items-center gap-2 group">
-            <div
-                class="w-8 h-8 bg-ind-accent flex items-center justify-center font-bold text-black transform transition-transform group-hover:scale-105 duration-300"
-            >
-                G
-            </div>
-            <span
-                class="font-bold text-xl tracking-tight uppercase flex items-center"
-                >GNA</span
-            >
+        <a href="/" class="flex items-center group">
+            <img
+                src="/gna-logo.png"
+                alt="GNA Inc — Breakthrough Performance"
+                class="h-8 w-auto object-contain transition-opacity duration-300 group-hover:opacity-80"
+                style="filter: brightness(0) invert(1);"
+            />
         </a>
 
         <!-- Desktop Links -->
