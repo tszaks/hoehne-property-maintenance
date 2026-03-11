@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import Anthropic from '@anthropic-ai/sdk';
+import OpenAI from 'openai';
 
 export const prerender = false;
 
@@ -193,7 +193,7 @@ export const POST: APIRoute = async ({ request }) => {
         });
     }
 
-    const apiKey = import.meta.env.ANTHROPIC_API_KEY;
+    const apiKey = import.meta.env.OPENAI_API_KEY;
     if (!apiKey) {
         return new Response(JSON.stringify({ error: 'API key not configured' }), {
             status: 500,
@@ -201,16 +201,18 @@ export const POST: APIRoute = async ({ request }) => {
         });
     }
 
-    const client = new Anthropic({ apiKey });
+    const client = new OpenAI({ apiKey });
 
-    const response = await client.messages.create({
-        model: 'claude-haiku-4-5-20251001',
+    const response = await client.chat.completions.create({
+        model: 'gpt-4o-mini',
         max_tokens: 400,
-        system: SYSTEM_PROMPT,
-        messages,
+        messages: [
+            { role: 'system', content: SYSTEM_PROMPT },
+            ...messages,
+        ],
     });
 
-    const text = response.content[0].type === 'text' ? response.content[0].text : '';
+    const text = response.choices[0]?.message?.content ?? '';
 
     return new Response(JSON.stringify({ content: text }), {
         headers: { 'Content-Type': 'application/json' },
