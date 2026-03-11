@@ -1,6 +1,5 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import gsap from "gsap";
     import { Menu, X } from "lucide-svelte";
     import { fade, fly } from "svelte/transition";
     import { backOut } from "svelte/easing";
@@ -24,15 +23,6 @@
 
         window.addEventListener("scroll", handleScroll, { passive: true });
 
-        // Initial entrance animation
-        gsap.from(navElement, {
-            y: -100,
-            opacity: 0,
-            duration: 1,
-            ease: "power3.out",
-            delay: 0.2,
-        });
-
         return () => {
             window.removeEventListener("scroll", handleScroll);
         };
@@ -41,7 +31,7 @@
 
 <nav
     bind:this={navElement}
-    class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out px-6 py-4 lg:px-12 {isScrolled
+    class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out px-6 py-4 lg:px-12 nav-entrance {isScrolled
         ? 'ind-glass py-4'
         : 'bg-transparent py-6'}"
 >
@@ -131,3 +121,13 @@
         </div>
     </div>
 {/if}
+
+<style>
+    @keyframes nav-slide-down {
+        from { transform: translateY(-100%); opacity: 0; }
+        to   { transform: translateY(0);    opacity: 1; }
+    }
+    :global(.nav-entrance) {
+        animation: nav-slide-down 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
+    }
+</style>
