@@ -1,0 +1,173 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/Navbar.svelte';
+import Footer from '../../components/Footer.svelte';
+import SmoothScroll from '../../components/SmoothScroll.svelte';
+import Cursor from '../../components/Cursor.svelte';
+
+export async function getStaticPaths() {
+  return [
+    { 
+      params: { slug: 'founders-press' },
+      props: { 
+        title: "Founder's Press",
+        tagline: "Foundational Voice & Media.",
+        type: "Service",
+        year: "2024 — Present",
+        description: "Social content ghostwriting for founders and executives. A focused service for those looking to establish a consistent digital presence.",
+        concept: "Founder's Press works as an extension of your voice, helping you maintain visibility in the digital landscape without the time overhead of manual writing.",
+        features: ["Voice Development", "Ghostwriting", "Strategic Presence"],
+        results: ["Established Presence", "Refined Writing", "Founder-Centric"],
+        inquiryLink: "mailto:tyler@szakacsmedia.com?subject=Inquiry: Founder's Press"
+      }
+    },
+    { 
+      params: { slug: 'marpe-nutrition' },
+      props: { 
+        title: "The Marpe Ecosystem",
+        tagline: "Reimagining Digital Health.",
+        type: "Full Rebuild",
+        year: "2024 — Present",
+        description: "A complete digital transformation of the Marpe brand, including the flagship marpenutrition.com and startmydetox.com.",
+        concept: "We unified the Marpe brand under a single cohesive digital ecosystem. From tailored shopping flows to engaging landing pages, the ecosystem is built for speed and health.",
+        features: ["Fast Shopping Experience", "Unified Branding", "Flexible Content", "UX/UI Design"],
+        results: ["Unified Platforms", "Smooth User Flow", "Scalable Infrastructure"],
+        inquiryLink: "mailto:tyler@szakacsmedia.com?subject=Inquiry: Digital Transformation"
+      }
+    },
+    { 
+      params: { slug: 'vero' },
+      props: { 
+        title: "Vero",
+        tagline: "Your money. Finally simple.",
+        type: "Flagship Product",
+        year: "2025 — Present",
+        description: "A financial companion designed to transform natural conversation into wealth-building insights. Built to redefine the personal balance sheet.",
+        concept: "Vero isn't just a tracking tool; it's a partner. It understands the nuances of your life through conversation, providing clarity where there was once noise.",
+        features: ["Natural Conversation", "Smart Timeframes", "Privacy-First", "Personality"],
+        results: ["BETA Active", "Successful TestFlight Launch", "Fluid Experience"],
+        inquiryLink: "https://askvero.app",
+        externalLink: "https://askvero.app"
+      }
+    },
+    { 
+      params: { slug: 'cortex' },
+      props: { 
+        title: "Cortex",
+        tagline: "The Operating System for Ideas.",
+        type: "Productivity",
+        year: "2025 — Present",
+        description: "A thinking tool that helps you collect, connect, and develop your ideas.",
+        concept: "Cortex mimics the way your mind naturally works—associative, fluid, and limitless. It transforms scattered thoughts into a connected web of knowledge.",
+        features: ["Natural Capture", "Smart Connections", "Contextual Search", "Visual Graph"],
+        results: ["Structured Thinking", "Effortless Recall", "Idea Synthesis"],
+        inquiryLink: "mailto:tyler@szakacsmedia.com?subject=Inquiry: Cortex"
+      }
+    },
+
+  ];
+}
+
+const { title, tagline, type, year, description, concept, features, results, inquiryLink, externalLink } = Astro.props;
+---
+
+<Layout title={`${title} — Szakacs Media`}>
+  <SmoothScroll client:only="svelte" />
+  <Cursor client:only="svelte" />
+  <div class="noise-overlay"></div>
+  
+  <Navbar client:load />
+
+  <main class="min-h-screen pt-24 lg:pt-40 px-6 pb-20">
+    <div class="max-w-6xl mx-auto">
+      <!-- Breadcrumb -->
+      <a href="/" class="group flex items-center gap-2 text-apple-400 hover:text-black transition-colors mb-8 lg:mb-12 uppercase text-[10px] font-bold tracking-[0.3em]">
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:-translate-x-1"><path d="m15 18-6-6 6-6"/></svg>
+        Back to Laboratory
+      </a>
+
+      <!-- Header -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 mb-20 lg:mb-32">
+        <div class="space-y-8">
+          <div class="flex items-center gap-4">
+             <span class="text-accent text-[10px] font-bold tracking-[0.4em] uppercase py-1 px-3 border border-accent/20 rounded-full">{type}</span>
+             <span class="text-apple-400 text-[10px] font-bold tracking-[0.4em] uppercase">{year}</span>
+          </div>
+          <h1 class="text-5xl md:text-8xl font-black tracking-tightest leading-tight">{title}</h1>
+          <p class="text-xl md:text-3xl text-apple-500 font-medium italic opacity-80 leading-relaxed font-serif">"{tagline}"</p>
+        </div>
+        <div class="flex items-end">
+          <p class="text-lg md:text-2xl leading-relaxed text-black/80 font-medium font-serif italic">
+            {description}
+          </p>
+        </div>
+      </div>
+
+      <!-- Main Content Block -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-20 mb-20 lg:mb-40">
+        <div class="lg:col-span-2 space-y-12">
+            <h2 class="text-2xl lg:text-3xl font-bold tracking-tight uppercase">The Concept.</h2>
+            <p class="text-lg md:text-2xl leading-relaxed text-black/60">
+              {concept}
+            </p>
+        </div>
+        <div class="space-y-12 bg-white/40 backdrop-blur-sm p-8 rounded-3xl border border-black/5 shadow-sm">
+            <h2 class="text-sm font-bold tracking-[0.4em] uppercase text-accent">Capabilities.</h2>
+            <ul class="space-y-4">
+                {features.map(feature => (
+                  <li class="flex items-start gap-3 text-base lg:text-lg font-medium text-black/80">
+                    <span class="mt-2.5 w-1.5 h-1.5 bg-accent rounded-full shrink-0"></span>
+                    {feature}
+                  </li>
+                ))}
+            </ul>
+        </div>
+      </div>
+
+      <!-- Results/Outcomes -->
+      <div class="border-y border-black/5 py-12 lg:py-24 mb-20 lg:mb-40">
+           <div class="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
+               {results.map((result, i) => (
+                 <div class="space-y-2">
+                    <span class="text-apple-400 text-[10px] font-bold tracking-[0.4em] uppercase mb-4 block">Metric 0{i+1}</span>
+                    <p class="text-2xl md:text-4xl font-bold tracking-tightest leading-none">{result}</p>
+                 </div>
+               ))}
+           </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="text-center py-20 lg:py-40">
+          <h2 class="text-4xl md:text-6xl font-bold tracking-tightest mb-12">
+            {title === "Vero" ? "Ready to transform your finances?" : "Interested in working together?"}
+          </h2>
+          <div class="flex flex-col md:flex-row items-center justify-center gap-6">
+            <a 
+              href={inquiryLink}
+              target={inquiryLink.startsWith('http') ? "_blank" : "_self"}
+              class="inline-block px-12 py-6 bg-black text-white rounded-full text-lg font-bold tracking-tight hover:scale-105 transition-transform duration-500 shadow-xl shadow-black/10"
+            >
+              {title === "Vero" ? "Join the Beta" : `Inquire about ${title}`}
+            </a>
+            {externalLink && inquiryLink !== externalLink && (
+              <a 
+                href={externalLink}
+                target="_blank"
+                class="inline-block px-12 py-6 border border-black/10 rounded-full text-lg font-bold tracking-tight hover:bg-black/5 transition-all duration-500"
+              >
+                Visit Site
+              </a>
+            )}
+          </div>
+      </div>
+    </div>
+  </main>
+
+  <Footer client:visible />
+</Layout>
+
+<style>
+  h1, h2, h3 {
+    -webkit-font-smoothing: antialiased;
+  }
+</style>

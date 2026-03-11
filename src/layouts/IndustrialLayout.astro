@@ -1,0 +1,35 @@
+---
+import '../styles/industrial.css';
+
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const { 
+	title = "Industrial Template — Heavy Engineering & Logistics", 
+	description = "A premium, motion-rich template for industrial companies." 
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" class="dark">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		
+		<!-- Theme Color -->
+		<meta name="theme-color" content="#0a0a0a" />
+
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+	</head>
+	<body class="industrial-theme selection:bg-ind-accent selection:text-black bg-ind-bg text-ind-fg">
+		<div class="industrial-noise"></div>
+		<slot />
+	</body>
+</html>
