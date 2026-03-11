@@ -125,11 +125,28 @@
         window.sessionStorage.setItem(SESSION_STORAGE_KEY, value);
     }
 
+    function finalizedSessionKey(id: string) {
+        return `${SESSION_STORAGE_KEY}:${id}:finalized`;
+    }
+
+    function isStoredSessionFinalized(id: string) {
+        return window.sessionStorage.getItem(finalizedSessionKey(id)) === "1";
+    }
+
+    function markStoredSessionFinalized(id: string) {
+        window.sessionStorage.setItem(finalizedSessionKey(id), "1");
+    }
+
+    function clearStoredSessionFinalized(id: string) {
+        window.sessionStorage.removeItem(finalizedSessionKey(id));
+    }
+
     function startFreshSession(resetMessages = true) {
         writeSessionId(crypto.randomUUID());
         didFinalizeSession = false;
         lastBookedDraft = null;
         resetBooking();
+        clearStoredSessionFinalized(sessionId);
 
         if (resetMessages) {
             messages = buildIntroMessages();
@@ -142,7 +159,12 @@
         window.localStorage.removeItem(SESSION_STORAGE_KEY);
 
         const storedSessionId = window.sessionStorage.getItem(SESSION_STORAGE_KEY);
-        writeSessionId(storedSessionId || crypto.randomUUID());
+        const liveSessionId =
+            storedSessionId && !isStoredSessionFinalized(storedSessionId)
+                ? storedSessionId
+                : crypto.randomUUID();
+
+        writeSessionId(liveSessionId);
         scheduleIdleFinalize();
 
         const handlePageHide = () => {
@@ -217,7 +239,6 @@
             return;
         }
 
-        didFinalizeSession = true;
         clearIdleTimer();
 
         const payload = JSON.stringify({
@@ -229,13 +250,19 @@
 
         try {
             if (useBeacon && navigator.sendBeacon) {
-                navigator.sendBeacon(
+                const queued = navigator.sendBeacon(
                     "/api/chat/finalize",
                     new Blob([payload], { type: "application/json" })
                 );
-                return;
+
+                if (queued) {
+                    didFinalizeSession = true;
+                    markStoredSessionFinalized(sessionId);
+                    return;
+                }
             }
 
+            didFinalizeSession = true;
             const response = await fetch("/api/chat/finalize", {
                 body: payload,
                 headers: { "Content-Type": "application/json" },
@@ -243,10 +270,17 @@
                 method: "POST",
             });
 
-            if (!response.ok) {
+            const data = await response.json().catch(() => null);
+            const status = typeof data?.status === "string" ? data.status : "";
+            const finalizationSucceeded = response.ok && status !== "saved-no-email";
+
+            if (!finalizationSucceeded) {
                 didFinalizeSession = false;
                 scheduleIdleFinalize();
+                return;
             }
+
+            markStoredSessionFinalized(sessionId);
         } catch {
             didFinalizeSession = false;
             scheduleIdleFinalize();

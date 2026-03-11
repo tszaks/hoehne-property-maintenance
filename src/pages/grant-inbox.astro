@@ -1,6 +1,6 @@
 ---
 import IndustrialLayout from '../layouts/IndustrialLayout.astro';
-import { listChatSessions } from '../lib/server/chat-store';
+import { getChatSession, listChatSessions } from '../lib/server/chat-store';
 
 export const prerender = false;
 
@@ -9,9 +9,14 @@ const providedToken = Astro.url.searchParams.get('token')?.trim() ?? '';
 const requestedSessionId = Astro.url.searchParams.get('session')?.trim() ?? '';
 const authorized = Boolean(expectedToken) && providedToken === expectedToken;
 
-const sessions = authorized ? await listChatSessions(60) : [];
-const selectedSession =
-    sessions.find((session) => session.sessionId === requestedSessionId) ?? sessions[0] ?? null;
+const recentSessions = authorized ? await listChatSessions(60) : [];
+const requestedSession =
+    authorized && requestedSessionId ? await getChatSession(requestedSessionId) : null;
+const sessions =
+    requestedSession && !recentSessions.some((session) => session.sessionId === requestedSession.sessionId)
+        ? [requestedSession, ...recentSessions]
+        : recentSessions;
+const selectedSession = requestedSession ?? sessions[0] ?? null;
 
 const bookedCount = sessions.filter((session) => session.booked).length;
 const emailedCount = sessions.filter((session) => session.summarySentAt).length;
