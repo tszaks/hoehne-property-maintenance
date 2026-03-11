@@ -308,8 +308,11 @@ This is a chat, not a pitch deck. Be concise, conversational, insightful, and al
 
 function shapeReply(text: string) {
     const plain = text
-        .replace(/\*\*/g, '')
-        .replace(/[`#>-]/g, '')
+        .replace(/\*\*(.*?)\*\*/g, '$1')
+        .replace(/\*(.*?)\*/g, '$1')
+        .replace(/`([^`]+)`/g, '$1')
+        .replace(/^#{1,6}\s*/gm, '')
+        .replace(/^\s*[-*>]\s*/gm, '')
         .replace(/\s+/g, ' ')
         .trim();
 
