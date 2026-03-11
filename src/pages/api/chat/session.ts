@@ -4,8 +4,19 @@ import { saveChatSession } from '../../../lib/server/chat-store';
 
 export const prerender = false;
 
+async function parseBody(request: Request) {
+    const text = await request.text().catch(() => '');
+    if (!text) return null;
+
+    try {
+        return JSON.parse(text) as Record<string, unknown>;
+    } catch {
+        return null;
+    }
+}
+
 export const POST: APIRoute = async ({ request }) => {
-    const body = await request.json().catch(() => null);
+    const body = await parseBody(request);
 
     if (!body || typeof body !== 'object') {
         return new Response(JSON.stringify({ error: 'Missing session payload' }), {

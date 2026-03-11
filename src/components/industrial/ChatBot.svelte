@@ -16,6 +16,7 @@
         status: string;
     };
     type Choice = { label: string; value: string };
+    type FinalizeReason = "booked" | "closed" | "idle" | "pagehide";
     type BookingState = {
         active: boolean;
         choices: Choice[];
@@ -38,22 +39,22 @@
         "1-on-1 Coaching",
         "Exit Strategy / Preparing for Sale",
     ];
+    const INTRO_MESSAGE =
+        "Hey — I'm Grant, Greg's intake assistant. You running a restoration or construction company? Tell me what's going on and I'll tell you straight whether Greg can help.";
+    const SESSION_STORAGE_KEY = "grant-chat-session-id";
+    const IDLE_FINALIZE_MS = 15 * 60 * 1000;
 
     let isOpen = $state(false);
     let isMinimized = $state(false);
-    let messages = $state<Message[]>([
-        {
-            role: "assistant",
-            content:
-                "Hey — I'm Grant, Greg's intake assistant. You running a restoration or construction company? Tell me what's going on and I'll tell you straight whether Greg can help.",
-        },
-    ]);
+    let messages = $state<Message[]>([{ role: "assistant", content: INTRO_MESSAGE }]);
     let inputValue = $state("");
     let isLoading = $state(false);
+    let didFinalizeSession = $state(false);
     let lastBookedDraft = $state<BookingState["draft"] | null>(null);
     let messagesEl: HTMLElement;
     let inputEl: HTMLTextAreaElement;
     let sessionId = $state("");
+    let idleTimer: number | null = null;
     let booking = $state<BookingState>({
         active: false,
         choices: [],
@@ -74,10 +75,86 @@
         return Intl.DateTimeFormat().resolvedOptions().timeZone || "America/New_York";
     }
 
+    function buildIntroMessages() {
+        return [{ role: "assistant", content: INTRO_MESSAGE }] satisfies Message[];
+    }
+
+    function hasUserConversation() {
+        return messages.some((message) => message.role === "user");
+    }
+
+    function getBookingState() {
+        return lastBookedDraft
+            ? {
+                  active: false,
+                  booked: true,
+                  draft: lastBookedDraft,
+                  phase: "booked",
+              }
+            : {
+                  active: booking.active,
+                  booked: false,
+                  draft: booking.draft,
+                  phase: booking.phase,
+              };
+    }
+
+    function clearIdleTimer() {
+        if (idleTimer !== null) {
+            window.clearTimeout(idleTimer);
+            idleTimer = null;
+        }
+    }
+
+    function scheduleIdleFinalize() {
+        if (typeof window === "undefined") return;
+
+        clearIdleTimer();
+
+        if (!isOpen || didFinalizeSession || !hasUserConversation()) {
+            return;
+        }
+
+        idleTimer = window.setTimeout(() => {
+            void finalizeSession("idle");
+        }, IDLE_FINALIZE_MS);
+    }
+
+    function writeSessionId(value: string) {
+        sessionId = value;
+        window.sessionStorage.setItem(SESSION_STORAGE_KEY, value);
+    }
+
+    function startFreshSession(resetMessages = true) {
+        writeSessionId(crypto.randomUUID());
+        didFinalizeSession = false;
+        lastBookedDraft = null;
+        resetBooking();
+
+        if (resetMessages) {
+            messages = buildIntroMessages();
+        }
+
+        scheduleIdleFinalize();
+    }
+
     onMount(() => {
-        const storedSessionId = window.localStorage.getItem("grant-chat-session-id");
-        sessionId = storedSessionId || crypto.randomUUID();
-        window.localStorage.setItem("grant-chat-session-id", sessionId);
+        window.localStorage.removeItem(SESSION_STORAGE_KEY);
+
+        const storedSessionId = window.sessionStorage.getItem(SESSION_STORAGE_KEY);
+        writeSessionId(storedSessionId || crypto.randomUUID());
+        scheduleIdleFinalize();
+
+        const handlePageHide = () => {
+            void finalizeSession("pagehide", true);
+        };
+
+        window.addEventListener("pagehide", handlePageHide);
+
+        return () => {
+            clearIdleTimer();
+            window.removeEventListener("pagehide", handlePageHide);
+        };
     });
 
     function isValidEmail(value: string) {
@@ -104,42 +181,75 @@
 
     function addAssistantMessage(content: string) {
         messages = [...messages, { role: "assistant", content }];
+        scheduleIdleFinalize();
     }
 
-    async function persistSession() {
+    async function persistSession(useBeacon = false) {
         if (!sessionId || !messages.length) return;
-
-        const bookingState = lastBookedDraft
-            ? {
-                  active: false,
-                  booked: true,
-                  draft: lastBookedDraft,
-                  phase: "booked",
-              }
-            : {
-                  active: booking.active,
-                  booked: false,
-                  draft: booking.draft,
-                  phase: booking.phase,
-              };
+        const payload = JSON.stringify({
+            booking: getBookingState(),
+            messages,
+            sessionId,
+        });
 
         try {
+            if (useBeacon && navigator.sendBeacon) {
+                navigator.sendBeacon(
+                    "/api/chat/session",
+                    new Blob([payload], { type: "application/json" })
+                );
+                return;
+            }
+
             await fetch("/api/chat/session", {
-                body: JSON.stringify({
-                    booking: bookingState,
-                    messages,
-                    sessionId,
-                }),
+                body: payload,
                 headers: { "Content-Type": "application/json" },
                 keepalive: true,
                 method: "POST",
             });
         } catch {
             // Let the chat continue even if persistence fails.
-        } finally {
-            if (lastBookedDraft) {
-                lastBookedDraft = null;
+        }
+    }
+
+    async function finalizeSession(reason: FinalizeReason, useBeacon = false) {
+        if (!sessionId || didFinalizeSession || !hasUserConversation()) {
+            return;
+        }
+
+        didFinalizeSession = true;
+        clearIdleTimer();
+
+        const payload = JSON.stringify({
+            booking: getBookingState(),
+            messages,
+            reason,
+            sessionId,
+        });
+
+        try {
+            if (useBeacon && navigator.sendBeacon) {
+                navigator.sendBeacon(
+                    "/api/chat/finalize",
+                    new Blob([payload], { type: "application/json" })
+                );
+                return;
             }
+
+            const response = await fetch("/api/chat/finalize", {
+                body: payload,
+                headers: { "Content-Type": "application/json" },
+                keepalive: true,
+                method: "POST",
+            });
+
+            if (!response.ok) {
+                didFinalizeSession = false;
+                scheduleIdleFinalize();
+            }
+        } catch {
+            didFinalizeSession = false;
+            scheduleIdleFinalize();
         }
     }
 
@@ -298,6 +408,7 @@
         addAssistantMessage(
             `You're booked for ${slotLabel}. Calendly will send the invite to ${email}, and that email will include the reschedule link.`
         );
+        await finalizeSession("booked");
     }
 
     async function handleBookingReply(value: string) {
@@ -419,9 +530,14 @@
         const text = content.trim();
         if (!text || isLoading) return;
 
+        if (didFinalizeSession) {
+            startFreshSession(true);
+        }
+
         messages = [...messages, { role: "user", content: text }];
         inputValue = "";
         isLoading = true;
+        scheduleIdleFinalize();
         await scrollToBottom();
 
         try {
@@ -473,6 +589,10 @@
     }
 
     async function startBooking() {
+        if (didFinalizeSession) {
+            startFreshSession(true);
+        }
+
         if (isLoading || booking.active) return;
 
         booking = {
@@ -506,10 +626,17 @@
     function openChat() {
         isOpen = true;
         isMinimized = false;
+        scheduleIdleFinalize();
         tick().then(() => {
             inputEl?.focus();
             scrollToBottom();
         });
+    }
+
+    function closeChat() {
+        isOpen = false;
+        isMinimized = false;
+        void finalizeSession("closed");
     }
 </script>
 
@@ -587,7 +714,7 @@
                 <button
                     onclick={(e) => {
                         e.stopPropagation();
-                        isOpen = false;
+                        closeChat();
                     }}
                     class="text-ind-steel hover:text-white transition-colors p-1"
                     aria-label="Close chat"
