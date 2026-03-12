@@ -755,12 +755,14 @@
         class="fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-ind-accent text-black font-bold pl-4 pr-5 py-3 shadow-2xl hover:bg-white transition-all duration-300 group"
         aria-label="Chat with Grant"
     >
-        <div class="relative shrink-0">
-            <div
-                class="w-8 h-8 rounded-full bg-black flex items-center justify-center font-black text-ind-accent text-sm group-hover:text-black group-hover:bg-ind-accent transition-all duration-300 border border-ind-accent/40"
-            >
-                G
-            </div>
+        <div
+            class="shrink-0 rounded-sm bg-black px-2 py-1.5 border border-black/80 transition-all duration-300 group-hover:border-black"
+        >
+            <img
+                src="/gna-logo-light.png"
+                alt="GNA Inc — Breakthrough Performance"
+                class="h-4 w-auto block"
+            />
         </div>
         <div class="text-left">
             <div class="text-[0.6rem] uppercase tracking-[0.15em] opacity-70 leading-none mb-0.5">ASK</div>
@@ -783,15 +785,14 @@
             onkeydown={(e) => e.key === "Enter" && (isMinimized = !isMinimized)}
             aria-label={isMinimized ? "Expand chat" : "Minimize chat"}
         >
-            <div class="relative shrink-0">
-                <div
-                    class="w-9 h-9 rounded-full bg-ind-accent flex items-center justify-center font-black text-black text-sm"
-                >
-                    G
-                </div>
-                <span
-                    class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-400 rounded-full border-2 border-[#111]"
-                ></span>
+            <div
+                class="shrink-0 rounded-sm bg-black px-2 py-1.5 border border-white/10"
+            >
+                <img
+                    src="/gna-logo-light.png"
+                    alt="GNA Inc — Breakthrough Performance"
+                    class="h-[18px] w-auto block"
+                />
             </div>
 
             <div class="flex-1 min-w-0">
