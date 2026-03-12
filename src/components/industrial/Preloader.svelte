@@ -70,16 +70,12 @@
     class="fixed inset-0 z-[10000] bg-ind-bg flex flex-col items-center justify-center"
 >
     <!-- Logo -->
-    <div bind:this={logoRef} class="mb-12 flex items-center gap-3">
-        <div
-            class="w-12 h-12 bg-ind-accent flex items-center justify-center font-black text-black text-2xl"
-        >
-            G
-        </div>
-        <span
-            class="text-2xl font-black uppercase tracking-tight text-white hidden md:block"
-            >GNA</span
-        >
+    <div bind:this={logoRef} class="mb-12">
+        <img
+            src="/gna-logo-light.png"
+            alt="GNA Inc — Breakthrough Performance"
+            class="w-[220px] md:w-[300px] h-auto object-contain"
+        />
     </div>
 
     <!-- Progress bar -->

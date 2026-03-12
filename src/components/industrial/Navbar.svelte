@@ -39,10 +39,9 @@
         <!-- Logo -->
         <a href="/" class="flex items-center group">
             <img
-                src="/gna-logo.png"
+                src="/gna-logo-light.png"
                 alt="GNA Inc — Breakthrough Performance"
-                class="h-8 w-auto object-contain transition-opacity duration-300 group-hover:opacity-80"
-                style="filter: brightness(0) invert(1);"
+                class="h-9 w-auto object-contain transition-opacity duration-300 group-hover:opacity-80"
             />
         </a>
 
