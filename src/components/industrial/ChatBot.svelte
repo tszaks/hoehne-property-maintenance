@@ -752,18 +752,9 @@
 {#if !isOpen}
     <button
         onclick={openChat}
-        class="fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-ind-accent text-black font-bold pl-4 pr-5 py-3 shadow-2xl hover:bg-white transition-all duration-300 group"
+        class="fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-ind-accent text-black font-bold px-5 py-3 shadow-2xl hover:bg-white transition-all duration-300 group"
         aria-label="Chat with Grant"
     >
-        <div
-            class="shrink-0 rounded-sm bg-black px-2 py-1.5 border border-black/80 transition-all duration-300 group-hover:border-black"
-        >
-            <img
-                src="/gna-logo-light.png"
-                alt="GNA Inc — Breakthrough Performance"
-                class="h-4 w-auto block"
-            />
-        </div>
         <div class="text-left">
             <div class="text-[0.6rem] uppercase tracking-[0.15em] opacity-70 leading-none mb-0.5">ASK</div>
             <div class="text-sm uppercase tracking-wider leading-none">Grant</div>
