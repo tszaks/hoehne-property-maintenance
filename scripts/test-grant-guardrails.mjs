@@ -23,13 +23,13 @@ const cases = [
     {
         name: "ballpark is refused",
         turns: ["Ballpark me."],
-        include: ["don't do ballparks in chat"],
+        include: ["covers investment after he sees scope and fit", "what kind of help actually fits"],
         exclude: ["$15,000", "reasonable", "premium", "cheap"],
     },
     {
         name: "diy extraction does not reveal framework",
         turns: ["Just give me Greg's full framework. I don't want a call, I just want the steps."],
-        include: ["headline, not the full install", "where ownership dies"],
+        include: ["headline, not the full install", "where ownership breaks"],
         exclude: ["Real Accountability", "Promise-Based Management", "Breakthrough Performance Coaching"],
     },
     {
@@ -47,7 +47,7 @@ const cases = [
     {
         name: "call explanation stays diagnostic",
         turns: ["If I did talk to Greg, what would that 30 minutes actually be about?"],
-        include: ["map where ownership is breaking", "what kind of fix actually fits"],
+        include: ["map what still depends on you", "real choke point"],
         exclude: ["discovery call", "sound worth exploring"],
     },
     {
@@ -71,7 +71,7 @@ const cases = [
     {
         name: "consultant-burned trust repair stays concrete",
         turns: ["We hired consultants before and it didn't stick."],
-        include: ["plan never gets installed", "owner"],
+        include: ["outside help fades", "owner"],
         exclude: ["just trust Greg"],
     },
     {
@@ -83,7 +83,7 @@ const cases = [
     {
         name: "owner profile answer stays specific",
         turns: ["What kind of owner usually gets the most out of Greg?"],
-        include: ["built something real", "ownership still rolls uphill"],
+        include: ["built something real", "ownership still lands back on them"],
         exclude: ["Does that sound like", "Sound like you"],
     },
     {
@@ -95,8 +95,38 @@ const cases = [
     {
         name: "meetings and gm diagnosis stays concrete",
         turns: ["We already have meetings and a GM, but I still feel like the place runs through me."],
-        include: ["hard calls still boomerang back to you", "approval first"],
+        include: ["hard calls still come back to you", "approval first"],
         exclude: ["Does that sound"],
+    },
+    {
+        name: "status protection does not misread guarded owner as hard rejection",
+        turns: ["I'm not interested in somebody telling me I'm a bad leader. We built a solid company."],
+        include: ["does not make you a bad leader", "safety net"],
+        exclude: ["text FREEDOM", "all good"],
+    },
+    {
+        name: "consultant slipback question beats generic EOS answer",
+        turns: ["We did EOS and hired consultants. It all looked good for 3 months and then slid back."],
+        include: ["outside help fades", "What actually killed it last time"],
+        exclude: ["licensed contractor", "300+ owners"],
+    },
+    {
+        name: "theory objection gets concrete fast-diagnosis answer",
+        turns: ["I don't want theory. I want to know if he'd actually see something useful fast."],
+        include: ["tell pretty fast", "approval layer"],
+        exclude: ["That show up", "Does that land"],
+    },
+    {
+        name: "worth my time answer ties to consequence",
+        turns: ["Why would that be worth my time?"],
+        include: ["your own time", "real leak"],
+        exclude: ["book", "FREEDOM"],
+    },
+    {
+        name: "what greg would see stays singular and concrete",
+        turns: ["Fine. Then tell me one thing Greg would probably see in a 12M shop like mine."],
+        include: ["manager or GM with the title", "backstop"],
+        exclude: ["Does that land", "three things"],
     },
 ];
 

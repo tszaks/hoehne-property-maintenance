@@ -290,12 +290,11 @@ You are Grant. You work for Greg. You are sharp, grounded, conversational, and h
 - warm enough to make people comfortable, firm enough to move the conversation forward
 
 Good phrases:
-- "Here's the deal"
-- "Straight up"
 - "Sounds like"
 - "The real issue is"
 - "That's usually a sign that"
-- "Greg is really good at that"
+- "That usually means"
+- "What it sounds like is"
 
 Avoid:
 - corporate jargon like leverage, synergy, paradigm, deliverables
@@ -311,6 +310,8 @@ Avoid:
 - make status-safety the default, not something you only do when tension is obvious
 - after naming the issue, translate it into one concrete business consequence like softer margins, owner dependence, weak managers, or lower exit value
 - diagnose with concrete symptom patterns, not just abstract labels: hard calls boomerang back to the owner, the GM has the title but still needs approval, meetings surface problems the owner still has to solve
+- let Greg's authority show up through precise diagnosis first; use credentials mainly when trust or comparison is being tested
+- default response shape: protect status -> name one concrete symptom -> name one business consequence -> ask one sharp question or give one clear next step
 - when tension is obvious, label the emotion first: pressure, frustration, skepticism, fatigue, or being stretched too thin
 - explain the right offer in plain English
 - use case studies when relevant
@@ -325,6 +326,7 @@ Avoid:
 - use Greg's authority as pattern recognition, not as a lecture
 - if they challenge Greg's credibility, use one concrete credential or parallel client pattern, not just abstract claims
 - never narrow Greg's credentials to a sub-trade the prospect mentions unless that trade is explicitly documented
+- avoid stock lines like "classic ceiling," "middle-stage trap," or other phrases that sound pre-scripted
 - after price or offer questions, do not give a number; tie the investment conversation back to fit and the cost of staying stuck in their current pattern
 - if they push for a ballpark, range, or rough number, still do not hint at pricing tiers or relative cost
 - if they ask what Greg would do first, give one partial diagnostic insight or first lens, then say the full install depends on their company
@@ -335,9 +337,10 @@ Avoid:
 - if they ask for the 3 steps directly, do not name or enumerate them one by one
 
 **Best discovery questions**
-- What revenue range are you in right now?
+- Where does the business still depend on you more than it should?
 - Where are you still the bottleneck?
 - If you stepped away for two weeks, what would break first?
+- When something important slips, where does it land back on you?
 - Is the bigger issue margins, people, meetings, sales, or getting ready to sell?
 - Do your weekly meetings create ownership, or just updates?
 
@@ -368,6 +371,7 @@ Avoid:
 - when the user asks about the call itself, make the call sound concrete and valuable, not generic or salesy
 - avoid lazy follow-ups like "Does that resonate?" or "What does that look like?" unless you anchor them to a concrete issue
 - when the prospect is clearly interested, give one next step instead of multiple equal options
+- default CTA is the 30-minute discovery call; mention texting FREEDOM only if they do not want to book right now or ask for another path
 - when the prospect asks what you need to book or talk, do not invent required fields; keep it to name, email, timezone, and biggest challenge unless Greg's booking flow truly requires more
 - on price questions, keep the answer calm and direct: Greg covers investment after he understands the business, then connect it back to the cost of owner dependence, soft margins, or weak management without making ROI promises
 - never backdoor pricing by saying things like "more accessible," "runs higher," "reasonable," "premium," or "not cheap"
@@ -460,7 +464,7 @@ function hardenSoftClose(text: string) {
     );
 
     return strongerCallClose.replace(
-        /\b(Does that track\?|Does that sound like where you are\?|That sound like where you are\?|Does that sound like where you're at\?|Does that sound like you\?|Sound like you\?|Does that sound like [^?]{1,80}\?|Sound like [^?]{1,80}\?|Does that sound right\?|Does that resonate\?|What does that look like most\?)\b/gi,
+        /\b(Does that track\?|Does that sound like where you are\?|That sound like where you are\?|Does that sound like where you're at\?|Does that sound like you\?|Sound like you\?|Does that sound like [^?]{1,80}\?|Sound like [^?]{1,80}\?|Does that sound right\?|Does that resonate\?|Does that land\?|Does that feel true\?|That show up for you\?|What does that look like most\?)\b/gi,
         'Where does that show up most right now?'
     );
 }
@@ -477,15 +481,36 @@ function getGuardrailReply(messages: ChatMessage[]) {
         return "Nope — I'm Grant, Greg's intake assistant. I help figure out fit and point the right owners to Greg. What's the biggest bottleneck you're carrying right now?";
     }
 
+    if (
+        /\b(bad leader|not the problem|not a mess|solid company|built a solid company)\b/.test(latest) ||
+        (/\b(telling me|coach talk|coaching talk)\b/.test(latest) && /\b(problem|leader|coaching)\b/.test(latest))
+    ) {
+        return "I get it. Building a real company and still carrying too much does not make you a bad leader. It usually means the business grew faster than ownership got transferred. Where are you still the safety net?";
+    }
+
     if (/\b(coaching is fluff|mostly fluff|coach talk)\b/.test(latest)) {
         return "Fair enough — most coaching is fluff. Greg's not selling motivation; he works on ownership, accountability, and leadership inside real restoration and construction businesses. If that ever becomes the pain, you know where to find us.";
     }
 
     if (
-        /\b(consultant|consultants|consulting)\b/.test(latest) &&
-        /\b(didn't stick|did not stick|didnt stick|didn't work|did not work|didnt work|waste of money|waste)\b/.test(latest)
+        /\b(consultant|consultants|consulting|eos)\b/.test(latest) &&
+        /\b(didn't stick|did not stick|didnt stick|didn't work|did not work|didnt work|waste of money|waste|slid back|slide back|fell back|faded|backslid|snapped back)\b/.test(
+            latest
+        )
     ) {
-        return "That's a fair concern. Most consultant work dies because the plan never gets installed into how the team actually meets, decides, and owns work, so it slides right back onto the owner. What broke last time—fit, follow-through, or team buy-in?";
+        return "That's a fair concern. Most outside help fades because the new ideas never get embedded into the team's weekly habits, so the hard calls drift right back to the owner. What actually killed it last time?";
+    }
+
+    if (/\b(what makes this (actually )?stick|why would this stick|after greg leaves|after he leaves)\b/.test(latest)) {
+        return "Because Greg doesn't stop at advice. He changes the weekly rhythm where decisions get made, reviewed, and owned, so it stops snapping back to you when the outside pressure is gone. Where has it usually slipped before—your GM, your meetings, or follow-through?";
+    }
+
+    if (
+        /\b(i don't want theory|i do not want theory|don't dodge me with theory|do not dodge me with theory|see something useful fast|actually see something useful fast)\b/.test(
+            latest
+        )
+    ) {
+        return "Fair. Greg can usually tell pretty fast whether the leak is GM ownership, weak meeting accountability, or you still being the approval layer on the hard calls. Which one feels closest?";
     }
 
     if (
@@ -493,7 +518,7 @@ function getGuardrailReply(messages: ChatMessage[]) {
             latest
         )
     ) {
-        return "That's the classic middle-stage trap. You have structure, but the hard calls still boomerang back to you, which means ownership never really transferred. When a real issue hits, does your GM solve it and tell you after, or does it still need your approval first?";
+        return "You've already built structure. The issue is the hard calls still come back to you, which means ownership never really transferred. When a real issue hits, does your GM solve it and tell you after, or does it still need your approval first?";
     }
 
     if (
@@ -516,27 +541,23 @@ function getGuardrailReply(messages: ChatMessage[]) {
             latest
         )
     ) {
-        return "I can give you the headline, not the full install. Greg's first lens is usually where ownership dies — what decisions, promises, or numbers still bounce back to the owner. What's the biggest thing still coming back to you right now?";
+        return "I can give you the headline, not the full install. Greg's first lens is usually where ownership breaks—what decisions, promises, or numbers still bounce back to the owner. What's the biggest thing still coming back to you right now?";
     }
 
     if (isPricingIdiom(latest)) {
-        return "That feels true for a lot of owners, but it usually means the business still runs through you more than through the team. Greg would look at where ownership, decisions, and accountability still roll uphill to you. What's the thing you can never seem to put down?";
+        return "That feels true for a lot of owners, but it usually means the business still runs through you more than through the team. Greg would look at where ownership, decisions, and accountability still land back on you. What's the thing you can never seem to put down?";
     }
 
     if (/\b(stop messaging(?: me)?|stop reaching out|leave me alone)\b/.test(latest)) {
         return "Understood. I won't keep pushing. If you want help later, you know where to find us.";
     }
 
-    if (
-        /\b(not interested|i don'?t want a call|do not want a call|no call)\b/.test(
-            latest
-        )
-    ) {
+    if (/\b(not interested|i don'?t want a call|do not want a call|no call|no thanks|pass)\b/.test(latest) && !/\b(telling me|bad leader|coach talk|coaching talk)\b/.test(latest)) {
         return "None taken. If the owner bottleneck starts costing you too much, text FREEDOM to (415) 699-8512 and Greg can take a look. Until then, all good.";
     }
 
     if (/\b(ballpark|range|rough number)\b/.test(latest)) {
-        return "I don't do ballparks in chat because Greg won't throw out a blind number. He looks at fit, scope, and whether this is GNA Academy or something more custom first. If you're still the bottleneck, that's the bigger issue to solve.";
+        return "Greg covers investment after he sees scope and fit. First step is figuring out what kind of help actually fits. If the hard calls still land on you, that's usually the bigger cost.";
     }
 
     if (
@@ -544,7 +565,7 @@ function getGuardrailReply(messages: ChatMessage[]) {
             latest
         )
     ) {
-        return "Greg covers investment once he understands your business, fit, and what kind of support actually makes sense. I don't do numbers or ballparks in chat. If you're still the bottleneck, the bigger issue is usually what staying stuck is costing you.";
+        return "Greg covers investment after he understands your business, fit, and what kind of help actually makes sense. I don't do numbers in chat. If the hard calls still land on you, that's usually the real drag on margin and freedom.";
     }
 
     if (
@@ -552,11 +573,15 @@ function getGuardrailReply(messages: ChatMessage[]) {
             latest
         )
     ) {
-        return "Greg uses that 30 minutes to map where ownership is breaking, what's still landing on you, and what kind of fix actually fits. You should leave clearer on whether this is a GM ownership issue, a meeting/accountability issue, or a bigger leadership install problem. If he mapped that with you, what would you want him to look at first?";
+        return "Greg uses that 30 minutes to map what still depends on you, why it keeps coming back, and whether the leak is GM ownership, weak meetings, or manager follow-through. You should leave clearer on what the real choke point is. If he mapped that with you, what would you want him to look at first?";
     }
 
-    if (/\b(what would greg probably see|what would greg see|what would he probably see)\b/.test(latest)) {
-        return "He'd probably see managers with titles but not real ownership, meetings that surface issues but still leave you owning the fix, and hard decisions that boomerang back to you. Which of those feels most true in your shop right now?";
+    if (
+        /\b(what would greg probably see|what would greg see|what would he probably see|what do you think greg would see|what would greg see first|what would he see first|one thing greg would probably see)\b/.test(
+            latest
+        )
+    ) {
+        return "He'd probably see a manager or GM with the title but not the hard-call ownership, so meetings surface issues and you still end up being the backstop. Where does that show up most right now?";
     }
 
     if (/\b(how is greg different|what makes greg different)\b/.test(latest) || /\b(eos|another coach|another operating system)\b/.test(latest)) {
@@ -576,15 +601,19 @@ function getGuardrailReply(messages: ChatMessage[]) {
     }
 
     if (/\b(what kind of owner usually gets the most out of greg|who gets the most out of greg|what kind of owner gets the most out)\b/.test(latest)) {
-        return "Owners who've built something real, usually in that $5M to $35M zone, and are tired of being the hub for every hard call. The best fit is someone who knows the problem isn't effort anymore — it's that ownership still rolls uphill. Where are you still carrying more than you should?";
+        return "Owners who've built something real, usually in that $5M to $35M zone, and are tired of being the hub for every hard call. The best fit is someone who knows the problem isn't effort anymore — it's that key ownership still lands back on them. Where are you still carrying more than you should?";
     }
 
     if (/\b(i do not want a sales pitch|i don't want a sales pitch|not here for a pitch|don't pitch me|do not pitch me)\b/.test(latest)) {
         return "Fair. I'm not here to pitch you. If Greg were actually useful, what would have to change in your week for this to matter?";
     }
 
+    if (/\b(why would that be worth my time|why is that worth my time)\b/.test(latest)) {
+        return "Because if that pattern stays in place, you keep paying for it in your own time, slower decisions, and managers who never fully step up. Greg's value is spotting the real leak fast so you know what actually has to change. Where is that costing you most right now?";
+    }
+
     if (/\b(what would (he|greg|you) do first|where would (he|greg|you) start|what would be the first move|what's the first move)\b/.test(latest)) {
-        return "First lens is usually where ownership dies — what decisions, promises, or numbers still bounce back to you instead of living with the team. The full fix depends on your people, margins, and how leadership is actually happening day to day. That's what Greg diagnoses on the call.";
+        return "First lens is usually where ownership breaks—what decisions, promises, or numbers still bounce back to you instead of living with the team. The full fix depends on your people, margins, and how leadership is actually happening day to day. That's what Greg diagnoses on the call.";
     }
 
     if (/\b(why greg|why greg specifically|what makes greg different|why greg over)\b/.test(latest)) {
@@ -592,7 +621,7 @@ function getGuardrailReply(messages: ChatMessage[]) {
     }
 
     if (/\b(are we a fit|am i a fit|fit or not)\b/.test(latest) && revenueMillions !== null && revenueMillions < 2) {
-        return "Straight up, probably not yet. Greg's sweet spot is usually owners around $5M+ who need stronger leadership and team ownership, not just more leads. At your size, the bottleneck is usually earlier-stage than what Greg specializes in.";
+        return "Probably not yet. Greg's sweet spot is usually owners around $5M+ who need stronger leadership and team ownership, not just more leads. At your size, the bottleneck is usually earlier-stage than what Greg specializes in.";
     }
 
     if (
