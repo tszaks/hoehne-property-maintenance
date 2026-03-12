@@ -1,12 +1,13 @@
 import { execFileSync } from 'node:child_process';
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const repoRoot = path.resolve(__dirname, '..');
-const legacyRoot = '/Users/tyler/Google Drive/My Drive/Tyler Workspace/Legacy Root/Clients/GNA';
+const defaultLegacyRoot = '/Users/tyler/Google Drive/My Drive/Tyler Workspace/Legacy Root/Clients/GNA';
+const legacyRoot = process.env.GNA_SOURCE_ROOT || defaultLegacyRoot;
 const outputPath = path.join(repoRoot, 'src/data/grant-knowledge.json');
 const sourceLibraryLabel = 'Legacy Root/Clients/GNA';
 
@@ -108,9 +109,12 @@ const CURATED_CARDS = [
     {
         category: 'positioning',
         cues: ['who is greg', 'why greg', 'different', 'credible', 'experience', 'licensed contractor'],
+        detailOptions: ['licensed contractor', '30+ years in restoration and construction', '300+ owners helped', 'operator pattern recognition instead of generic coach talk'],
         id: 'greg-credibility',
         priority: 14,
+        questionAngles: ['Where does that show up most right now?', 'What keeps finding its way back to you?'],
         sourceIds: ['gna-academy-sales-intro', 'gregbot-training-manual'],
+        statusAnchor: 'Talk to them like they have built something real and are looking for an operator who has seen this movie before.',
         tags: ['credibility', 'fit', 'restoration', 'construction', 'coach'],
         text: 'Greg is a licensed contractor who has spent three decades building teams, fixing broken execution, and helping restoration and construction owners stop being the driving force of the company. His authority comes from pattern recognition in real shops, not generic business-coach language.',
         title: 'Greg credibility and point of view',
@@ -118,9 +122,12 @@ const CURATED_CARDS = [
     {
         category: 'fit',
         cues: ['fit', 'ideal client', 'who is this for', 'sweet spot', 'right fit'],
+        detailOptions: ['restoration or construction owner', 'roughly $5M to $35M', 'hard calls and accountability still land back on the owner', 'demand exists but leadership depth has not caught up yet'],
         id: 'best-fit-owner',
         priority: 12,
+        questionAngles: ['If you stepped away for two weeks, what breaks first?', 'Where do hard calls still land back on you?'],
         sourceIds: ['gregbot-training-manual', 'five-stages-of-business'],
+        statusAnchor: 'Frame it like they have built something real and now hit a scaling ceiling, not a personal failure.',
         tags: ['fit', 'owner', 'sweet-spot', 'stage-two', 'stage-three', 'stage-four'],
         text: 'Best fit is usually an owner in restoration or construction who has built something real, often around $5M to $35M, but still feels like the hub for hard calls, accountability, and key decisions. Greg is strongest when the business has enough demand and now needs leadership depth, stronger managers, and less owner dependence.',
         title: 'Who Greg is best for',
@@ -168,9 +175,12 @@ const CURATED_CARDS = [
     {
         category: 'offers',
         cues: ['weekly meetings', 'meeting training', 'team meetings', 'our meetings suck'],
+        detailOptions: ['facts not stories', 'promised targets versus actuals', 'what did not work', 'team problem-solving', 'acknowledgements'],
         id: 'weekly-team-meetings-course',
         priority: 13,
+        questionAngles: ['What keeps coming back to you after those meetings?', 'Where do promises usually die right now?'],
         sourceIds: ['gna-offer-stack', 'real-accountability-workbook'],
+        statusAnchor: 'Assume they already know meetings matter. The real issue is that the meeting is not transferring ownership.',
         tags: ['weekly-meetings', 'accountability', 'ownership', 'facts-not-stories'],
         text: 'The weekly meetings training turns vague update meetings into short operating reviews built around facts, promised targets versus actuals, breakdowns, team problem-solving, and acknowledgements. The point is not more meetings. The point is meetings that create ownership after the room clears.',
         title: 'Highly Effective Weekly Team Meetings',
@@ -178,9 +188,12 @@ const CURATED_CARDS = [
     {
         category: 'offers',
         cues: ['management team', 'gm', 'leaders', 'leadership team', 'management bench'],
+        detailOptions: ['team becomes the driving force', 'owner stops carrying every hard call', 'leadership behavior and ownership improve together'],
         id: 'dynamic-management-team-course',
         priority: 13,
+        questionAngles: ['Which calls still end up with you?', 'Where does the title exist but ownership still does not?'],
         sourceIds: ['gna-offer-stack', 'five-stages-of-business'],
+        statusAnchor: 'Treat the issue like a growth-stage leadership transfer problem, not a failure of effort.',
         tags: ['management-team', 'gm', 'leadership', 'owner-dependence'],
         text: 'Build a Dynamic Powerful Management Team is about making the team the driving force of the business. It covers motivation, ownership, leadership behavior, and how to move the owner out of carrying every hard call and backstop decision.',
         title: 'Build a Dynamic Powerful Management Team',
@@ -188,9 +201,12 @@ const CURATED_CARDS = [
     {
         category: 'offers',
         cues: ['project management', 'project coordination', 'pm', 'pc', 'jobs dragging', 'closeout', 'subs'],
+        detailOptions: ['buyout discipline', 'pre-con planning', 'milestone tracking', 'closed-date drift', 'cleaner handoffs between PM, coordinator, customer, and field'],
         id: 'project-management-course',
         priority: 13,
+        questionAngles: ['Where do jobs start drifting first?', 'Which handoff is bleeding the most margin right now?'],
         sourceIds: ['gna-offer-stack', 'project-manager-rules'],
+        statusAnchor: 'Talk like job drag is operationally normal at scale, but still expensive and fixable.',
         tags: ['project-management', 'coordination', 'margin', 'schedule', 'closeout'],
         text: 'Greg treats project management and project coordination as two sides of the same coin. The goal is faster, cleaner jobs with tighter schedules, better buyout discipline, stronger pre-con planning, better milestone tracking, and fewer closed-date drifts that bleed margin.',
         title: 'Highly Effective Project Management and Project Coordination',
@@ -228,9 +244,12 @@ const CURATED_CARDS = [
     {
         category: 'framework',
         cues: ['weekly meetings', 'facts not stories', 'promises', 'acknowledgements'],
+        detailOptions: ['promised target versus actual', 'what did not work', 'ask the team for solutions', 'clear promises for next week', 'acknowledge wins'],
         id: 'weekly-meeting-rhythm',
         priority: 13,
+        questionAngles: ['What keeps landing back on you after the meeting?', 'Where does the follow-through disappear?'],
         sourceIds: ['real-accountability-workbook', 'three-steps-workbook'],
+        statusAnchor: 'Do not act like more meetings are the answer. Act like ownership after the meeting is the real problem.',
         tags: ['weekly-meetings', 'promises', 'acknowledgements', 'breakdowns'],
         text: 'A healthy weekly meeting in Greg’s world runs on facts, not stories. Each person reports promised target versus actual, names what did not work, asks the team for solutions, makes clear promises for next week, and acknowledges wins so the meeting becomes a performance engine instead of a complaint circle.',
         title: 'Weekly meeting rhythm',
@@ -238,9 +257,12 @@ const CURATED_CARDS = [
     {
         category: 'framework',
         cues: ['communication', 'cfa', 'promise', 'request', 'conditions of satisfaction'],
+        detailOptions: ['clear requests', 'conditions of satisfaction', 'real promises', 'explicit completion', 'explicit satisfaction'],
         id: 'communication-for-action',
         priority: 12,
+        questionAngles: ['Where does work get fuzzy right now?', 'Which handoff keeps running on assumptions?'],
         sourceIds: ['conversation-for-action'],
+        statusAnchor: 'Treat confusion as a system problem, not a character flaw.',
         tags: ['communication', 'promises', 'leadership', 'requests'],
         text: 'Communication for Action is Greg’s communication loop for producing results instead of confusion. The work is to make clear requests, negotiate conditions of satisfaction, make real promises, perform, and then explicitly declare completion and satisfaction so work does not drift inside assumptions.',
         title: 'Communication for Action',
@@ -248,9 +270,12 @@ const CURATED_CARDS = [
     {
         category: 'framework',
         cues: ['stages', 'stage', 'grow', 'stuck', 'owner does everything', 'sell someday'],
+        detailOptions: ['owner does everything', 'delegates but stays the center of gravity', 'management team becomes the driving force', 'business runs independent of the owner', 'business has real value without the owner'],
         id: 'five-stages',
         priority: 14,
+        questionAngles: ['How much of the hard-call layer still depends on you?', 'Are you trying to build a team-run business or just a busier version of yourself?'],
         sourceIds: ['five-stages-of-business'],
+        statusAnchor: 'Frame the problem as a stage transition issue. The owner is hitting a ceiling, not failing.',
         tags: ['stages', 'growth', 'owner-dependence', 'management-team', 'exit'],
         text: 'Greg’s Five Stages of Business is a practical growth model: owner does everything, then delegates, then builds a playbook and management team, then the business runs independent of the owner, then the company has real value without the owner. The key question is always whether the owner’s direct involvement is shrinking as leadership depth grows.',
         title: 'Five Stages of Business',
@@ -288,9 +313,12 @@ const CURATED_CARDS = [
     {
         category: 'operations',
         cues: ['owner bottleneck', 'do everything', 'middle of everything', 'step away', 'vacation', 'firefighting'],
+        detailOptions: ['owner is still the safety net', 'owner is still the firefighter', 'key decisions and crises still land back on the owner'],
         id: 'owner-bottleneck',
         priority: 14,
+        questionAngles: ['What pulls you back in first?', 'Where are you still the safety net?'],
         sourceIds: ['pain-points-reference', 'business-assessment', 'bottleneck-assessment'],
+        statusAnchor: 'Acknowledge that they built the company. Then frame the pain as a predictable ownership-transfer ceiling.',
         tags: ['owner-bottleneck', 'firefighting', 'step-away', 'leadership'],
         text: 'The most repeated GNA pain pattern is owner-centric leadership: the owner is still driving sales, ops, hiring, decisions, and crisis management. The business may be growing, but the owner still feels like the safety net, the firefighter, and the one person everything important lands back on.',
         title: 'Owner bottleneck pattern',
@@ -298,9 +326,12 @@ const CURATED_CARDS = [
     {
         category: 'operations',
         cues: ['profit', 'margin', 'cash flow', 'collections', 'gp', 'job cost', 'wip', 'overhead'],
+        detailOptions: ['unclear markups', 'incomplete job costing', 'slow collections', 'weak GP targets', 'production misses the owner absorbs'],
         id: 'margin-and-cash-flow',
         priority: 13,
+        questionAngles: ['Where do you feel the leak most right now?', 'What keeps eroding profit after the job should already be working?'],
         sourceIds: ['pain-points-reference', 'business-assessment'],
+        statusAnchor: 'Talk like the money issue is real, but upstream. It is usually exposing leadership and operational breakdowns, not just accounting.',
         tags: ['profit', 'margin', 'cash-flow', 'collections', 'job-costing', 'financials'],
         text: 'Greg links weak margins to unclear markups, incomplete job costing, slow collections, weak GP targets, and production misses that the owner ends up absorbing. In GNA’s language, money problems are rarely just accounting problems. They usually expose leadership, accountability, and operational breakdowns upstream.',
         title: 'Margin and cash-flow problems',
@@ -318,9 +349,12 @@ const CURATED_CARDS = [
     {
         category: 'operations',
         cues: ['project management', 'coordination', 'jobs drag', 'closeout', 'customer angry', 'adjuster', 'change order'],
+        detailOptions: ['close customer contact', 'meticulous coordination', 'visible project promises', 'follow-up on approvals and change orders', 'supplements, collections, and closeout discipline'],
         id: 'project-management-issues',
         priority: 13,
+        questionAngles: ['Which handoff is breaking first?', 'Where are approvals, supplements, or closeout getting loose?'],
         sourceIds: ['project-manager-rules', 'business-assessment'],
+        statusAnchor: 'Treat the pain like a handoff problem at scale, not a personal weakness.',
         tags: ['project-management', 'coordination', 'closeout', 'customer', 'adjuster', 'change-order'],
         text: 'In restoration and construction, profit gets won or lost in the handoffs. Greg’s PM lens is close customer contact, meticulous coordination, visible project promises, real documentation, and fast follow-up on approvals, change orders, supplements, collections, and closeout. If those handoffs are sloppy, margin and reputation both suffer.',
         title: 'Project management and coordination issues',
@@ -338,12 +372,54 @@ const CURATED_CARDS = [
     {
         category: 'operations',
         cues: ['meetings', 'phone calls', 'communication', 'office and field', 'handoff', 'broken communication'],
+        detailOptions: ['loose phone calls', 'missing notes', 'unclear next-step ownership', 'clean written follow-up', 'fewer handoff gaps between field, office, estimators, PMs, coordinators, and customers'],
         id: 'communication-and-handoffs',
         priority: 12,
+        questionAngles: ['Where do assumptions keep replacing clear handoffs?', 'Which handoff gets fuzzy most often?'],
         sourceIds: ['business-assessment', 'conversation-for-action', 'project-manager-rules'],
+        statusAnchor: 'Treat the issue like work is moving through assumptions instead of clear requests and promises.',
         tags: ['communication', 'handoffs', 'office-field', 'requests', 'promises'],
         text: 'A recurring operational failure in these docs is communication by loose phone calls, missing notes, and unclear next-step ownership. Greg’s response is structured communication: clearer requests, clearer promises, cleaner written follow-up, and fewer handoff gaps between field, office, estimators, PMs, coordinators, and customers.',
         title: 'Communication and handoff breakdowns',
+    },
+    {
+        category: 'sales-psychology',
+        cues: ['eos', 'consultant', 'consultants', 'did not stick', "didn't stick", 'slid back', 'waste of money', 'already tried'],
+        detailOptions: ['the structure may have been fine, but the weekly rhythm never changed', 'meetings surfaced issues without transferred ownership', 'manager behavior stayed the same, so the owner became the backstop again'],
+        id: 'structure-vs-lived-ownership',
+        priority: 14,
+        questionAngles: ['What was the first thing that slipped after the rollout?', 'Where did ownership drift back to you?'],
+        sourceIds: ['three-steps-workbook', 'conversation-for-action', 'pain-points-reference'],
+        statusAnchor: 'Start by validating the frustration. Treat failed consulting as a real scar, not a misunderstanding.',
+        tags: ['skepticism', 'consultant-burn', 'weekly-meetings', 'accountability', 'ownership'],
+        text: 'When owners say they already tried EOS or consultants, Greg’s read is usually not that structure was wrong. It is that the weekly rhythm never forced promises, follow-up, and manager behavior to change, so the owner ended up carrying the hard calls again.',
+        title: 'Structure versus lived ownership',
+    },
+    {
+        category: 'sales-psychology',
+        cues: ['what happens on the call', 'what is the call about', 'discovery call', 'sales call', 'what do we talk about', 'what happens on the discovery call'],
+        detailOptions: ['map where ownership is breaking', 'see what still lands on the owner', 'sort whether the real issue is meetings, manager authority, margins, or a bigger install problem'],
+        id: 'call-as-diagnostic',
+        priority: 13,
+        questionAngles: ['If Greg mapped that in 30 minutes, what would you want him to look at first?', 'Which part feels most expensive right now?'],
+        sourceIds: ['gregbot-training-manual', 'business-assessment', 'five-stages-of-business'],
+        statusAnchor: 'Make the call feel practical and diagnostic, not like a pitch.',
+        tags: ['call', 'diagnostic', 'fit', 'owner-bottleneck', 'leadership'],
+        text: 'The discovery call is a practical diagnostic. Greg uses it to map where ownership is breaking, what still lands on the owner, and whether the main choke point is meetings, manager authority, margins, or a deeper install issue.',
+        title: 'Call as diagnostic',
+    },
+    {
+        category: 'sales-psychology',
+        cues: ['what would greg do first', 'what would he do first', 'where would greg start', 'what is the first move', 'just tell me the steps', 'can i do this myself'],
+        detailOptions: ['look at which hard calls still land on the owner', 'look at which missed promises still bounce back to the owner', 'look at which key numbers still need the owner to force action'],
+        id: 'diy-open-loop',
+        priority: 13,
+        questionAngles: ['Which of those still lands on you most?', 'What keeps boomeranging back to you right now?'],
+        sourceIds: ['three-steps-workbook', 'conversation-for-action', 'pain-points-reference'],
+        statusAnchor: 'Give one sharp first lens so they feel understood, then leave the full install for the call.',
+        tags: ['diy', 'first-step', 'owner-bottleneck', 'promises', 'accountability'],
+        text: 'Grant should not turn the chat into free consulting. The move is to give one sharp first lens on where ownership is breaking, then stop there and point to the call for the full install.',
+        title: 'DIY open loop',
     },
     {
         category: 'psychology',
@@ -391,6 +467,14 @@ function extractText(filePath) {
     }
 
     throw new Error(`Unsupported file type: ${filePath}`);
+}
+
+function assertToolAvailable(name) {
+    try {
+        execFileSync('which', [name], { encoding: 'utf8' });
+    } catch {
+        throw new Error(`Missing required tool "${name}". Install it first, then rerun the knowledge build.`);
+    }
 }
 
 function isUsefulParagraph(paragraph) {
@@ -491,6 +575,13 @@ function buildBundle() {
 }
 
 function main() {
+    assertToolAvailable('textutil');
+    assertToolAvailable('pdftotext');
+
+    if (!existsSync(legacyRoot)) {
+        throw new Error(`GNA source library not found at "${legacyRoot}". Set GNA_SOURCE_ROOT to the archive path and rerun.`);
+    }
+
     const bundle = buildBundle();
 
     mkdirSync(path.dirname(outputPath), { recursive: true });
