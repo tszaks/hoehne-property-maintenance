@@ -293,6 +293,7 @@ You are Grant. You work for Greg. You are sharp, grounded, conversational, and h
 - calm authority: sound like Greg has seen this pattern many times and knows it is fixable
 - never minimize the pain: talk like it is solvable, but still costly, frustrating, and serious for the owner
 - if source-backed context is provided for a turn, use it lightly to sharpen the diagnosis or explain Greg's method with one concrete detail
+- if source-backed context is provided for a turn, open with the concrete operating read itself instead of scene-setting filler like "Greg sees this all the time"
 - never mention source documents, workbooks, or internal notes
 
 Good phrases:
@@ -816,7 +817,6 @@ function getGuardrailReply(messages: ChatMessage[]) {
 
     const latest = latestUser.toLowerCase();
     const revenueMillions = extractLatestUserRevenueMillions(messages);
-    const leak = getLikelyLeak(messages);
 
     if (/\bare you greg\b|\byou greg\b|\bare you the coach\b/.test(latest)) {
         return "Nope — I'm Grant, Greg's intake assistant. I help figure out fit and point the right owners to Greg. What's the biggest bottleneck you're carrying right now?";
@@ -832,13 +832,6 @@ function getGuardrailReply(messages: ChatMessage[]) {
 
     if (/\b(coaching is fluff|mostly fluff|coach talk)\b/.test(latest)) {
         return "Fair enough — most coaching is fluff. Greg's not selling motivation; he works on ownership, accountability, and leadership inside real restoration and construction businesses. If that ever becomes the pain, you know where to find us.";
-    }
-
-    if (
-        /\b(how is greg different|what makes greg different|why greg|why greg specifically|why would greg be different)\b/.test(latest) ||
-        (/\b(eos|another coach|another operating system)\b/.test(latest) && /\b(different|versus|vs|than|compare)\b/.test(latest))
-    ) {
-        return `Greg's a licensed contractor with 30+ years in restoration and construction, and he's helped 300+ owners through this kind of bottleneck. Most coaches stop at structure. Greg spots things like ${leak.description} fast, so he can see why the hard calls keep landing back on you. Where does that show up most right now?`;
     }
 
     if (/\bconditions of satisfaction\b/.test(latest)) {
@@ -882,22 +875,6 @@ function getGuardrailReply(messages: ChatMessage[]) {
     }
 
     if (
-        /\b(what (would|will) (that|the) 30 minutes (actually )?be about|what (would|will) (the )?call be about|what happens on the call|what does greg do on the call)\b/.test(
-            latest
-        )
-    ) {
-        return "Greg uses that 30 minutes to map what still depends on you, why it keeps coming back, and whether the leak is GM ownership, weak meetings, or manager follow-through. You should leave clearer on what the real choke point is. If he mapped that with you, what would you want him to look at first?";
-    }
-
-    if (
-        /\b(what (do|would) you need from me|what info do you need|what do you need to book|what do you need from me|what would he actually need from me)\b/.test(
-            latest
-        )
-    ) {
-        return "Just your name, email, timezone, and the biggest challenge you want Greg to look at. That's enough to get the call moving. Best next step is booking the 30-minute call through the contact section on the site.";
-    }
-
-    if (
         /\b(gm|gms|pm|pms|project managers?|managers?)\b/.test(latest) &&
         /\b(messy|expensive)\b/.test(latest) &&
         /\b(come to me|comes to me|come back to me|comes back to me|still come to me)\b/.test(latest)
@@ -907,10 +884,6 @@ function getGuardrailReply(messages: ChatMessage[]) {
 
     if (/\b(why do owners stay stuck|why do people stay stuck|why does it stay stuck)\b/.test(latest) && /\b(meetings|org charts|structure)\b/.test(latest)) {
         return "Because structure on paper is not the same as transferred ownership. The titles exist, but the real decisions, promises, and hard accountability still roll uphill to the owner. Where does that show up most in your company right now?";
-    }
-
-    if (/\b(what kind of owner usually gets the most out of greg|who gets the most out of greg|what kind of owner gets the most out)\b/.test(latest)) {
-        return "Owners who've built something real, usually in that $5M to $35M zone, and are tired of being the hub for every hard call. The best fit is someone who knows the problem isn't effort anymore — it's that key ownership still lands back on them. Where are you still carrying more than you should?";
     }
 
     if (/\b(i do not want a sales pitch|i don't want a sales pitch|not here for a pitch|don't pitch me|do not pitch me)\b/.test(latest)) {
@@ -923,14 +896,6 @@ function getGuardrailReply(messages: ChatMessage[]) {
 
     if (/\b(what should i do next|what's the next step|what is the next step|what next)\b/.test(latest)) {
         return "Best next step is booking the 30-minute call with Greg through the site. Send your name, email, timezone, and the main issue, and that gets it moving.";
-    }
-
-    if (/\b(why would that be worth my time|why is that worth my time)\b/.test(latest)) {
-        return "Because if that pattern stays in place, you keep paying for it in your own time, slower decisions, softer margins, and managers who never fully step up. Greg's value is spotting the real leak fast and showing you what actually has to change. Where is that costing you most right now?";
-    }
-
-    if (/\b(what would (he|greg|you) do first|where would (he|greg|you) start|what would be the first move|what's the first move|what would he want to see first|what would greg want to see first|what would he look at first|what would greg look at first)\b/.test(latest)) {
-        return "First thing he'd look at is where the hard calls, missed promises, or key numbers still land back on you instead of staying with the team. That's usually what tells him whether this is a manager problem, a meeting problem, or a bigger ownership gap.";
     }
 
     if (/\b(are we a fit|am i a fit|fit or not)\b/.test(latest) && (soundsSubTwoMillion(messages) || (revenueMillions !== null && revenueMillions < 2))) {

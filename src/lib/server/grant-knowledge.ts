@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import rawKnowledgeBundle from '../../data/grant-knowledge.json';
 
 type ChatMessage = {
     content: string;
@@ -17,9 +17,12 @@ type GrantKnowledgeSource = {
 type GrantKnowledgeCard = {
     category: string;
     cues: string[];
+    detailOptions?: string[];
     id: string;
     priority?: number;
+    questionAngles?: string[];
     sourceIds: string[];
+    statusAnchor?: string;
     tags: string[];
     text: string;
     title: string;
@@ -36,6 +39,16 @@ type TopicRule = {
     regex: RegExp;
     tags: string[];
 };
+
+type QueryParts = {
+    combined: string;
+    context: string;
+    contextTokens: string[];
+    latest: string;
+    latestTokens: string[];
+};
+
+const KNOWLEDGE_BUNDLE = rawKnowledgeBundle as GrantKnowledgeBundle;
 
 const STOP_WORDS = new Set([
     'about',
@@ -118,7 +131,11 @@ const TOPIC_RULES: TopicRule[] = [
         tags: ['hiring', 'team', 'culture', 'coaching'],
     },
     {
-        regex: /\b(academy|offer|coaching|call|discovery|mastermind|weekly meetings training)\b/i,
+        regex: /\b(eos|consultant|consultants|did not stick|didn't stick|slid back|slide back|waste of money|already tried)\b/i,
+        tags: ['skepticism', 'consultant-burn', 'accountability', 'weekly-meetings'],
+    },
+    {
+        regex: /\b(academy|offer|coaching|mastermind|weekly meetings training)\b/i,
         tags: ['academy', 'offer', 'coaching'],
     },
     {
@@ -131,27 +148,24 @@ const TOPIC_RULES: TopicRule[] = [
     },
 ];
 
-let cachedBundle: GrantKnowledgeBundle | null = null;
-
-function loadKnowledgeBundle() {
-    if (cachedBundle) {
-        return cachedBundle;
-    }
-
-    try {
-        const fileUrl = new URL('../../data/grant-knowledge.json', import.meta.url);
-        cachedBundle = JSON.parse(readFileSync(fileUrl, 'utf8')) as GrantKnowledgeBundle;
-    } catch {
-        cachedBundle = {
-            cards: [],
-            generatedAt: '',
-            sourceLibraryPath: '',
-            sources: [],
-        };
-    }
-
-    return cachedBundle;
-}
+const TRANSACTIONAL_PATTERNS = [
+    /\b(full )?name\b/i,
+    /\b(best )?email\b/i,
+    /\btime ?zone\b/i,
+    /\bbook( it|ing)?\b/i,
+    /\block it in\b/i,
+    /\bslot\b/i,
+    /\bwhat times?\b/i,
+    /\bavailable times?\b/i,
+    /\bopening(s)?\b/i,
+    /\bavailability\b/i,
+    /\bcalendar\b/i,
+    /\breschedule\b/i,
+    /\bcancel\b/i,
+    /\bthat works\b/i,
+    /\bsounds good\b/i,
+    /\buse 1-on-1 coaching\b/i,
+];
 
 function normalizeText(text: string) {
     return text.toLowerCase().replace(/[^a-z0-9\s-]/g, ' ').replace(/\s+/g, ' ').trim();
@@ -172,18 +186,68 @@ function detectTags(text: string) {
     return unique(tags);
 }
 
-function buildQuery(messages: ChatMessage[]) {
-    return messages
-        .filter((message) => message.role === 'user')
-        .slice(-6)
-        .map((message) => message.content)
-        .join(' ');
+function isTransactionalTurn(text: string) {
+    const trimmed = text.trim();
+    if (!trimmed) return true;
+
+    const normalized = normalizeText(trimmed);
+    const words = normalized.split(' ').filter(Boolean);
+    const topicalTags = detectTags(trimmed);
+
+    if (words.length <= 2 && /^(hi|hey|hello|thanks|thank you|ok|okay|cool|yes|yep|yeah)$/i.test(trimmed)) {
+        return true;
+    }
+
+    if (!topicalTags.length && TRANSACTIONAL_PATTERNS.some((pattern) => pattern.test(trimmed))) {
+        return true;
+    }
+
+    return false;
 }
 
-function scoreCard(card: GrantKnowledgeCard, query: string, tokens: string[], detectedTags: string[]) {
+function buildQueryParts(messages: ChatMessage[]): QueryParts | null {
+    const userMessages = messages.filter((message) => message.role === 'user');
+    const latestMessage = [...userMessages].reverse().find((message) => message.content.trim());
+
+    if (!latestMessage || isTransactionalTurn(latestMessage.content)) {
+        return null;
+    }
+
+    const latest = latestMessage.content;
+    const latestTokens = tokenize(latest);
+    const contextMessages = userMessages
+        .slice(0, -1)
+        .filter((message) => !isTransactionalTurn(message.content))
+        .slice(-2)
+        .map((message) => message.content);
+    const context = contextMessages.join(' ');
+
+    return {
+        combined: [latest, context].filter(Boolean).join(' '),
+        context,
+        contextTokens: tokenize(context),
+        latest,
+        latestTokens,
+    };
+}
+
+function scoreTextForTokens(text: string, tokens: string[], perTokenScore: number) {
+    let score = 0;
+
+    for (const token of tokens) {
+        if (text.includes(token)) {
+            score += perTokenScore;
+        }
+    }
+
+    return score;
+}
+
+function scoreCard(card: GrantKnowledgeCard, query: QueryParts, detectedTags: string[]) {
     const normalizedTitle = normalizeText(card.title);
     const normalizedText = normalizeText(card.text);
     const normalizedCues = card.cues.map((cue) => normalizeText(cue));
+    const normalizedDetails = (card.detailOptions ?? []).map((detail) => normalizeText(detail));
     let score = card.priority ?? 0;
 
     for (const tag of detectedTags) {
@@ -193,15 +257,33 @@ function scoreCard(card: GrantKnowledgeCard, query: string, tokens: string[], de
     }
 
     for (const cue of normalizedCues) {
-        if (cue && query.includes(cue)) {
-            score += 14;
+        if (cue && query.latest.includes(cue)) {
+            score += 18;
+            continue;
+        }
+
+        if (cue && query.context.includes(cue)) {
+            score += 8;
         }
     }
 
-    for (const token of tokens) {
-        if (normalizedTitle.includes(token)) score += 4;
-        if (card.tags.some((tag) => tag.includes(token))) score += 3;
-        if (normalizedText.includes(token)) score += 1;
+    score += scoreTextForTokens(normalizedTitle, query.latestTokens, 6);
+    score += scoreTextForTokens(normalizedTitle, query.contextTokens, 3);
+    score += scoreTextForTokens(normalizedText, query.latestTokens, 2);
+    score += scoreTextForTokens(normalizedText, query.contextTokens, 1);
+
+    for (const tag of card.tags) {
+        if (query.latestTokens.some((token) => tag.includes(token))) {
+            score += 4;
+        } else if (query.contextTokens.some((token) => tag.includes(token))) {
+            score += 2;
+        }
+    }
+
+    for (const detail of normalizedDetails) {
+        if (detail && query.latest.includes(detail)) {
+            score += 5;
+        }
     }
 
     if (card.id.includes('-raw-')) {
@@ -238,23 +320,37 @@ function dedupeAndTrim(cards: GrantKnowledgeCard[], maxCards: number) {
     return results;
 }
 
+function formatCard(card: GrantKnowledgeCard) {
+    const extras: string[] = [];
+
+    if (card.statusAnchor) {
+        extras.push(`status anchor: ${card.statusAnchor}`);
+    }
+
+    if (card.detailOptions?.length) {
+        extras.push(`detail options: ${card.detailOptions.slice(0, 3).join('; ')}`);
+    }
+
+    if (card.questionAngles?.length) {
+        extras.push(`question angles: ${card.questionAngles.slice(0, 2).join(' / ')}`);
+    }
+
+    return extras.length ? `- ${card.title}: ${card.text} (${extras.join(' | ')})` : `- ${card.title}: ${card.text}`;
+}
+
 export function retrieveGrantKnowledge(messages: ChatMessage[], maxCards = 4) {
-    const bundle = loadKnowledgeBundle();
-    if (!bundle.cards.length) return [];
+    if (!KNOWLEDGE_BUNDLE.cards.length) return [];
 
-    const rawQuery = buildQuery(messages);
-    if (!rawQuery.trim()) return [];
+    const query = buildQueryParts(messages);
+    if (!query?.combined.trim()) return [];
 
-    const normalizedQuery = normalizeText(rawQuery);
-    const queryTokens = tokenize(rawQuery);
-    const detectedTags = detectTags(rawQuery);
-
-    const ranked = bundle.cards
+    const detectedTags = detectTags(query.combined);
+    const ranked = KNOWLEDGE_BUNDLE.cards
         .map((card) => ({
             card,
-            score: scoreCard(card, normalizedQuery, queryTokens, detectedTags),
+            score: scoreCard(card, query, detectedTags),
         }))
-        .filter((entry) => entry.score > 4)
+        .filter((entry) => entry.score > 6)
         .sort((left, right) => right.score - left.score)
         .map((entry) => entry.card);
 
@@ -268,18 +364,25 @@ export function buildGrantKnowledgeBrief(messages: ChatMessage[]) {
     const primaryCard = knowledgeCards[0];
     const lines = [
         'TURN REQUIREMENT:',
-        `- The strongest source-backed note for this turn is "${primaryCard.title}".`,
-        '- If the user is asking about this topic, answer with at least one concrete operating detail from these notes before you pivot back to diagnosis or CTA.',
-        '- Prefer these specifics over generic phrasing like classic pattern or Greg sees this all the time.',
-        '- Stay conversational and do not dump the whole list.',
+        `- Primary source-backed lens for this turn: "${primaryCard.title}".`,
+        '- Start with the operating read itself. Do not open with filler like "Greg sees this all the time."',
+        '- Use one concrete operating detail from these notes before you pivot back to diagnosis or CTA.',
+        primaryCard.statusAnchor ? `- Protect status this way: ${primaryCard.statusAnchor}.` : '',
+        primaryCard.detailOptions?.length
+            ? `- Best detail options for this turn: ${primaryCard.detailOptions.slice(0, 3).join('; ')}.`
+            : '',
+        primaryCard.questionAngles?.length
+            ? `- If you ask a follow-up, keep it in this lane: ${primaryCard.questionAngles.slice(0, 2).join(' / ')}.`
+            : '',
+        '- Stay conversational and do not dump frameworks, documents, or the whole playbook.',
         'SOURCE-BACKED CONTEXT FOR THIS CHAT:',
-        'Use only what fits this exact conversation. Pull one or two concrete details. Do not dump frameworks, do not quote price, and do not sound like you are reading notes.',
-        ...knowledgeCards.map((card) => `- ${card.title}: ${card.text}`),
-    ];
+        'Use only what fits this exact conversation. Pull one or two concrete details. Do not quote price, and do not sound like you are reading notes.',
+        ...knowledgeCards.map(formatCard),
+    ].filter(Boolean);
 
     return lines.join('\n');
 }
 
 export function getGrantKnowledgeSources() {
-    return loadKnowledgeBundle().sources;
+    return KNOWLEDGE_BUNDLE.sources;
 }
