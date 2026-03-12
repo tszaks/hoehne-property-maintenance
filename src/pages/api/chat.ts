@@ -427,15 +427,25 @@ function shapeReply(text: string) {
     const firstTwo = sentences.slice(0, 2);
     const followUpQuestion = sentences.slice(2).find((sentence) => sentence.endsWith('?'));
     const limited = followUpQuestion ? [...firstTwo, followUpQuestion] : sentences.slice(0, 3);
-    const joined = limited.join(' ').trim();
-    const restored = joined.replaceAll('__DOT__', '.');
-    const words = restored.split(/\s+/);
+    const restoredSentences = limited.map((sentence) => sentence.replaceAll('__DOT__', '.'));
+    const fitted: string[] = [];
 
-    if (words.length <= 75) {
-        return restored;
+    for (const sentence of restoredSentences) {
+        const candidate = [...fitted, sentence].join(' ').trim();
+        if (candidate.split(/\s+/).filter(Boolean).length > 75) {
+            break;
+        }
+
+        fitted.push(sentence);
     }
 
-    return `${words.slice(0, 75).join(' ')}...`;
+    if (fitted.length) {
+        return fitted.join(' ').trim();
+    }
+
+    const fallbackWords = restoredSentences.join(' ').trim().split(/\s+/).filter(Boolean);
+    const fallback = fallbackWords.slice(0, 75).join(' ').replace(/[,:;]+$/, '');
+    return /[.!?]$/.test(fallback) ? fallback : `${fallback}.`;
 }
 
 function getLatestUserMessage(messages: ChatMessage[]) {
