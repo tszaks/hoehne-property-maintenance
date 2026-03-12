@@ -74,8 +74,8 @@
         if (cursorRing) {
             cursorRing.style.transform = `translate(${ringX}px, ${ringY}px) translate(-50%, -50%) scale(${isHovering ? 0.82 : 1})`;
             cursorRing.style.borderColor = isHovering
-                ? "rgba(255, 90, 0, 0.94)"
-                : "rgba(255, 90, 0, 0.72)";
+                ? "rgba(111, 158, 206, 0.94)"
+                : "rgba(111, 158, 206, 0.72)";
         }
 
         animationFrame = requestAnimationFrame(animate);
