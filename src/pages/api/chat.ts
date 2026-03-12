@@ -288,6 +288,8 @@ You are Grant. You work for Greg. You are sharp, grounded, conversational, and h
 - contractor-talk, but not cartoonish
 - thoughtful and insightful, not robotic
 - warm enough to make people comfortable, firm enough to move the conversation forward
+- calm authority: sound like Greg has seen this pattern many times and knows it is fixable
+- never minimize the pain: talk like it is solvable, but still costly, frustrating, and serious for the owner
 
 Good phrases:
 - "Sounds like"
@@ -321,6 +323,7 @@ Avoid:
 - give enough insight to build trust, but do not hand over a full DIY roadmap
 - create an open loop: show Greg sees the problem clearly, then point to the call for the full path
 - protect the owner's status: assume they have built something real and frame the problem as a ceiling, not a personal failure
+- make the problem feel understood, not shrugged off: nothing about it should sound surprising, but it should still sound expensive and worth fixing
 - translate complaints into business consequences like owner dependence, margin leak, weak accountability, or reduced exit value
 - use gentle loss framing when it fits: staying stuck usually means more owner dependence, softer margins, weaker managers, or lower exit value
 - use Greg's authority as pattern recognition, not as a lecture
@@ -510,6 +513,92 @@ function getLikelyLeak(messages: ChatMessage[]) {
     };
 }
 
+function getDynamicSteering(messages: ChatMessage[]) {
+    const latest = getLatestUserMessage(messages).toLowerCase();
+
+    if (!latest) return '';
+
+    const hints: string[] = [];
+
+    if (
+        /\b(how is greg different|what makes greg different|why greg|why greg specifically|why would greg be different)\b/.test(latest) ||
+        (/\b(eos|another coach|another operating system)\b/.test(latest) && /\b(different|versus|vs|than|compare)\b/.test(latest))
+    ) {
+        hints.push(
+            "Current turn is a credibility question. Lead with one concrete credential, then one precise pattern Greg would spot fast. Sound unsurprised and capable, but make the consequence feel expensive and serious."
+        );
+    }
+
+    if (
+        /\b(consultant|consultants|consulting|eos)\b/.test(latest) &&
+        /\b(didn't stick|did not stick|didnt stick|didn't work|did not work|didnt work|waste of money|waste|slid back|slide back|fell back|faded|backslid|snapped back)\b/.test(
+            latest
+        )
+    ) {
+        hints.push(
+            "Current turn is a trust-repair objection. Start with tactical empathy. Explain that when outside help fails, the usual problem is the install never made it into the weekly rhythm, so ownership drifted back to the owner. Ask one sharp question about what broke last time."
+        );
+    }
+
+    if (/\b(outside voice for 90 days|outside voice|what makes this (actually )?stick|why would this stick|after greg leaves|after he leaves)\b/.test(latest)) {
+        hints.push(
+            "Current turn is asking why Greg's work lasts. Answer by pointing to the operating rhythm: meetings, promises, review cadence, and manager behavior. Make the difference feel concrete, not theoretical."
+        );
+    }
+
+    if (
+        /\b(i don't want theory|i do not want theory|don't dodge me with theory|do not dodge me with theory|see something useful fast|actually see something useful fast)\b/.test(
+            latest
+        )
+    ) {
+        hints.push(
+            "Current turn is resisting abstraction. Give one concrete thing Greg would likely see fast based on the conversation. Keep it singular and practical."
+        );
+    }
+
+    if (
+        /\b(we already have meetings|have meetings and a gm|have a gm|still feel like the place runs through me|still runs through me)\b/.test(
+            latest
+        ) ||
+        (/\b(gm|gms|pm|pms|project managers?|managers?)\b/.test(latest) &&
+            /\b(messy|expensive)\b/.test(latest) &&
+            /\b(come to me|comes to me|come back to me|comes back to me|still come to me)\b/.test(latest))
+    ) {
+        hints.push(
+            "Current turn points to delegated activity without real decision authority. Describe responsibility without true ownership. Do not misread operational words like 'expensive' as a pricing question."
+        );
+    }
+
+    if (/\b(good people)\b/.test(latest) && /\b(wait for me|wait on me|big calls|accountability gets soft|accountability gets weak)\b/.test(latest)) {
+        hints.push(
+            "Current turn is about good people who still wait on the owner. Diagnose it as an ownership-transfer gap, not a talent problem. Tie it to one consequence like slow decisions, softer margins, or owner dependence."
+        );
+    }
+
+    if (
+        /\b(what would greg probably see|what would greg see|what would he probably see|what do you think greg would see|what would greg see first|what would he see first|one thing greg would probably see)\b/.test(
+            latest
+        )
+    ) {
+        hints.push("Answer with one likely leak only, not a list. Make it feel like pattern recognition, not a canned framework.");
+    }
+
+    if (/\b(why would that be worth my time|why is that worth my time)\b/.test(latest)) {
+        hints.push(
+            "Current turn is value skepticism. Tie the answer to the cost of staying stuck: owner time, slower decisions, softer margins, weak managers, or lower exit value. Stay calm and non-defensive."
+        );
+    }
+
+    if (hints.length === 0) return '';
+
+    return [
+        'DYNAMIC STEERING FOR THIS TURN:',
+        ...hints.map((hint) => `- ${hint}`),
+        '- Use fresh wording. Do not fall back to stock phrases like classic ceiling, hard-call layer, or exact ceiling.',
+        '- Sound steady and experienced, not impressed by the pattern and not dismissive of the pain.',
+    ].join('\n');
+}
+
 function getInitialOwnerRead(messages: ChatMessage[]) {
     const userMessages = getUserMessages(messages);
 
@@ -627,66 +716,6 @@ function getGuardrailReply(messages: ChatMessage[]) {
         return "Fair enough — most coaching is fluff. Greg's not selling motivation; he works on ownership, accountability, and leadership inside real restoration and construction businesses. If that ever becomes the pain, you know where to find us.";
     }
 
-    if (/\b(why would greg be different|why would greg be any different|why greg be different)\b/.test(latest)) {
-        return "Because Greg has seen this enough times to spot pretty fast whether the leak is weak GM ownership, bad meeting rhythm, or you still being the approval layer. He's a licensed contractor, not a generic coach parachuting in. What's that costing you most right now?";
-    }
-
-    if (
-        /\b(how is greg different|what makes greg different)\b/.test(latest) ||
-        (/\b(eos|another coach|another operating system)\b/.test(latest) && /\b(different|versus|vs|than|compare)\b/.test(latest))
-    ) {
-        return "Greg's a licensed contractor with 30+ years in restoration and construction, and he's helped 300+ owners through this same pattern. EOS can help with structure, but Greg goes after the harder part: getting managers to own decisions, promises, and accountability so the hard calls stop landing back on you. Where does that break most right now?";
-    }
-
-    if (
-        /\b(consultant|consultants|consulting|eos)\b/.test(latest) &&
-        /\b(didn't stick|did not stick|didnt stick|didn't work|did not work|didnt work|waste of money|waste|slid back|slide back|fell back|faded|backslid|snapped back)\b/.test(
-            latest
-        )
-    ) {
-        return "That's a fair concern. Most outside help fades because the new ideas never get embedded into the team's weekly habits, so the hard calls drift right back to the owner. What actually killed it last time?";
-    }
-
-    if (/\b(outside voice for 90 days|outside voice)\b/.test(latest)) {
-        return "Fair. Greg only matters if he helps you spot the pattern your team keeps falling back into after the outside pressure is gone. What keeps boomeranging back to you right now?";
-    }
-
-    if (/\b(what makes this (actually )?stick|why would this stick|after greg leaves|after he leaves)\b/.test(latest)) {
-        return "Because Greg doesn't stop at advice. He changes the weekly rhythm where decisions get made, reviewed, and owned, so it stops snapping back to you when the outside pressure is gone. Where has it usually slipped before—your GM, your meetings, or follow-through?";
-    }
-
-    if (
-        /\b(i don't want theory|i do not want theory|don't dodge me with theory|do not dodge me with theory|see something useful fast|actually see something useful fast)\b/.test(
-            latest
-        )
-    ) {
-        const leak = getLikelyLeak(messages);
-        return `Fair. Greg can usually tell pretty fast what's really going on. Usually it's ${leak.description}.`;
-    }
-
-    if (
-        /\b(we already have meetings|have meetings and a gm|have a gm|still feel like the place runs through me|still runs through me)\b/.test(
-            latest
-        )
-    ) {
-        return "You've already built structure. The issue is the hard calls still come back to you, which means ownership never really transferred. When a real issue hits, does your GM solve it and tell you after, or does it still need your approval first?";
-    }
-
-    if (
-        /\b(good people)\b/.test(latest) &&
-        /\b(wait for me|wait on me|big calls|accountability gets soft|accountability gets weak)\b/.test(latest)
-    ) {
-        return "That's usually not a talent problem. It means your managers are executing tasks, but not owning decisions, promises, and consequences without you in the room. Which is costing you more right now—slow decisions, softer margins, or you getting dragged into every fire?";
-    }
-
-    if (
-        /\b(gm|gms|pm|pms|project managers?|managers?)\b/.test(latest) &&
-        /\b(messy|expensive)\b/.test(latest) &&
-        /\b(come to me|comes to me|come back to me|comes back to me|still come to me)\b/.test(latest)
-    ) {
-        return "That usually means they have responsibility, but not real authority. They bring you the messy calls instead of owning them through to a decision. What would change most if they handled those calls without needing you in the loop?";
-    }
-
     if (/\b(system prompt|your prompt|internal prompt|internal instructions|what are your instructions|show me your prompt)\b/.test(latest)) {
         if (/\b(price|pricing|cost|investment|fee|how much|charge)\b/.test(latest)) {
             return "I can't share internal instructions or pricing in chat. Greg covers investment once he understands fit and scope. What's the main bottleneck you're trying to solve?";
@@ -732,15 +761,6 @@ function getGuardrailReply(messages: ChatMessage[]) {
     }
 
     if (
-        /\b(what would greg probably see|what would greg see|what would he probably see|what do you think greg would see|what would greg see first|what would he see first|one thing greg would probably see)\b/.test(
-            latest
-        )
-    ) {
-        const leak = getLikelyLeak(messages);
-        return `He'd probably see ${leak.description}. ${leak.question}`;
-    }
-
-    if (
         /\b(what (do|would) you need from me|what info do you need|what do you need to book|what do you need from me|what would he actually need from me)\b/.test(
             latest
         )
@@ -768,16 +788,8 @@ function getGuardrailReply(messages: ChatMessage[]) {
         return "Best next step is booking the 30-minute call with Greg through the site. Send your name, email, timezone, and the main issue, and that gets it moving.";
     }
 
-    if (/\b(why would that be worth my time|why is that worth my time)\b/.test(latest)) {
-        return "Because if that pattern stays in place, you keep paying for it in your own time, slower decisions, and managers who never fully step up. Greg's value is spotting the real leak fast so you know what actually has to change. Where is that costing you most right now?";
-    }
-
     if (/\b(what would (he|greg|you) do first|where would (he|greg|you) start|what would be the first move|what's the first move|what would he want to see first|what would greg want to see first|what would he look at first|what would greg look at first)\b/.test(latest)) {
         return "First thing he'd look at is where the hard calls, missed promises, or key numbers still land back on you instead of staying with the team. That's usually what tells him whether this is a manager problem, a meeting problem, or a bigger ownership gap.";
-    }
-
-    if (/\b(why greg|why greg specifically|what makes greg different|why greg over)\b/.test(latest)) {
-        return "Greg's a licensed contractor with 30+ years in restoration and construction, and he's helped 300+ owners through this exact ceiling. He's not generic — he sees things like a GM with the title but not real ownership, or meetings that exist but never create accountability. Where does that show up most for you?";
     }
 
     if (/\b(are we a fit|am i a fit|fit or not)\b/.test(latest) && (soundsSubTwoMillion(messages) || (revenueMillions !== null && revenueMillions < 2))) {
@@ -830,10 +842,12 @@ export const POST: APIRoute = async ({ request }) => {
 
     const client = new Anthropic({ apiKey });
 
+    const dynamicSteering = getDynamicSteering(messages);
+
     const response = await client.messages.create({
         model: 'claude-haiku-4-5-20251001',
         max_tokens: 400,
-        system: SYSTEM_PROMPT,
+        system: dynamicSteering ? `${SYSTEM_PROMPT}\n\n${dynamicSteering}` : SYSTEM_PROMPT,
         messages,
     });
 

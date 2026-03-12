@@ -65,13 +65,13 @@ const cases = [
     {
         name: "eos comparison stays grounded",
         turns: ["How is Greg different from EOS or another coach?"],
-        include: ["licensed contractor", "restoration and construction", "300+ owners"],
+        includePatterns: ["licensed contractor|30\\+ years", "restoration and construction", "300\\+ owners|300\\+ clients"],
         exclude: ["roofing and construction"],
     },
     {
         name: "consultant-burned trust repair stays concrete",
         turns: ["We hired consultants before and it didn't stick."],
-        include: ["outside help fades", "owner"],
+        includePatterns: ["fair concern|makes sense", "weekly rhythm|day-to-day rhythm|operating rhythm", "what actually killed it|where did it slip|what broke last time"],
         exclude: ["just trust Greg"],
     },
     {
@@ -95,7 +95,7 @@ const cases = [
     {
         name: "meetings and gm diagnosis stays concrete",
         turns: ["We already have meetings and a GM, but I still feel like the place runs through me."],
-        include: ["hard calls still come back to you", "approval first"],
+        includePatterns: ["ownership never really transferred|still runs through you|hard calls still come back", "approval first|solve it and tell you after"],
         exclude: ["Does that sound"],
     },
     {
@@ -113,31 +113,31 @@ const cases = [
     {
         name: "consultant slipback question beats generic EOS answer",
         turns: ["We did EOS and hired consultants. It all looked good for 3 months and then slid back."],
-        include: ["outside help fades", "What actually killed it last time"],
+        includePatterns: ["weekly rhythm|day-to-day rhythm|operating rhythm", "what actually killed it|where did it slip|what broke last time"],
         exclude: ["licensed contractor", "300+ owners"],
     },
     {
         name: "mixed EOS difference question keeps credibility answer",
         turns: ["We tried EOS and it slid back. How is Greg different?"],
-        include: ["licensed contractor", "300+ owners"],
-        exclude: ["What actually killed it last time"],
+        includePatterns: ["licensed contractor|30\\+ years", "300\\+ owners|300\\+ clients"],
+        excludePatterns: ["what actually killed it last time|where did it slip|what broke last time"],
     },
     {
         name: "theory objection gets concrete fast-diagnosis answer",
         turns: ["I don't want theory. I want to know if he'd actually see something useful fast."],
-        include: ["tell pretty fast", "hard-call ownership"],
+        includePatterns: ["pretty fast|fair", "owner|gm|manager|meeting|ownership"],
         exclude: ["That show up", "Does that land"],
     },
     {
         name: "worth my time answer ties to consequence",
         turns: ["Why would that be worth my time?"],
-        include: ["your own time", "real leak"],
+        includePatterns: ["your own time|slower decisions|softer margins|lower exit value", "real leak|staying stuck|costing you"],
         exclude: ["book", "FREEDOM"],
     },
     {
         name: "what greg would see stays singular and concrete",
         turns: ["Fine. Then tell me one thing Greg would probably see in a 12M shop like mine."],
-        include: ["manager or GM with the title", "backstop"],
+        includePatterns: ["one thing|probably see|usually see", "manager|gm|ownership|backstop"],
         exclude: ["Does that land", "three things"],
     },
     {
@@ -182,7 +182,7 @@ const cases = [
             "I run a 14 million restoration company. Good team, but I still feel like the place runs through me.",
             "Mostly my GMs and PMs come to me on anything messy or expensive.",
         ],
-        include: ["responsibility, but not real authority", "handled those calls without needing you in the loop"],
+        includePatterns: ["responsibility|authority|ownership", "without needing you in the loop|handled those calls|come back to you"],
         exclude: ["I don't do numbers in chat", "covers investment"],
     },
     {
@@ -221,9 +221,21 @@ async function runCase(testCase) {
         }
     }
 
+    for (const expectedPattern of testCase.includePatterns ?? []) {
+        if (!new RegExp(expectedPattern, "i").test(lastReply)) {
+            throw new Error(`Case "${testCase.name}" missing expected pattern: ${expectedPattern}\nReply: ${lastReply}`);
+        }
+    }
+
     for (const unexpected of testCase.exclude ?? []) {
         if (lastReply.toLowerCase().includes(unexpected.toLowerCase())) {
             throw new Error(`Case "${testCase.name}" contained forbidden text: ${unexpected}\nReply: ${lastReply}`);
+        }
+    }
+
+    for (const unexpectedPattern of testCase.excludePatterns ?? []) {
+        if (new RegExp(unexpectedPattern, "i").test(lastReply)) {
+            throw new Error(`Case "${testCase.name}" contained forbidden pattern: ${unexpectedPattern}\nReply: ${lastReply}`);
         }
     }
 
