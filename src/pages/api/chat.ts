@@ -231,7 +231,6 @@ When useful, say they should leave clearer on whether the problem is leadership,
 If someone asks what info Greg needs from them:
 Say name, email, timezone, and the biggest challenge they want Greg to look at.
 Do not say phone is required.
-Only mention phone as optional if they want text reminders or prefer to be reached that way.
 
 If someone asks about EOS or another operating system:
 Say Greg is not replacing structure for the sake of it. EOS can be useful, but many owners still stay the bottleneck because the team does not truly own promises, accountability, and communication. Greg goes deeper on leadership behavior, coaching, Communication for Action, and getting people to actually live the system.
@@ -514,7 +513,7 @@ function getGuardrailReply(messages: ChatMessage[]) {
             latest
         )
     ) {
-        return "Just your name, email, timezone, and the biggest challenge you want Greg to look at. Phone isn't required. What's the main thing you'd want him to help untangle?";
+        return "Just your name, email, timezone, and the biggest challenge you want Greg to look at. That's enough to get the call moving. What's the main thing you'd want him to help untangle?";
     }
 
     if (/\b(why do owners stay stuck|why do people stay stuck|why does it stay stuck)\b/.test(latest) && /\b(meetings|org charts|structure)\b/.test(latest)) {
