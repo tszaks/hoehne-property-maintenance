@@ -224,7 +224,7 @@
                         <div class="group">
                             <label
                                 for="program"
-                                class="block text-[0.65rem] font-bold uppercase tracking-[0.22em] text-ind-steel/90 transition-colors group-focus-within:text-ind-accent"
+                                class="mb-2 block text-[0.65rem] font-bold uppercase tracking-[0.22em] text-ind-steel/90 transition-colors group-focus-within:text-ind-accent"
                             >
                                 <span aria-hidden="true">04 // </span>Interested In
                             </label>
@@ -249,20 +249,12 @@
                     </div>
 
                     <div class="group">
-                        <div class="mb-2 flex items-center justify-between gap-4">
-                            <label
-                                for="message"
-                                class="block text-[0.65rem] font-bold uppercase tracking-[0.22em] text-ind-steel/90 transition-colors group-focus-within:text-ind-accent"
-                            >
-                                <span aria-hidden="true">05 // </span>Your Situation
-                            </label>
-                            <span
-                                id="message-helper"
-                                class="hidden text-[0.65rem] uppercase tracking-[0.16em] text-ind-steel/70 md:block"
-                            >
-                                The clearer this is, the better Greg can prep
-                            </span>
-                        </div>
+                        <label
+                            for="message"
+                            class="mb-2 block text-[0.65rem] font-bold uppercase tracking-[0.22em] text-ind-steel/90 transition-colors group-focus-within:text-ind-accent"
+                        >
+                            <span aria-hidden="true">05 // </span>Your Situation
+                        </label>
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 w-[2px] bg-ind-accent/20 transition-colors group-focus-within:bg-ind-accent"></div>
                             <textarea
@@ -273,6 +265,12 @@
                                 placeholder="Tell Greg about the business, the bottleneck, and what needs to change."
                             ></textarea>
                         </div>
+                        <p
+                            id="message-helper"
+                            class="mt-2 text-[0.62rem] uppercase tracking-[0.16em] text-ind-steel/70"
+                        >
+                            The clearer this is, the better Greg can prep.
+                        </p>
                     </div>
 
                     <button
