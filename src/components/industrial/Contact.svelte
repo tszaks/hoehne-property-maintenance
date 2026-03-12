@@ -142,100 +142,143 @@
             <!-- Form -->
             <div
                 bind:this={formRef}
-                class="bg-ind-surface p-8 md:p-10 relative"
+                class="relative overflow-hidden border border-white/6 bg-ind-surface/95 p-8 shadow-[0_24px_80px_rgba(0,0,0,0.45),inset_0_1px_0_rgba(255,255,255,0.04)] md:p-10"
             >
-                <!-- Fasteners -->
+                <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-ind-accent/60 to-transparent"></div>
+                <div class="absolute inset-y-0 left-0 w-px bg-gradient-to-b from-transparent via-white/8 to-transparent"></div>
+                <div class="absolute inset-y-0 right-0 w-px bg-gradient-to-b from-transparent via-white/8 to-transparent"></div>
+
                 <div class="ind-fastener top-3 left-3"></div>
                 <div class="ind-fastener top-3 right-3"></div>
                 <div class="ind-fastener bottom-3 left-3"></div>
                 <div class="ind-fastener bottom-3 right-3"></div>
 
-                <form class="space-y-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
+                <div class="mb-8 border-b border-ind-border/40 pb-6">
+                    <div class="ind-metadata text-ind-accent mb-3">Direct Intake</div>
+                    <h4 class="text-2xl font-black uppercase tracking-tight text-white">
+                        Tell Greg What Is Going On
+                    </h4>
+                    <p class="mt-3 max-w-xl text-sm leading-relaxed text-ind-steel">
+                        Give him a clean read on the business, the pressure point, and what needs to change.
+                    </p>
+                </div>
+
+                <form class="space-y-7">
+                    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                        <div class="group">
                             <label
                                 for="name"
-                                class="block text-xs uppercase tracking-widest text-ind-steel font-semibold mb-2"
-                                >Full Name</label
+                                class="mb-2 block text-[0.65rem] font-bold uppercase tracking-[0.22em] text-ind-steel/70 transition-colors group-focus-within:text-ind-accent"
                             >
-                            <input
-                                id="name"
-                                type="text"
-                                class="w-full bg-ind-bg border border-ind-border/30 px-4 py-3 text-white text-sm focus:border-ind-accent focus:outline-none transition-colors placeholder:text-ind-steel/30"
-                                placeholder="John Doe"
-                            />
+                                01 // Full Name
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 w-[2px] bg-ind-accent/20 transition-colors group-focus-within:bg-ind-accent"></div>
+                                <input
+                                    id="name"
+                                    type="text"
+                                    class="w-full border border-ind-border/50 bg-black/50 px-4 py-3.5 pl-5 text-sm text-white outline-none transition-all placeholder:text-ind-steel/25 focus:border-ind-accent/60 focus:bg-black/65"
+                                    placeholder="John Doe"
+                                />
+                            </div>
                         </div>
-                        <div>
+
+                        <div class="group">
                             <label
                                 for="company"
-                                class="block text-xs uppercase tracking-widest text-ind-steel font-semibold mb-2"
-                                >Company</label
+                                class="mb-2 block text-[0.65rem] font-bold uppercase tracking-[0.22em] text-ind-steel/70 transition-colors group-focus-within:text-ind-accent"
                             >
+                                02 // Company
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 w-[2px] bg-ind-accent/20 transition-colors group-focus-within:bg-ind-accent"></div>
+                                <input
+                                    id="company"
+                                    type="text"
+                                    class="w-full border border-ind-border/50 bg-black/50 px-4 py-3.5 pl-5 text-sm text-white outline-none transition-all placeholder:text-ind-steel/25 focus:border-ind-accent/60 focus:bg-black/65"
+                                    placeholder="Company Name"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="group">
+                        <label
+                            for="email"
+                            class="mb-2 block text-[0.65rem] font-bold uppercase tracking-[0.22em] text-ind-steel/70 transition-colors group-focus-within:text-ind-accent"
+                        >
+                            03 // Email
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 w-[2px] bg-ind-accent/20 transition-colors group-focus-within:bg-ind-accent"></div>
                             <input
-                                id="company"
-                                type="text"
-                                class="w-full bg-ind-bg border border-ind-border/30 px-4 py-3 text-white text-sm focus:border-ind-accent focus:outline-none transition-colors placeholder:text-ind-steel/30"
-                                placeholder="Company Name"
+                                id="email"
+                                type="email"
+                                class="w-full border border-ind-border/50 bg-black/50 px-4 py-3.5 pl-5 text-sm text-white outline-none transition-all placeholder:text-ind-steel/25 focus:border-ind-accent/60 focus:bg-black/65"
+                                placeholder="john@company.com"
                             />
                         </div>
                     </div>
 
-                    <div>
-                        <label
-                            for="email"
-                            class="block text-xs uppercase tracking-widest text-ind-steel font-semibold mb-2"
-                            >Email</label
-                        >
-                        <input
-                            id="email"
-                            type="email"
-                            class="w-full bg-ind-bg border border-ind-border/30 px-4 py-3 text-white text-sm focus:border-ind-accent focus:outline-none transition-colors placeholder:text-ind-steel/30"
-                            placeholder="john@company.com"
-                        />
-                    </div>
-
-                    <div>
+                    <div class="group">
                         <label
                             for="program"
-                            class="block text-xs uppercase tracking-widest text-ind-steel font-semibold mb-2"
-                            >Interested In</label
+                            class="mb-2 block text-[0.65rem] font-bold uppercase tracking-[0.22em] text-ind-steel/70 transition-colors group-focus-within:text-ind-accent"
                         >
-                        <select
-                            id="program"
-                            class="w-full bg-ind-bg border border-ind-border/30 px-4 py-3 text-white text-sm focus:border-ind-accent focus:outline-none transition-colors"
-                        >
-                            <option value="">Select a program</option>
-                            <option value="one-to-one">One-to-One Coaching</option>
-                            <option value="mastermind">Mastermind Group</option>
-                            <option value="exit">Succession &amp; Exit Strategy</option>
-                            <option value="team">Team &amp; Culture</option>
-                            <option value="discovery">Free Discovery Call</option>
-                        </select>
+                            04 // Interested In
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 w-[2px] bg-ind-accent/20 transition-colors group-focus-within:bg-ind-accent"></div>
+                            <select
+                                id="program"
+                                class="w-full appearance-none border border-ind-border/50 bg-black/50 px-4 py-3.5 pl-5 pr-12 text-sm text-white outline-none transition-all focus:border-ind-accent/60 focus:bg-black/65"
+                            >
+                                <option value="">Select a program</option>
+                                <option value="one-to-one">One-to-One Coaching</option>
+                                <option value="mastermind">Mastermind Group</option>
+                                <option value="exit">Succession &amp; Exit Strategy</option>
+                                <option value="team">Team &amp; Culture</option>
+                                <option value="discovery">Free Discovery Call</option>
+                            </select>
+                            <div class="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-ind-steel/60">
+                                <ArrowRight size={14} class="rotate-90" />
+                            </div>
+                        </div>
                     </div>
 
-                    <div>
-                        <label
-                            for="message"
-                            class="block text-xs uppercase tracking-widest text-ind-steel font-semibold mb-2"
-                            >Your Situation</label
-                        >
-                        <textarea
-                            id="message"
-                            rows="4"
-                            class="w-full bg-ind-bg border border-ind-border/30 px-4 py-3 text-white text-sm focus:border-ind-accent focus:outline-none transition-colors resize-none placeholder:text-ind-steel/30"
-                            placeholder="Tell Greg about your business, your biggest challenge, and what you want to change..."
-                        ></textarea>
+                    <div class="group">
+                        <div class="mb-2 flex items-center justify-between gap-4">
+                            <label
+                                for="message"
+                                class="block text-[0.65rem] font-bold uppercase tracking-[0.22em] text-ind-steel/70 transition-colors group-focus-within:text-ind-accent"
+                            >
+                                05 // Your Situation
+                            </label>
+                            <span class="text-[0.65rem] uppercase tracking-[0.16em] text-ind-steel/40">
+                                The clearer this is, the better Greg can prep
+                            </span>
+                        </div>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 w-[2px] bg-ind-accent/20 transition-colors group-focus-within:bg-ind-accent"></div>
+                            <textarea
+                                id="message"
+                                rows="5"
+                                class="w-full resize-none border border-ind-border/50 bg-black/50 px-4 py-3.5 pl-5 text-sm leading-relaxed text-white outline-none transition-all placeholder:text-ind-steel/25 focus:border-ind-accent/60 focus:bg-black/65"
+                                placeholder="Tell Greg about the business, the bottleneck, and what needs to change."
+                            ></textarea>
+                        </div>
                     </div>
 
                     <button
                         type="submit"
-                        class="ind-button px-8 py-4 w-full text-sm font-bold flex items-center justify-center gap-2 group"
+                        class="group relative flex w-full items-center justify-center gap-3 overflow-hidden border border-ind-accent bg-ind-accent px-8 py-4 text-sm font-black uppercase tracking-[0.16em] text-black transition-all duration-300 hover:border-white hover:bg-white"
                     >
-                        Apply for Coaching
+                        <span class="relative z-10">Apply for Coaching</span>
                         <ArrowRight
                             size={16}
-                            class="transform transition-transform group-hover:translate-x-1"
+                            class="relative z-10 transform transition-transform group-hover:translate-x-1"
                         />
+                        <div class="absolute inset-0 bg-white/20 translate-y-full transition-transform duration-300 group-hover:translate-y-0"></div>
                     </button>
                 </form>
             </div>
