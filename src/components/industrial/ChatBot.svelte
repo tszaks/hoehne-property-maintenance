@@ -50,6 +50,7 @@
     let inputValue = $state("");
     let isLoading = $state(false);
     let didFinalizeSession = $state(false);
+    let lastFinalizeReason = $state<FinalizeReason | null>(null);
     let lastBookedDraft = $state<BookingState["draft"] | null>(null);
     let messagesEl: HTMLElement;
     let inputEl: HTMLTextAreaElement;
@@ -144,6 +145,7 @@
     function startFreshSession(resetMessages = true) {
         writeSessionId(crypto.randomUUID());
         didFinalizeSession = false;
+        lastFinalizeReason = null;
         lastBookedDraft = null;
         resetBooking();
         clearStoredSessionFinalized(sessionId);
@@ -257,6 +259,7 @@
 
                 if (queued) {
                     didFinalizeSession = true;
+                    lastFinalizeReason = reason;
                     markStoredSessionFinalized(sessionId);
                     return;
                 }
@@ -280,9 +283,11 @@
                 return;
             }
 
+            lastFinalizeReason = reason;
             markStoredSessionFinalized(sessionId);
         } catch {
             didFinalizeSession = false;
+            lastFinalizeReason = null;
             scheduleIdleFinalize();
         }
     }
@@ -564,7 +569,7 @@
         const text = content.trim();
         if (!text || isLoading) return;
 
-        if (didFinalizeSession) {
+        if (didFinalizeSession && lastFinalizeReason !== "booked") {
             startFreshSession(true);
         }
 
