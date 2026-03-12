@@ -15,7 +15,7 @@
 
     // Magnetic pull state
     let magneticTarget: HTMLElement | null = null;
-    let magneticStrength = 0.3;
+    let magneticStrength = 0.2;
 
     function handleMouseMove(e: MouseEvent) {
         mouseX = e.clientX;
@@ -33,7 +33,7 @@
             gsap.to(magneticTarget, {
                 x: deltaX,
                 y: deltaY,
-                duration: 0.3,
+                duration: 0.22,
                 ease: "power2.out",
             });
         }
@@ -56,7 +56,7 @@
             gsap.to(magneticTarget, {
                 x: 0,
                 y: 0,
-                duration: 0.5,
+                duration: 0.38,
                 ease: "elastic.out(1, 0.4)",
             });
             magneticTarget = null;
@@ -65,17 +65,17 @@
 
     function animate() {
         // Smooth lerp for the ring (trails behind the dot)
-        ringX += (mouseX - ringX) * 0.15;
-        ringY += (mouseY - ringY) * 0.15;
+        ringX += (mouseX - ringX) * 0.22;
+        ringY += (mouseY - ringY) * 0.22;
 
         if (cursorDot) {
-            cursorDot.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%) scale(${isHovering ? 0 : 1})`;
+            cursorDot.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%) scale(${isHovering ? 0.72 : 1})`;
         }
         if (cursorRing) {
-            cursorRing.style.transform = `translate(${ringX}px, ${ringY}px) translate(-50%, -50%) scale(${isHovering ? 1.5 : 1})`;
+            cursorRing.style.transform = `translate(${ringX}px, ${ringY}px) translate(-50%, -50%) scale(${isHovering ? 1.18 : 1})`;
             cursorRing.style.borderColor = isHovering
-                ? "rgba(255, 90, 0, 0.8)"
-                : "rgba(255, 90, 0, 0.4)";
+                ? "rgba(255, 90, 0, 0.82)"
+                : "rgba(255, 90, 0, 0.52)";
         }
 
         animationFrame = requestAnimationFrame(animate);
@@ -139,18 +139,18 @@
     <!-- Precise dot -->
     <div
         bind:this={cursorDot}
-        class="fixed top-0 left-0 w-2 h-2 rounded-full bg-ind-accent pointer-events-none z-[9999] mix-blend-difference"
+        class="fixed top-0 left-0 h-[5px] w-[5px] rounded-full bg-ind-accent pointer-events-none z-[9999]"
         class:opacity-0={!isVisible}
         class:opacity-100={isVisible}
-        style="transition: opacity 0.3s ease, width 0.3s ease, height 0.3s ease;"
+        style="transition: opacity 0.2s ease;"
     ></div>
 
     <!-- Trailing ring -->
     <div
         bind:this={cursorRing}
-        class="fixed top-0 left-0 w-10 h-10 rounded-full border-2 border-ind-accent/40 pointer-events-none z-[9998]"
+        class="fixed top-0 left-0 h-6 w-6 rounded-full border border-ind-accent/50 pointer-events-none z-[9998]"
         class:opacity-0={!isVisible}
         class:opacity-100={isVisible}
-        style="transition: opacity 0.3s ease, border-color 0.3s ease, width 0.4s ease, height 0.4s ease;"
+        style="transition: opacity 0.2s ease, border-color 0.2s ease;"
     ></div>
 {/if}
