@@ -460,7 +460,7 @@ function hardenSoftClose(text: string) {
     );
 
     return strongerCallClose.replace(
-        /\b(Does that track\?|Does that sound like where you are\?|That sound like where you are\?|Does that sound like where you're at\?|Does that sound like you\?|Does that sound right\?|Does that resonate\?|What does that look like most\?)\b/gi,
+        /\b(Does that track\?|Does that sound like where you are\?|That sound like where you are\?|Does that sound like where you're at\?|Does that sound like you\?|Sound like you\?|Does that sound right\?|Does that resonate\?|What does that look like most\?)\b/gi,
         'Where does that show up most right now?'
     );
 }
