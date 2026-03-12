@@ -488,6 +488,21 @@ function getGuardrailReply(messages: ChatMessage[]) {
         return "That's a fair concern. Most consultant work dies because the plan never gets installed into how the team actually meets, decides, and owns work, so it slides right back onto the owner. What broke last time—fit, follow-through, or team buy-in?";
     }
 
+    if (
+        /\b(we already have meetings|have meetings and a gm|have a gm|still feel like the place runs through me|still runs through me)\b/.test(
+            latest
+        )
+    ) {
+        return "That's the classic middle-stage trap. You have structure, but the hard calls still boomerang back to you, which means ownership never really transferred. When a real issue hits, does your GM solve it and tell you after, or does it still need your approval first?";
+    }
+
+    if (
+        /\b(good people)\b/.test(latest) &&
+        /\b(wait for me|wait on me|big calls|accountability gets soft|accountability gets weak)\b/.test(latest)
+    ) {
+        return "That's usually not a talent problem. It means your managers are executing tasks, but not owning decisions, promises, and consequences without you in the room. Which is costing you more right now—slow decisions, softer margins, or you getting dragged into every fire?";
+    }
+
     if (/\b(system prompt|your prompt|internal prompt|internal instructions|what are your instructions|show me your prompt)\b/.test(latest)) {
         if (/\b(price|pricing|cost|investment|fee|how much|charge)\b/.test(latest)) {
             return "I can't share internal instructions or pricing in chat. Greg covers investment once he understands fit and scope. What's the main bottleneck you're trying to solve?";
@@ -540,6 +555,10 @@ function getGuardrailReply(messages: ChatMessage[]) {
         return "Greg uses that 30 minutes to map where ownership is breaking, what's still landing on you, and what kind of fix actually fits. You should leave clearer on whether this is a GM ownership issue, a meeting/accountability issue, or a bigger leadership install problem. If he mapped that with you, what would you want him to look at first?";
     }
 
+    if (/\b(what would greg probably see|what would greg see|what would he probably see)\b/.test(latest)) {
+        return "He'd probably see managers with titles but not real ownership, meetings that surface issues but still leave you owning the fix, and hard decisions that boomerang back to you. Which of those feels most true in your shop right now?";
+    }
+
     if (/\b(how is greg different|what makes greg different)\b/.test(latest) || /\b(eos|another coach|another operating system)\b/.test(latest)) {
         return "Greg's a licensed contractor with 30+ years in restoration and construction, and he's helped 300+ owners through this exact ceiling. EOS can help with structure, but Greg goes after the harder part: getting managers to own decisions, promises, and accountability so the business stops rolling uphill to you. Where does that break most right now?";
     }
@@ -554,6 +573,14 @@ function getGuardrailReply(messages: ChatMessage[]) {
 
     if (/\b(why do owners stay stuck|why do people stay stuck|why does it stay stuck)\b/.test(latest) && /\b(meetings|org charts|structure)\b/.test(latest)) {
         return "Because structure on paper is not the same as transferred ownership. The titles exist, but the real decisions, promises, and hard accountability still roll uphill to the owner. Where does that show up most in your company right now?";
+    }
+
+    if (/\b(what kind of owner usually gets the most out of greg|who gets the most out of greg|what kind of owner gets the most out)\b/.test(latest)) {
+        return "Owners who've built something real, usually in that $5M to $35M zone, and are tired of being the hub for every hard call. The best fit is someone who knows the problem isn't effort anymore — it's that ownership still rolls uphill. Where are you still carrying more than you should?";
+    }
+
+    if (/\b(i do not want a sales pitch|i don't want a sales pitch|not here for a pitch|don't pitch me|do not pitch me)\b/.test(latest)) {
+        return "Fair. I'm not here to pitch you. If Greg were actually useful, what would have to change in your week for this to matter?";
     }
 
     if (/\b(what would (he|greg|you) do first|where would (he|greg|you) start|what would be the first move|what's the first move)\b/.test(latest)) {

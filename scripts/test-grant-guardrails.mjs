@@ -80,6 +80,24 @@ const cases = [
         include: ["sequence issue", "leadership, ownership", "fix that first"],
         exclude: ["book", "FREEDOM"],
     },
+    {
+        name: "owner profile answer stays specific",
+        turns: ["What kind of owner usually gets the most out of Greg?"],
+        include: ["built something real", "ownership still rolls uphill"],
+        exclude: ["Does that sound like", "Sound like you"],
+    },
+    {
+        name: "no sales pitch gets diagnostic question",
+        turns: ["I do not want a sales pitch."],
+        include: ["not here to pitch you", "what would have to change in your week"],
+        exclude: ["book", "Worth"],
+    },
+    {
+        name: "meetings and gm diagnosis stays concrete",
+        turns: ["We already have meetings and a GM, but I still feel like the place runs through me."],
+        include: ["hard calls still boomerang back to you", "approval first"],
+        exclude: ["Does that sound"],
+    },
 ];
 
 async function runCase(testCase) {
