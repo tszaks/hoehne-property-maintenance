@@ -332,6 +332,7 @@ Avoid:
 - translate complaints into business consequences like owner dependence, margin leak, weak accountability, or reduced exit value
 - use gentle loss framing when it fits: staying stuck usually means more owner dependence, softer margins, weaker managers, or lower exit value
 - use Greg's authority as pattern recognition, not as a lecture
+- when someone says they have good people who still wait on them, diagnose it as an ownership-transfer gap, not a talent or coachability problem
 - if they challenge Greg's credibility, use one concrete credential or parallel client pattern, not just abstract claims
 - never narrow Greg's credentials to a sub-trade the prospect mentions unless that trade is explicitly documented
 - avoid stock lines like "classic ceiling," "middle-stage trap," or other phrases that sound pre-scripted
@@ -593,6 +594,22 @@ function getDynamicSteering(messages: ChatMessage[]) {
     }
 
     if (
+        /\b(what would (he|greg|you) do first|where would (he|greg|you) start|what would be the first move|what's the first move|what would he want to see first|what would greg want to see first|what would he look at first|what would greg look at first)\b/.test(
+            latest
+        )
+    ) {
+        return [
+            'DYNAMIC STEERING FOR THIS TURN:',
+            '- Current turn wants one first lens, not a list and not a dodge.',
+            '- Give one concrete first lens: where the hard calls, missed promises, or key numbers still land back on the owner.',
+            '- Then ask one focused follow-up about where that shows up most.',
+            '- Do not ask them to restate the whole problem unless there is truly no context.',
+            '- Sound steady and experienced, not impressed by the pattern and not dismissive of the pain.',
+            '- Use fresh wording. Do not fall back to stock phrases like classic ceiling, hard-call layer, or exact ceiling.',
+        ].join('\n');
+    }
+
+    if (
         /\b(what would greg probably see|what would greg see|what would he probably see|what do you think greg would see|what would greg see first|what would he see first|one thing greg would probably see)\b/.test(
             latest
         )
@@ -641,6 +658,7 @@ function getDynamicSteering(messages: ChatMessage[]) {
             'DYNAMIC STEERING FOR THIS TURN:',
             '- Current turn is about good people who still wait on the owner.',
             '- Diagnose it as an ownership-transfer gap, not a talent problem.',
+            '- Do not call them uncoachable, untalented, or weak.',
             '- Tie it to one consequence like slow decisions, softer margins, or owner dependence.',
             '- Sound steady and experienced, not impressed by the pattern and not dismissive of the pain.',
             '- Use fresh wording. Do not fall back to stock phrases like classic ceiling, hard-call layer, or exact ceiling.',
@@ -697,6 +715,14 @@ function getDynamicFallbackReply(messages: ChatMessage[]) {
 
     if (/\b(good people)\b/.test(latest) && /\b(wait for me|wait on me|big calls|accountability gets soft|accountability gets weak)\b/.test(latest)) {
         return "That usually isn't a talent problem. It means ownership never fully transferred, so good people still wait on you for the real decisions. Which is costing you more right now: slow decisions, softer margins, or getting pulled into every fire?";
+    }
+
+    if (
+        /\b(what would (he|greg|you) do first|where would (he|greg|you) start|what would be the first move|what's the first move|what would he want to see first|what would greg want to see first|what would he look at first|what would greg look at first)\b/.test(
+            latest
+        )
+    ) {
+        return `First thing he'd look at is where the hard calls, missed promises, or key numbers still land back on you instead of staying with the team. Where does that show up most right now?`;
     }
 
     if (
