@@ -460,6 +460,12 @@ function extractLatestUserRevenueMillions(messages: ChatMessage[]) {
     return null;
 }
 
+function soundsSubTwoMillion(messages: ChatMessage[]) {
+    const context = getUserContextText(messages);
+
+    return /\b(under|below|less than)\s*\$?\s*2\s*(m|million)\b/.test(context);
+}
+
 function getLikelyLeak(messages: ChatMessage[]) {
     const context = getUserContextText(messages);
 
@@ -566,16 +572,22 @@ function hardenSoftClose(text: string) {
 function deScriptify(text: string) {
     return text
         .replace(/\bThat'?s a classic ceiling\.\s*/gi, 'That usually means the business still depends on you more than it should. ')
+        .replace(/\bThat'?s a common ceiling\.\s*/gi, 'That usually means the business still depends on you more than it should. ')
+        .replace(/\bThat'?s the classic bottleneck\b/gi, "That's the bottleneck")
         .replace(/\bThat'?s the classic pattern\.\s*/gi, 'That usually means ')
         .replace(/\bThat'?s the pattern Greg sees all the time\.\s*/gi, 'That usually means ')
+        .replace(/\bThat'?s the pattern Greg sees a lot\.\s*/gi, 'That usually means ')
         .replace(/\bThat'?s the classic sign\.\s*/gi, 'That usually means ')
         .replace(/\bThat'?s the core issue Greg sees all the time\.\s*/gi, 'That usually means ')
         .replace(/\bclassic ceiling\b/gi, 'point where the business should carry more without you')
+        .replace(/\bcommon ceiling\b/gi, 'point where the business should carry more without you')
+        .replace(/\bclassic bottleneck\b/gi, 'bottleneck')
         .replace(/\bglue holding it together\b/gi, 'backstop keeping it tight')
         .replace(/\bownership actually dies\b/gi, 'ownership actually breaks')
         .replace(/\bownership dies\b/gi, 'ownership breaks')
         .replace(/\broll(?:s|ed)? back uphill to you\b/gi, 'lands back on you')
         .replace(/\broll(?:s|ed)? uphill to you\b/gi, 'lands back on you')
+        .replace(/\bproblems still lands back on you\b/gi, 'problems still land back on you')
         .replace(/\bleadership problem\b/gi, 'leadership ownership gap');
 }
 
@@ -752,7 +764,7 @@ function getGuardrailReply(messages: ChatMessage[]) {
         return "Greg's a licensed contractor with 30+ years in restoration and construction, and he's helped 300+ owners through this exact ceiling. He's not generic — he sees things like a GM with the title but not real ownership, or meetings that exist but never create accountability. Where does that show up most for you?";
     }
 
-    if (/\b(are we a fit|am i a fit|fit or not)\b/.test(latest) && revenueMillions !== null && revenueMillions < 2) {
+    if (/\b(are we a fit|am i a fit|fit or not)\b/.test(latest) && (soundsSubTwoMillion(messages) || (revenueMillions !== null && revenueMillions < 2))) {
         return "Probably not yet. Greg's sweet spot is usually owners around $5M+ who need stronger leadership and team ownership, not just more leads. At your size, the bottleneck is usually earlier-stage than what Greg specializes in.";
     }
 
