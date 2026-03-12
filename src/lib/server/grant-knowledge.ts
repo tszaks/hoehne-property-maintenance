@@ -179,6 +179,12 @@ const TOPIC_RULES: TopicRule[] = [
 const INTENT_RULES: IntentRule[] = [
     {
         intent: 'credibility',
+        regex: /\b(why should i work with (greg|you|him)|why would i work with (greg|you|him)|why should we work with (greg|you|him)|why would we work with (greg|you|him))\b/i,
+        preferredCardIds: ['greg-credibility', 'best-fit-owner'],
+        instruction: 'This is defensive skepticism. Validate their caution first, then ask permission to learn about their situation before you make a case for Greg.',
+    },
+    {
+        intent: 'credibility',
         regex: /\b(how is greg different|what makes greg different|why greg|why greg specifically|why would greg be different)\b/i,
         preferredCardIds: ['greg-credibility', 'structure-vs-lived-ownership'],
         instruction: 'This is a credibility question. Answer the difference question first, and lead with licensed contractor plus 30+ years and/or 300+ owners before comparing systems.',
