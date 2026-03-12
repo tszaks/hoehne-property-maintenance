@@ -177,7 +177,7 @@
                                 <input
                                     id="name"
                                     type="text"
-                                    class="w-full border border-ind-border/50 bg-black/50 px-4 py-3 pl-5 text-sm text-white outline-none transition-all placeholder:text-ind-steel/25 focus:border-ind-accent/60 focus:bg-black/65"
+                                    class="block w-full border border-ind-border/50 bg-black/50 px-4 py-3 pl-5 text-sm text-white outline-none transition-all placeholder:text-ind-steel/25 focus:border-ind-accent/60 focus:bg-black/65"
                                     placeholder="John Doe"
                                 />
                             </div>
@@ -195,7 +195,7 @@
                                 <input
                                     id="company"
                                     type="text"
-                                    class="w-full border border-ind-border/50 bg-black/50 px-4 py-3 pl-5 text-sm text-white outline-none transition-all placeholder:text-ind-steel/25 focus:border-ind-accent/60 focus:bg-black/65"
+                                    class="block w-full border border-ind-border/50 bg-black/50 px-4 py-3 pl-5 text-sm text-white outline-none transition-all placeholder:text-ind-steel/25 focus:border-ind-accent/60 focus:bg-black/65"
                                     placeholder="Company Name"
                                 />
                             </div>
@@ -215,7 +215,7 @@
                                 <input
                                     id="email"
                                     type="email"
-                                    class="w-full border border-ind-border/50 bg-black/50 px-4 py-3 pl-5 text-sm text-white outline-none transition-all placeholder:text-ind-steel/25 focus:border-ind-accent/60 focus:bg-black/65"
+                                    class="block w-full border border-ind-border/50 bg-black/50 px-4 py-3 pl-5 text-sm text-white outline-none transition-all placeholder:text-ind-steel/25 focus:border-ind-accent/60 focus:bg-black/65"
                                     placeholder="john@company.com"
                                 />
                             </div>
@@ -232,7 +232,7 @@
                                 <div class="absolute inset-y-0 left-0 w-[2px] bg-ind-accent/20 transition-colors group-focus-within:bg-ind-accent"></div>
                                 <select
                                     id="program"
-                                    class="w-full appearance-none border border-ind-border/50 bg-black/50 px-4 py-3 pl-5 pr-12 text-sm text-white outline-none transition-all focus:border-ind-accent/60 focus:bg-black/65"
+                                    class="block w-full appearance-none border border-ind-border/50 bg-black/50 px-4 py-3 pl-5 pr-12 text-sm text-white outline-none transition-all focus:border-ind-accent/60 focus:bg-black/65"
                                 >
                                     <option value="">Select a program</option>
                                     <option value="one-to-one">One-to-One Coaching</option>
@@ -261,7 +261,7 @@
                                 id="message"
                                 rows="4"
                                 aria-describedby="message-helper"
-                                class="w-full resize-none border border-ind-border/50 bg-black/50 px-4 py-3 pl-5 text-sm leading-relaxed text-white outline-none transition-all placeholder:text-ind-steel/25 focus:border-ind-accent/60 focus:bg-black/65"
+                                class="block w-full resize-none border border-ind-border/50 bg-black/50 px-4 py-3 pl-5 text-sm leading-relaxed text-white outline-none transition-all placeholder:text-ind-steel/25 focus:border-ind-accent/60 focus:bg-black/65"
                                 placeholder="Tell Greg about the business, the bottleneck, and what needs to change."
                             ></textarea>
                         </div>
