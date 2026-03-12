@@ -140,6 +140,18 @@ const cases = [
         include: ["manager or GM with the title", "backstop"],
         exclude: ["Does that land", "three things"],
     },
+    {
+        name: "warm interest gets one clear next step",
+        turns: ["Maybe this is worth talking about."],
+        include: ["Best next step is a 30-minute call with Greg", "name, email, timezone"],
+        exclude: ["text FREEDOM"],
+    },
+    {
+        name: "what next gives booking path not multiple options",
+        turns: ["What should I do next?"],
+        include: ["booking the 30-minute call with Greg through the site", "name, email, timezone"],
+        exclude: ["text FREEDOM"],
+    },
 ];
 
 async function runCase(testCase) {
