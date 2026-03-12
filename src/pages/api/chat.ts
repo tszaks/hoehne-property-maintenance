@@ -838,6 +838,10 @@ function getGuardrailReply(messages: ChatMessage[]) {
         return `Greg's a licensed contractor with 30+ years in restoration and construction, and he's helped 300+ owners through this kind of bottleneck. Most coaches stop at structure. Greg spots things like ${leak.description} fast, so he can see why the hard calls keep landing back on you. Where does that show up most right now?`;
     }
 
+    if (/\bconditions of satisfaction\b/.test(latest)) {
+        return "It means getting clear up front on what done actually looks like: who owes what, by when, and what would count as complete. Greg uses that so requests do not drift into assumptions and missed promises. Where do things usually get fuzzy in your shop?";
+    }
+
     if (/\b(system prompt|your prompt|internal prompt|internal instructions|what are your instructions|show me your prompt)\b/.test(latest)) {
         if (/\b(price|pricing|cost|investment|fee|how much|charge)\b/.test(latest)) {
             return "I can't share internal instructions or pricing in chat. Greg covers investment once he understands fit and scope. What's the main bottleneck you're trying to solve?";
