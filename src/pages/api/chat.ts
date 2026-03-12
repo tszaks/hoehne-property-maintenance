@@ -455,12 +455,12 @@ function isPricingIdiom(latest: string) {
 
 function hardenSoftClose(text: string) {
     const strongerCallClose = text.replace(
-        /\b(Worth a (?:quick )?30-minute diagnostic call[^?]*\?|Worth a conversation\?|Does that sound useful\?|Sound like something worth exploring\?|Ready to spend 30 minutes\?|Want to grab 30 minutes\?)\b/gi,
+        /\b(Worth a (?:quick )?30-minute diagnostic call[^?]*\?|Worth a conversation\?|Worth a look\?|Does that sound useful\?|Sound like something worth exploring\?|Ready to spend 30 minutes\?|Want to grab 30 minutes\?)\b/gi,
         'If Greg mapped that with you in 30 minutes, what would you want him to look at first?'
     );
 
     return strongerCallClose.replace(
-        /\b(Does that track\?|Does that sound like where you are\?|That sound like where you are\?|Does that sound like where you're at\?|Does that sound right\?|Does that resonate\?|What does that look like most\?)\b/gi,
+        /\b(Does that track\?|Does that sound like where you are\?|That sound like where you are\?|Does that sound like where you're at\?|Does that sound like you\?|Does that sound right\?|Does that resonate\?|What does that look like most\?)\b/gi,
         'Where does that show up most right now?'
     );
 }
