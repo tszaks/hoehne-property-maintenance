@@ -53,7 +53,7 @@ const cases = [
     {
         name: "booking requirements do not invent phone",
         turns: ["Okay, say I wanted to talk to him. What would you need from me?"],
-        include: ["name, email, timezone", "Phone isn't required"],
+        include: ["name, email, timezone", "That's enough to get the call moving"],
         exclude: ["phone number is required"],
     },
     {
