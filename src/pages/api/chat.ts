@@ -448,7 +448,7 @@ function hardenSoftClose(text: string) {
     );
 
     return strongerCallClose.replace(
-        /\b(Does that track\?|Does that sound like where you are\?|That sound like where you are\?|Does that sound right\?|Does that resonate\?)\b/gi,
+        /\b(Does that track\?|Does that sound like where you are\?|That sound like where you are\?|Does that sound like where you're at\?|Does that sound right\?|Does that resonate\?|What does that look like most\?)\b/gi,
         'Where does that show up most right now?'
     );
 }
@@ -519,6 +519,10 @@ function getGuardrailReply(messages: ChatMessage[]) {
         )
     ) {
         return "Greg uses that 30 minutes to map where ownership is breaking, what's still landing on you, and what kind of fix actually fits. You should leave clearer on whether this is a GM ownership issue, a meeting/accountability issue, or a bigger leadership install problem. If he mapped that with you, what would you want him to look at first?";
+    }
+
+    if (/\b(how is greg different|what makes greg different)\b/.test(latest) || /\b(eos|another coach|another operating system)\b/.test(latest)) {
+        return "Greg's a licensed contractor with 30+ years in restoration and construction, and he's helped 300+ owners through this exact ceiling. EOS can help with structure, but Greg goes after the harder part: getting managers to own decisions, promises, and accountability so the business stops rolling uphill to you. Where does that break most right now?";
     }
 
     if (

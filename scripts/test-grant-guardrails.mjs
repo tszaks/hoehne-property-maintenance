@@ -62,6 +62,12 @@ const cases = [
         include: ["structure on paper is not the same as transferred ownership", "roll uphill"],
         exclude: ["does that sound like what's happening with yours"],
     },
+    {
+        name: "eos comparison stays grounded",
+        turns: ["How is Greg different from EOS or another coach?"],
+        include: ["licensed contractor", "restoration and construction", "300+ owners"],
+        exclude: ["roofing and construction"],
+    },
 ];
 
 async function runCase(testCase) {
