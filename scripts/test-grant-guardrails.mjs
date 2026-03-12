@@ -71,7 +71,7 @@ const cases = [
     {
         name: "consultant-burned trust repair stays concrete",
         turns: ["We hired consultants before and it didn't stick."],
-        includePatterns: ["fair concern|makes sense", "weekly rhythm|day-to-day rhythm|operating rhythm", "what actually killed it|where did it slip|what broke last time"],
+        includePatterns: ["fair concern|makes sense|that's frustrating|i get it", "weekly rhythm|day-to-day rhythm|operating rhythm", "what actually killed it|where did it slip|what broke last time|what didn't stick"],
         exclude: ["just trust Greg"],
     },
     {
@@ -113,7 +113,7 @@ const cases = [
     {
         name: "consultant slipback question beats generic EOS answer",
         turns: ["We did EOS and hired consultants. It all looked good for 3 months and then slid back."],
-        includePatterns: ["weekly rhythm|day-to-day rhythm|operating rhythm", "what actually killed it|where did it slip|what broke last time"],
+        includePatterns: ["weekly rhythm|day-to-day rhythm|operating rhythm", "what actually killed it|where did it slip|what broke last time|what didn't stick"],
         exclude: ["licensed contractor", "300+ owners"],
     },
     {

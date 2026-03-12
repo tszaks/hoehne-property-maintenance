@@ -515,18 +515,23 @@ function getLikelyLeak(messages: ChatMessage[]) {
 
 function getDynamicSteering(messages: ChatMessage[]) {
     const latest = getLatestUserMessage(messages).toLowerCase();
+    const leak = getLikelyLeak(messages);
 
     if (!latest) return '';
-
-    const hints: string[] = [];
 
     if (
         /\b(how is greg different|what makes greg different|why greg|why greg specifically|why would greg be different)\b/.test(latest) ||
         (/\b(eos|another coach|another operating system)\b/.test(latest) && /\b(different|versus|vs|than|compare)\b/.test(latest))
     ) {
-        hints.push(
-            "Current turn is a credibility question. Lead with two concrete authority signals: licensed contractor plus 30+ years and/or 300+ owners helped. Then name one precise pattern Greg would spot fast. Sound unsurprised and capable, but make the consequence feel expensive and serious."
-        );
+        return [
+            'DYNAMIC STEERING FOR THIS TURN:',
+            '- Current turn is a credibility question. Answer the difference question first.',
+            '- Lead with two concrete authority signals: licensed contractor plus 30+ years and/or 300+ owners helped.',
+            '- Then name one precise pattern Greg would spot fast, ideally tied to the current conversation.',
+            '- If they already tried EOS or consultants, acknowledge that in one short clause, but do not let it become the main answer.',
+            '- Sound steady and experienced, not impressed by the pattern and not dismissive of the pain.',
+            '- Use fresh wording. Do not fall back to stock phrases like classic ceiling, hard-call layer, or exact ceiling.',
+        ].join('\n');
     }
 
     if (
@@ -535,15 +540,25 @@ function getDynamicSteering(messages: ChatMessage[]) {
             latest
         )
     ) {
-        hints.push(
-            "Current turn is a trust-repair objection. Start with tactical empathy. Explain that when outside help fails, the usual problem is the install never made it into the weekly rhythm, so ownership drifted back to the owner. Ask one sharp question about what broke last time."
-        );
+        return [
+            'DYNAMIC STEERING FOR THIS TURN:',
+            '- Current turn is a trust-repair objection. Start with tactical empathy.',
+            '- Explain that when outside help fails, the usual problem is the install never made it into the weekly rhythm, so ownership drifted back to the owner.',
+            '- Ask one sharp question about what broke last time.',
+            '- Sound steady and experienced, not impressed by the pattern and not dismissive of the pain.',
+            '- Use fresh wording. Do not fall back to stock phrases like classic ceiling, hard-call layer, or exact ceiling.',
+        ].join('\n');
     }
 
     if (/\b(outside voice for 90 days|outside voice|what makes this (actually )?stick|why would this stick|after greg leaves|after he leaves)\b/.test(latest)) {
-        hints.push(
-            "Current turn is asking why Greg's work lasts. Answer by pointing to the operating rhythm: meetings, promises, review cadence, and manager behavior. Make the difference feel concrete, not theoretical."
-        );
+        return [
+            'DYNAMIC STEERING FOR THIS TURN:',
+            "- Current turn is asking why Greg's work lasts.",
+            '- Answer by pointing to the operating rhythm: meetings, promises, review cadence, and manager behavior.',
+            '- Make the difference feel concrete, not theoretical.',
+            '- Sound steady and experienced, not impressed by the pattern and not dismissive of the pain.',
+            '- Use fresh wording. Do not fall back to stock phrases like classic ceiling, hard-call layer, or exact ceiling.',
+        ].join('\n');
     }
 
     if (
@@ -551,9 +566,41 @@ function getDynamicSteering(messages: ChatMessage[]) {
             latest
         )
     ) {
-        hints.push(
-            "Current turn is resisting abstraction. Give one concrete thing Greg would likely see fast based on the conversation. Keep it singular and practical."
-        );
+        return [
+            'DYNAMIC STEERING FOR THIS TURN:',
+            '- Current turn is resisting abstraction. Give one concrete thing Greg would likely see fast based on the conversation.',
+            `- Use this likely leak as the anchor: ${leak.description}.`,
+            `- A question in this neighborhood would fit: ${leak.question}`,
+            '- Keep it singular and practical.',
+            '- Sound steady and experienced, not impressed by the pattern and not dismissive of the pain.',
+            '- Use fresh wording. Do not fall back to stock phrases like classic ceiling, hard-call layer, or exact ceiling.',
+        ].join('\n');
+    }
+
+    if (
+        /\b(what would greg probably see|what would greg see|what would he probably see|what do you think greg would see|what would greg see first|what would he see first|one thing greg would probably see)\b/.test(
+            latest
+        )
+    ) {
+        return [
+            'DYNAMIC STEERING FOR THIS TURN:',
+            '- Answer with one likely leak only, not a list. Make it feel like pattern recognition, not a canned framework.',
+            `- Use this likely leak as the anchor: ${leak.description}.`,
+            `- Follow with a question in this neighborhood: ${leak.question}`,
+            '- Sound steady and experienced, not impressed by the pattern and not dismissive of the pain.',
+            '- Use fresh wording. Do not fall back to stock phrases like classic ceiling, hard-call layer, or exact ceiling.',
+        ].join('\n');
+    }
+
+    if (/\b(why would that be worth my time|why is that worth my time)\b/.test(latest)) {
+        return [
+            'DYNAMIC STEERING FOR THIS TURN:',
+            '- Current turn is value skepticism.',
+            '- Tie the answer to the cost of staying stuck: owner time, slower decisions, softer margins, weak managers, or lower exit value.',
+            '- Stay calm and non-defensive.',
+            '- Sound steady and experienced, not impressed by the pattern and not dismissive of the pain.',
+            '- Use fresh wording. Do not fall back to stock phrases like classic ceiling, hard-call layer, or exact ceiling.',
+        ].join('\n');
     }
 
     if (
@@ -564,15 +611,77 @@ function getDynamicSteering(messages: ChatMessage[]) {
             /\b(messy|expensive)\b/.test(latest) &&
             /\b(come to me|comes to me|come back to me|comes back to me|still come to me)\b/.test(latest))
     ) {
-        hints.push(
-            "Current turn points to delegated activity without real decision authority. Describe responsibility without true ownership. Do not misread operational words like 'expensive' as a pricing question."
-        );
+        return [
+            'DYNAMIC STEERING FOR THIS TURN:',
+            '- Current turn points to delegated activity without real decision authority.',
+            '- Describe responsibility without true ownership.',
+            '- Do not misread operational words like expensive as a pricing question.',
+            '- Sound steady and experienced, not impressed by the pattern and not dismissive of the pain.',
+            '- Use fresh wording. Do not fall back to stock phrases like classic ceiling, hard-call layer, or exact ceiling.',
+        ].join('\n');
     }
 
     if (/\b(good people)\b/.test(latest) && /\b(wait for me|wait on me|big calls|accountability gets soft|accountability gets weak)\b/.test(latest)) {
-        hints.push(
-            "Current turn is about good people who still wait on the owner. Diagnose it as an ownership-transfer gap, not a talent problem. Tie it to one consequence like slow decisions, softer margins, or owner dependence."
-        );
+        return [
+            'DYNAMIC STEERING FOR THIS TURN:',
+            '- Current turn is about good people who still wait on the owner.',
+            '- Diagnose it as an ownership-transfer gap, not a talent problem.',
+            '- Tie it to one consequence like slow decisions, softer margins, or owner dependence.',
+            '- Sound steady and experienced, not impressed by the pattern and not dismissive of the pain.',
+            '- Use fresh wording. Do not fall back to stock phrases like classic ceiling, hard-call layer, or exact ceiling.',
+        ].join('\n');
+    }
+
+    return '';
+}
+
+function getDynamicFallbackReply(messages: ChatMessage[]) {
+    const latest = getLatestUserMessage(messages).toLowerCase();
+    const leak = getLikelyLeak(messages);
+
+    if (!latest) return null;
+
+    if (
+        /\b(how is greg different|what makes greg different|why greg|why greg specifically|why would greg be different)\b/.test(latest) ||
+        (/\b(eos|another coach|another operating system)\b/.test(latest) && /\b(different|versus|vs|than|compare)\b/.test(latest))
+    ) {
+        return `Greg's a licensed contractor with 30+ years in restoration and construction, and he's helped 300+ owners through this kind of bottleneck. What makes him different is he usually spots the pattern fast, like ${leak.description}. Where does that hit hardest for you?`;
+    }
+
+    if (
+        /\b(consultant|consultants|consulting|eos)\b/.test(latest) &&
+        /\b(didn't stick|did not stick|didnt stick|didn't work|did not work|didnt work|waste of money|waste|slid back|slide back|fell back|faded|backslid|snapped back)\b/.test(
+            latest
+        )
+    ) {
+        return "That's frustrating. Usually the advice made sense, but it never got built into the weekly rhythm, so ownership drifted back to the owner. What was the biggest thing that didn't stick?";
+    }
+
+    if (/\b(outside voice for 90 days|outside voice|what makes this (actually )?stick|why would this stick|after greg leaves|after he leaves)\b/.test(latest)) {
+        return "Because Greg doesn't stop at advice. He gets the pattern built into meetings, promises, and manager follow-through, so it doesn't slide back the second the outside pressure is gone. Where has it usually slipped for you?";
+    }
+
+    if (
+        /\b(i don't want theory|i do not want theory|don't dodge me with theory|do not dodge me with theory|see something useful fast|actually see something useful fast)\b/.test(
+            latest
+        )
+    ) {
+        return `Fair. Greg can usually see pretty fast whether it's really ${leak.description}. ${leak.question}`;
+    }
+
+    if (
+        /\b(we already have meetings|have meetings and a gm|have a gm|still feel like the place runs through me|still runs through me)\b/.test(
+            latest
+        ) ||
+        (/\b(gm|gms|pm|pms|project managers?|managers?)\b/.test(latest) &&
+            /\b(messy|expensive)\b/.test(latest) &&
+            /\b(come to me|comes to me|come back to me|comes back to me|still come to me)\b/.test(latest))
+    ) {
+        return "That usually means the structure exists, but the hard-call ownership still doesn't. Your managers carry responsibility, but not real authority. Which calls still find their way back to you?";
+    }
+
+    if (/\b(good people)\b/.test(latest) && /\b(wait for me|wait on me|big calls|accountability gets soft|accountability gets weak)\b/.test(latest)) {
+        return "That usually isn't a talent problem. It means ownership never fully transferred, so good people still wait on you for the real decisions. Which is costing you more right now: slow decisions, softer margins, or getting pulled into every fire?";
     }
 
     if (
@@ -580,23 +689,14 @@ function getDynamicSteering(messages: ChatMessage[]) {
             latest
         )
     ) {
-        hints.push("Answer with one likely leak only, not a list. Make it feel like pattern recognition, not a canned framework.");
+        return `He'd probably see ${leak.description}. ${leak.question}`;
     }
 
     if (/\b(why would that be worth my time|why is that worth my time)\b/.test(latest)) {
-        hints.push(
-            "Current turn is value skepticism. Tie the answer to the cost of staying stuck: owner time, slower decisions, softer margins, weak managers, or lower exit value. Stay calm and non-defensive."
-        );
+        return "Because if that pattern stays in place, you keep paying for it in your own time, slower decisions, softer margins, and managers who never fully step up. Greg's value is spotting the real leak fast. Where is that costing you most right now?";
     }
 
-    if (hints.length === 0) return '';
-
-    return [
-        'DYNAMIC STEERING FOR THIS TURN:',
-        ...hints.map((hint) => `- ${hint}`),
-        '- Use fresh wording. Do not fall back to stock phrases like classic ceiling, hard-call layer, or exact ceiling.',
-        '- Sound steady and experienced, not impressed by the pattern and not dismissive of the pain.',
-    ].join('\n');
+    return null;
 }
 
 function getInitialOwnerRead(messages: ChatMessage[]) {
@@ -832,8 +932,17 @@ export const POST: APIRoute = async ({ request }) => {
         });
     }
 
+    const dynamicFallbackReply = getDynamicFallbackReply(messages);
+    const dynamicSteering = getDynamicSteering(messages);
     const apiKey = import.meta.env.ANTHROPIC_API_KEY;
+
     if (!apiKey) {
+        if (dynamicFallbackReply) {
+            return new Response(JSON.stringify({ content: shapeReply(hardenSoftClose(deScriptify(dynamicFallbackReply))) }), {
+                headers: { 'Content-Type': 'application/json' },
+            });
+        }
+
         return new Response(JSON.stringify({ error: 'API key not configured' }), {
             status: 500,
             headers: { 'Content-Type': 'application/json' },
@@ -841,8 +950,6 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     const client = new Anthropic({ apiKey });
-
-    const dynamicSteering = getDynamicSteering(messages);
 
     const response = await client.messages.create({
         model: 'claude-haiku-4-5-20251001',
