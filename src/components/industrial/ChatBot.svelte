@@ -761,9 +761,6 @@
             >
                 G
             </div>
-            <span
-                class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-400 rounded-full border-2 border-black"
-            ></span>
         </div>
         <div class="text-left">
             <div class="text-[0.6rem] uppercase tracking-[0.15em] opacity-70 leading-none mb-0.5">ASK</div>
