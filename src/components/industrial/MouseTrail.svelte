@@ -69,13 +69,13 @@
         ringY += (mouseY - ringY) * 0.22;
 
         if (cursorDot) {
-            cursorDot.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%) scale(${isHovering ? 0.72 : 1})`;
+            cursorDot.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%) scale(${isHovering ? 0.88 : 1})`;
         }
         if (cursorRing) {
-            cursorRing.style.transform = `translate(${ringX}px, ${ringY}px) translate(-50%, -50%) scale(${isHovering ? 1.18 : 1})`;
+            cursorRing.style.transform = `translate(${ringX}px, ${ringY}px) translate(-50%, -50%) scale(${isHovering ? 0.82 : 1})`;
             cursorRing.style.borderColor = isHovering
-                ? "rgba(255, 90, 0, 0.82)"
-                : "rgba(255, 90, 0, 0.52)";
+                ? "rgba(255, 90, 0, 0.94)"
+                : "rgba(255, 90, 0, 0.72)";
         }
 
         animationFrame = requestAnimationFrame(animate);
@@ -148,7 +148,7 @@
     <!-- Trailing ring -->
     <div
         bind:this={cursorRing}
-        class="fixed top-0 left-0 h-6 w-6 rounded-full border border-ind-accent/50 pointer-events-none z-[9998]"
+        class="fixed top-0 left-0 h-7 w-7 rounded-full border-[1.5px] border-ind-accent/70 pointer-events-none z-[9998]"
         class:opacity-0={!isVisible}
         class:opacity-100={isVisible}
         style="transition: opacity 0.2s ease, border-color 0.2s ease;"
