@@ -170,15 +170,28 @@
         writeSessionId(liveSessionId);
         scheduleIdleFinalize();
 
-        const handlePageHide = () => {
+        const finalizeOnPageLeave = () => {
+            void persistSession(true);
             void finalizeSession("pagehide", true);
         };
 
+        const handlePageHide = () => {
+            finalizeOnPageLeave();
+        };
+
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === "hidden") {
+                void persistSession(true);
+            }
+        };
+
         window.addEventListener("pagehide", handlePageHide);
+        document.addEventListener("visibilitychange", handleVisibilityChange);
 
         return () => {
             clearIdleTimer();
             window.removeEventListener("pagehide", handlePageHide);
+            document.removeEventListener("visibilitychange", handleVisibilityChange);
         };
     });
 
