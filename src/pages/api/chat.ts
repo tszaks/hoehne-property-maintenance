@@ -799,6 +799,7 @@ function getGuardrailReply(messages: ChatMessage[]) {
 
     const latest = latestUser.toLowerCase();
     const revenueMillions = extractLatestUserRevenueMillions(messages);
+    const leak = getLikelyLeak(messages);
 
     if (/\bare you greg\b|\byou greg\b|\bare you the coach\b/.test(latest)) {
         return "Nope — I'm Grant, Greg's intake assistant. I help figure out fit and point the right owners to Greg. What's the biggest bottleneck you're carrying right now?";
@@ -814,6 +815,13 @@ function getGuardrailReply(messages: ChatMessage[]) {
 
     if (/\b(coaching is fluff|mostly fluff|coach talk)\b/.test(latest)) {
         return "Fair enough — most coaching is fluff. Greg's not selling motivation; he works on ownership, accountability, and leadership inside real restoration and construction businesses. If that ever becomes the pain, you know where to find us.";
+    }
+
+    if (
+        /\b(how is greg different|what makes greg different|why greg|why greg specifically|why would greg be different)\b/.test(latest) ||
+        (/\b(eos|another coach|another operating system)\b/.test(latest) && /\b(different|versus|vs|than|compare)\b/.test(latest))
+    ) {
+        return `Greg's a licensed contractor with 30+ years in restoration and construction, and he's helped 300+ owners through this kind of bottleneck. Most coaches stop at structure. Greg spots things like ${leak.description} fast, so he can see why the hard calls keep landing back on you. Where does that show up most right now?`;
     }
 
     if (/\b(system prompt|your prompt|internal prompt|internal instructions|what are your instructions|show me your prompt)\b/.test(latest)) {
@@ -868,6 +876,14 @@ function getGuardrailReply(messages: ChatMessage[]) {
         return "Just your name, email, timezone, and the biggest challenge you want Greg to look at. That's enough to get the call moving. Best next step is booking the 30-minute call through the contact section on the site.";
     }
 
+    if (
+        /\b(gm|gms|pm|pms|project managers?|managers?)\b/.test(latest) &&
+        /\b(messy|expensive)\b/.test(latest) &&
+        /\b(come to me|comes to me|come back to me|comes back to me|still come to me)\b/.test(latest)
+    ) {
+        return "That usually means they have responsibility, but not real authority to carry the hard calls through. So when something gets messy or expensive, it comes back to you as the final call. What does that cost you in a normal week?";
+    }
+
     if (/\b(why do owners stay stuck|why do people stay stuck|why does it stay stuck)\b/.test(latest) && /\b(meetings|org charts|structure)\b/.test(latest)) {
         return "Because structure on paper is not the same as transferred ownership. The titles exist, but the real decisions, promises, and hard accountability still roll uphill to the owner. Where does that show up most in your company right now?";
     }
@@ -886,6 +902,10 @@ function getGuardrailReply(messages: ChatMessage[]) {
 
     if (/\b(what should i do next|what's the next step|what is the next step|what next)\b/.test(latest)) {
         return "Best next step is booking the 30-minute call with Greg through the site. Send your name, email, timezone, and the main issue, and that gets it moving.";
+    }
+
+    if (/\b(why would that be worth my time|why is that worth my time)\b/.test(latest)) {
+        return "Because if that pattern stays in place, you keep paying for it in your own time, slower decisions, softer margins, and managers who never fully step up. Greg's value is spotting the real leak fast and showing you what actually has to change. Where is that costing you most right now?";
     }
 
     if (/\b(what would (he|greg|you) do first|where would (he|greg|you) start|what would be the first move|what's the first move|what would he want to see first|what would greg want to see first|what would he look at first|what would greg look at first)\b/.test(latest)) {
