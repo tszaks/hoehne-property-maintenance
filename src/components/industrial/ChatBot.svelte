@@ -208,6 +208,14 @@
         scheduleIdleFinalize();
     }
 
+    function getChatErrorMessage(error: string) {
+        if (error === "API key not configured") {
+            return "Grant isn't configured on this local build yet. Open www.gnaworks.com or set ANTHROPIC_API_KEY for local testing.";
+        }
+
+        return error;
+    }
+
     async function persistSession(useBeacon = false) {
         if (!sessionId || !messages.length) return;
         const payload = JSON.stringify({
@@ -594,12 +602,19 @@
                     method: "POST",
                 });
 
-                const data = await response.json();
+                const data = await response.json().catch(() => null);
+                const assistantContent =
+                    typeof data?.content === "string" && data.content.trim()
+                        ? data.content
+                        : typeof data?.error === "string" && data.error.trim()
+                            ? getChatErrorMessage(data.error)
+                            : "Something went wrong. Try again.";
+
                 messages = [
                     ...messages,
                     {
                         role: "assistant",
-                        content: data.content ?? "Something went wrong. Try again.",
+                        content: assistantContent,
                     },
                 ];
             }
