@@ -40,6 +40,13 @@ type TopicRule = {
     tags: string[];
 };
 
+type IntentRule = {
+    instruction: string;
+    intent: 'call' | 'credibility' | 'fit' | 'first-step';
+    preferredCardIds: string[];
+    regex: RegExp;
+};
+
 type QueryParts = {
     combined: string;
     context: string;
@@ -148,6 +155,33 @@ const TOPIC_RULES: TopicRule[] = [
     },
 ];
 
+const INTENT_RULES: IntentRule[] = [
+    {
+        intent: 'credibility',
+        regex: /\b(how is greg different|what makes greg different|why greg|why greg specifically|why would greg be different)\b/i,
+        preferredCardIds: ['greg-credibility', 'structure-vs-lived-ownership'],
+        instruction: 'This is a credibility question. Answer the difference question first, and lead with licensed contractor plus 30+ years and/or 300+ owners before comparing systems.',
+    },
+    {
+        intent: 'fit',
+        regex: /\b(what kind of business are you best for|what kind of owner gets the most out of greg|who gets the most out of greg|what kind of owner gets the most out|who is greg best for|what kind of business is greg best for)\b/i,
+        preferredCardIds: ['best-fit-owner', 'owner-bottleneck'],
+        instruction: 'This is a fit question. Answer the fit profile first before you talk about diagnostics or booking.',
+    },
+    {
+        intent: 'call',
+        regex: /\b(what happens on the call|what is the call about|what happens on that call|what happens on the discovery call|what would the call be about)\b/i,
+        preferredCardIds: ['call-as-diagnostic', 'best-fit-owner'],
+        instruction: 'This is a discovery-call question. Make the call sound practical and diagnostic before you ask anything back.',
+    },
+    {
+        intent: 'first-step',
+        regex: /\b(what would (he|greg|you) do first|where would (he|greg|you) start|what would be the first move|what's the first move|what would he want to see first|what would greg want to see first|what would he look at first|what would greg look at first)\b/i,
+        preferredCardIds: ['diy-open-loop', 'owner-bottleneck'],
+        instruction: 'This is a first-lens question. Give one sharp first lens before you ask a focused follow-up.',
+    },
+];
+
 const TRANSACTIONAL_PATTERNS = [
     /\b(full )?name\b/i,
     /\b(best )?email\b/i,
@@ -231,6 +265,10 @@ function buildQueryParts(messages: ChatMessage[]): QueryParts | null {
     };
 }
 
+function detectIntentRule(text: string) {
+    return INTENT_RULES.find((rule) => rule.regex.test(text)) ?? null;
+}
+
 function scoreTextForTokens(text: string, tokens: string[], perTokenScore: number) {
     let score = 0;
 
@@ -243,7 +281,7 @@ function scoreTextForTokens(text: string, tokens: string[], perTokenScore: numbe
     return score;
 }
 
-function scoreCard(card: GrantKnowledgeCard, query: QueryParts, detectedTags: string[]) {
+function scoreCard(card: GrantKnowledgeCard, query: QueryParts, detectedTags: string[], intentRule: IntentRule | null) {
     const normalizedTitle = normalizeText(card.title);
     const normalizedText = normalizeText(card.text);
     const normalizedCues = card.cues.map((cue) => normalizeText(cue));
@@ -283,6 +321,15 @@ function scoreCard(card: GrantKnowledgeCard, query: QueryParts, detectedTags: st
     for (const detail of normalizedDetails) {
         if (detail && query.latest.includes(detail)) {
             score += 5;
+        }
+    }
+
+    if (intentRule) {
+        const preferredIndex = intentRule.preferredCardIds.indexOf(card.id);
+        if (preferredIndex === 0) {
+            score += 42;
+        } else if (preferredIndex > 0) {
+            score += 22;
         }
     }
 
@@ -345,10 +392,11 @@ export function retrieveGrantKnowledge(messages: ChatMessage[], maxCards = 4) {
     if (!query?.combined.trim()) return [];
 
     const detectedTags = detectTags(query.combined);
+    const intentRule = detectIntentRule(query.latest);
     const ranked = KNOWLEDGE_BUNDLE.cards
         .map((card) => ({
             card,
-            score: scoreCard(card, query, detectedTags),
+            score: scoreCard(card, query, detectedTags, intentRule),
         }))
         .filter((entry) => entry.score > 6)
         .sort((left, right) => right.score - left.score)
@@ -362,9 +410,12 @@ export function buildGrantKnowledgeBrief(messages: ChatMessage[]) {
     if (!knowledgeCards.length) return '';
 
     const primaryCard = knowledgeCards[0];
+    const latestMessage = [...messages].reverse().find((message) => message.role === 'user')?.content ?? '';
+    const intentRule = detectIntentRule(latestMessage);
     const lines = [
         'TURN REQUIREMENT:',
         `- Primary source-backed lens for this turn: "${primaryCard.title}".`,
+        intentRule ? `- ${intentRule.instruction}` : '',
         '- Start with the operating read itself. Do not open with filler like "Greg sees this all the time."',
         '- Use one concrete operating detail from these notes before you pivot back to diagnosis or CTA.',
         primaryCard.statusAnchor ? `- Protect status this way: ${primaryCard.statusAnchor}.` : '',
