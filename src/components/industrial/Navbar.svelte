@@ -97,7 +97,7 @@
                     class="hover:text-ind-accent transition-colors py-4 block w-full text-center"
                     on:click={toggleMenu}
                 >
-                    {link[0]}
+                    {link}
                 </a>
             {/each}
             <div
