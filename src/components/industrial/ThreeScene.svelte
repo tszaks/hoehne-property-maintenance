@@ -15,7 +15,7 @@
 
 <!-- Dramatic Industrial Lighting -->
 <T.AmbientLight intensity={0.5} />
-<T.DirectionalLight position={[10, 10, 10]} intensity={4} color="#ff5a00" />
+<T.DirectionalLight position={[10, 10, 10]} intensity={4} color="#6f9ece" />
 <T.DirectionalLight position={[-10, -10, -10]} intensity={2} color="#4a5568" />
 <T.PointLight
     position={[0, 0, 5]}
@@ -29,9 +29,9 @@
     <T.Mesh rotation.y={rotationY} rotation.z={rotationZ}>
         <T.IcosahedronGeometry args={[7.5, 1]} />
         <T.MeshStandardMaterial
-            color="#ff5a00"
+            color="#6f9ece"
             wireframe={true}
-            emissive="#ff5a00"
+            emissive="#6f9ece"
             emissiveIntensity={0.4}
             transparent={true}
             opacity={0.3}
@@ -52,7 +52,7 @@
     <T.Mesh rotation.y={rotationY * 2}>
         <T.IcosahedronGeometry args={[3, 0]} />
         <T.MeshBasicMaterial
-            color="#ff5a00"
+            color="#6f9ece"
             transparent={true}
             opacity={0.15}
         />
