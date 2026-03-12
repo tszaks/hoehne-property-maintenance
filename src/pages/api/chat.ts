@@ -557,6 +557,15 @@ function isPricingIdiom(latest: string) {
     return /\bprice of being (the )?owner\b|\bprice of ownership\b/.test(latest);
 }
 
+function isPricingQuestion(latest: string) {
+    return (
+        /\b(price|pricing|cost|investment|fee|how much|charge|ballpark|range|rough number)\b/.test(latest) ||
+        /\b(too|sounds|seems|is)\s+expensive\b/.test(latest) ||
+        /\b(too|is)\s+cheap\b/.test(latest) ||
+        /\b(crazy expensive|crazy price|reasonable price)\b/.test(latest)
+    );
+}
+
 function hardenSoftClose(text: string) {
     const strongerCallClose = text.replace(
         /(Worth a (?:quick )?30-minute diagnostic call[^?]*\?|Worth a conversation\?|Worth a look\?|Worth (?:a )?(?:quick )?(?:30-minute )?(?:call|conversation|look|closer look|30 minutes?[^?]*|exploring[^?]*)\?|Does that sound useful\?|Sound like something worth exploring\?|Ready to spend 30 minutes\?|Want to grab 30 minutes\?)/gi,
@@ -583,6 +592,7 @@ function deScriptify(text: string) {
         .replace(/\bcommon ceiling\b/gi, 'point where the business should carry more without you')
         .replace(/\bclassic bottleneck\b/gi, 'bottleneck')
         .replace(/\bglue holding it together\b/gi, 'backstop keeping it tight')
+        .replace(/\bbecomes the glue again\b/gi, 'ends up carrying it again')
         .replace(/\bownership actually dies\b/gi, 'ownership actually breaks')
         .replace(/\bownership dies\b/gi, 'ownership breaks')
         .replace(/\broll(?:s|ed)? back uphill to you\b/gi, 'lands back on you')
@@ -699,11 +709,7 @@ function getGuardrailReply(messages: ChatMessage[]) {
         return "Greg covers investment after he sees scope and fit. First step is figuring out what kind of help actually fits. If the hard calls still land on you, that's usually the bigger cost.";
     }
 
-    if (
-        /\b(price|pricing|cost|investment|fee|how much|expensive|ballpark|range|rough number|reasonable|cheap|crazy|charge)\b/.test(
-            latest
-        )
-    ) {
+    if (isPricingQuestion(latest)) {
         return "Greg covers investment after he understands your business, fit, and what kind of help actually makes sense. I don't do numbers in chat. If the hard calls still land on you, that's usually the real drag on margin and freedom.";
     }
 
