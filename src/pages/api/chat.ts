@@ -504,6 +504,49 @@ function getLikelyLeak(messages: ChatMessage[]) {
     };
 }
 
+function getInitialOwnerRead(messages: ChatMessage[]) {
+    const userMessages = getUserMessages(messages);
+
+    if (userMessages.length !== 1) return null;
+
+    const latest = getLatestUserMessage(messages).toLowerCase();
+
+    if (!latest) return null;
+
+    if (/\b(price|pricing|cost|investment|fee|how much|charge|greg|call|fit|prompt|steps|system prompt|not interested|no call|sales pitch)\b/.test(latest)) {
+        return null;
+    }
+
+    if (/\b(meeting|meetings)\b/.test(latest) && /\b(own the fix|owning the fix|still own the fix|lands back|land back|comes back|coming back)\b/.test(latest)) {
+        return "That usually means the meeting is not the real problem. The issue gets discussed, but the ownership does not stick, so it lands back on you to carry. What keeps coming back after those meetings?";
+    }
+
+    if (/\b(gm|manager)\b/.test(latest) && /\b(boomerang|back to me|back on me|needs me|need me|approval|hard calls?|real calls?)\b/.test(latest)) {
+        return "That usually means your GM is running flow, but the hard-call layer still sits with you. Which calls keep finding their way back to you?";
+    }
+
+    if (/\b(step out|step away|vacation|gone for a week|out for a week)\b/.test(latest) && /\b(waits for me|wait for me|hard stuff waits|doesn't fall apart|does not fall apart)\b/.test(latest)) {
+        return "That usually means the routine is fine, but the judgment layer still lives with you. What waits for you first when you are out?";
+    }
+
+    if (/\b(margin|margins|profit|profits)\b/.test(latest) && /\b(holding together|hold together|middle|operation|owner|personally)\b/.test(latest)) {
+        return "That usually means too many decisions still get remade at your level, and margin feels it. Where do you feel that leak most right now?";
+    }
+
+    if (
+        (/\b(good people|decent revenue|revenue is fine|solid company)\b/.test(latest) || extractLatestUserRevenueMillions(messages) !== null) &&
+        /\b(big decision|big decisions|hard call|hard calls|middle|lands on me|land on me|serious issue|safety net|glue)\b/.test(latest)
+    ) {
+        return "You've built something real. The issue is the business still needs you in the middle for the hard calls, which usually means the team can run activity but not true ownership. Where does that hit hardest right now?";
+    }
+
+    if (/\b(holding together too much|hold together too much|middle of every serious issue|too much of the operation)\b/.test(latest)) {
+        return "That usually means the operation can move, but the hard judgment still lives with you. What keeps pulling you back in most?";
+    }
+
+    return null;
+}
+
 function isPricingIdiom(latest: string) {
     return /\bprice of being (the )?owner\b|\bprice of ownership\b/.test(latest);
 }
@@ -523,6 +566,10 @@ function hardenSoftClose(text: string) {
 function deScriptify(text: string) {
     return text
         .replace(/\bThat'?s a classic ceiling\.\s*/gi, 'That usually means the business still depends on you more than it should. ')
+        .replace(/\bThat'?s the classic pattern\.\s*/gi, 'That usually means ')
+        .replace(/\bThat'?s the pattern Greg sees all the time\.\s*/gi, 'That usually means ')
+        .replace(/\bThat'?s the classic sign\.\s*/gi, 'That usually means ')
+        .replace(/\bThat'?s the core issue Greg sees all the time\.\s*/gi, 'That usually means ')
         .replace(/\bclassic ceiling\b/gi, 'point where the business should carry more without you')
         .replace(/\bglue holding it together\b/gi, 'backstop keeping it tight')
         .replace(/\bownership actually dies\b/gi, 'ownership actually breaks')
@@ -542,15 +589,6 @@ function getGuardrailReply(messages: ChatMessage[]) {
 
     if (/\bare you greg\b|\byou greg\b|\bare you the coach\b/.test(latest)) {
         return "Nope — I'm Grant, Greg's intake assistant. I help figure out fit and point the right owners to Greg. What's the biggest bottleneck you're carrying right now?";
-    }
-
-    if (
-        (revenueMillions !== null || /\b(decent revenue|revenue is fine|good people)\b/.test(latest)) &&
-        /\b(every big decision|big decision|in the middle|stays tight when i'm in the middle|still lands on me|still land on me|still the glue|safety net)\b/.test(
-            latest
-        )
-    ) {
-        return "You've built something real. The issue is the business still needs you in the middle for the hard calls, which usually means the team can run activity but not true ownership. Where does that hit hardest right now?";
     }
 
     if (
@@ -724,6 +762,12 @@ function getGuardrailReply(messages: ChatMessage[]) {
         )
     ) {
         return "That may just be a sequence issue. Greg is usually best when the business already has enough demand and the real choke point is leadership, ownership, or getting out of the middle. If leads or estimating are the real bottleneck right now, I'd fix that first.";
+    }
+
+    const initialOwnerRead = getInitialOwnerRead(messages);
+
+    if (initialOwnerRead) {
+        return initialOwnerRead;
     }
 
     return null;

@@ -152,6 +152,30 @@ const cases = [
         include: ["booking the 30-minute call with Greg through the site", "name, email, timezone"],
         exclude: ["text FREEDOM"],
     },
+    {
+        name: "meetings opener reads carryover not generic bottleneck",
+        turns: ["Meetings happen every week, but somehow I still own the fix at the end."],
+        include: ["meeting is not the real problem", "What keeps coming back after those meetings"],
+        exclude: ["built something real", "hard calls"],
+    },
+    {
+        name: "gm opener reads hard-call layer",
+        turns: ["I've got a GM, but the real calls still seem to boomerang back to me."],
+        include: ["hard-call layer still sits with you", "Which calls keep finding their way back to you"],
+        exclude: ["built something real", "Where does that hit hardest"],
+    },
+    {
+        name: "step away opener reads judgment layer",
+        turns: ["If I step out for a week, the place doesn't fall apart, but the hard stuff waits for me."],
+        include: ["routine is fine, but the judgment layer still lives with you", "What waits for you first when you are out"],
+        exclude: ["built something real", "Where does that hit hardest"],
+    },
+    {
+        name: "margin opener reads decision remake leak",
+        turns: ["Margins are okay, but I feel like I'm personally holding together too much of the operation."],
+        include: ["decisions still get remade at your level", "Where do you feel that leak most right now"],
+        exclude: ["built something real", "Where does that hit hardest"],
+    },
 ];
 
 async function runCase(testCase) {
