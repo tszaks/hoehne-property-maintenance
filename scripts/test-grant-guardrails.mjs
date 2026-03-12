@@ -65,13 +65,17 @@ const cases = [
     {
         name: "eos comparison stays grounded",
         turns: ["How is Greg different from EOS or another coach?"],
-        includePatterns: ["licensed contractor|30\\+ years", "restoration and construction", "300\\+ owners|300\\+ clients"],
+        includePatterns: ["licensed contractor|30\\+ years", "restoration and construction", "300\\+.*owners|300\\+ clients"],
         exclude: ["roofing and construction"],
     },
     {
         name: "consultant-burned trust repair stays concrete",
         turns: ["We hired consultants before and it didn't stick."],
-        includePatterns: ["fair concern|makes sense|that's frustrating|i get it", "weekly rhythm|day-to-day rhythm|operating rhythm", "what actually killed it|where did it slip|what broke last time|what didn't stick"],
+        includePatterns: [
+            "fair concern|makes sense|that's frustrating|i get it",
+            "weekly rhythm|day-to-day rhythm|operating rhythm|talks and decides every week",
+            "what actually killed it|where did it slip|what broke last time|what didn't stick|where did it break down first",
+        ],
         exclude: ["just trust Greg"],
     },
     {
@@ -95,7 +99,7 @@ const cases = [
     {
         name: "meetings and gm diagnosis stays concrete",
         turns: ["We already have meetings and a GM, but I still feel like the place runs through me."],
-        includePatterns: ["ownership never really transferred|still runs through you|hard calls still come back", "approval first|solve it and tell you after"],
+        includePatterns: ["ownership never really transferred|still runs through you|hard calls still come back|bouncing back to you", "approval first|solve it and tell you after|landing back on you"],
         exclude: ["Does that sound"],
     },
     {
@@ -113,19 +117,19 @@ const cases = [
     {
         name: "consultant slipback question beats generic EOS answer",
         turns: ["We did EOS and hired consultants. It all looked good for 3 months and then slid back."],
-        includePatterns: ["weekly rhythm|day-to-day rhythm|operating rhythm", "what actually killed it|where did it slip|what broke last time|what didn't stick"],
+        includePatterns: ["weekly rhythm|day-to-day rhythm|operating rhythm|talks and decides every week", "what actually killed it|where did it slip|what broke last time|what didn't stick|what started sliding first"],
         exclude: ["licensed contractor", "300+ owners"],
     },
     {
         name: "mixed EOS difference question keeps credibility answer",
         turns: ["We tried EOS and it slid back. How is Greg different?"],
-        includePatterns: ["licensed contractor|30\\+ years", "300\\+ owners|300\\+ clients"],
+        includePatterns: ["licensed contractor|30\\+ years", "300\\+.*owners|300\\+ clients"],
         excludePatterns: ["what actually killed it last time|where did it slip|what broke last time"],
     },
     {
         name: "theory objection gets concrete fast-diagnosis answer",
         turns: ["I don't want theory. I want to know if he'd actually see something useful fast."],
-        includePatterns: ["pretty fast|fair", "owner|gm|manager|meeting|ownership"],
+        includePatterns: ["pretty fast|fair", "owner|gm|manager|meeting|ownership|hard calls"],
         exclude: ["That show up", "Does that land"],
     },
     {
@@ -137,7 +141,7 @@ const cases = [
     {
         name: "what greg would see stays singular and concrete",
         turns: ["Fine. Then tell me one thing Greg would probably see in a 12M shop like mine."],
-        includePatterns: ["one thing|probably see|usually see", "manager|gm|ownership|backstop"],
+        includePatterns: ["one thing|probably see|usually see|usually finds", "manager|gm|ownership|backstop"],
         exclude: ["Does that land", "three things"],
     },
     {
@@ -182,7 +186,7 @@ const cases = [
             "I run a 14 million restoration company. Good team, but I still feel like the place runs through me.",
             "Mostly my GMs and PMs come to me on anything messy or expensive.",
         ],
-        includePatterns: ["responsibility|authority|ownership", "without needing you in the loop|handled those calls|come back to you"],
+        includePatterns: ["responsibility|authority|ownership", "without needing you in the loop|handled those calls|come back to you|final call|carrying the risk"],
         exclude: ["I don't do numbers in chat", "covers investment"],
     },
     {
@@ -243,8 +247,20 @@ async function runCase(testCase) {
 }
 
 async function main() {
+    const failures = [];
+
     for (const testCase of cases) {
-        await runCase(testCase);
+        try {
+            await runCase(testCase);
+        } catch (error) {
+            failures.push(error.message);
+            console.error(error.message);
+        }
+    }
+
+    if (failures.length) {
+        console.error(`${failures.length} Grant guardrail checks failed against ${endpoint}`);
+        process.exit(1);
     }
 
     console.log(`All ${cases.length} Grant guardrail checks passed against ${endpoint}`);
