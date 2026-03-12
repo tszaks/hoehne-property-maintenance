@@ -219,7 +219,7 @@ Do not answer this question with abstract language alone. Include at least one c
 When helpful, add one concrete operating pattern Greg sees, like a GM with the title but not real ownership, or meetings that exist but never create accountability.
 
 If someone asks what Greg would tell them to do first:
-Say the first lens is usually to find where ownership dies — what decisions, promises, or numbers still bounce back to the owner instead of living with the team.
+Say the first thing Greg looks for is where the hard calls, missed promises, or key numbers still land back on the owner instead of living with the team.
 Then say the full fix depends on their specific team, margins, leadership habits, and bottlenecks, which is why Greg diagnoses it on the call.
 Do not answer this with only "it depends" or only "that's what the call is for."
 
@@ -327,6 +327,7 @@ Avoid:
 - if they challenge Greg's credibility, use one concrete credential or parallel client pattern, not just abstract claims
 - never narrow Greg's credentials to a sub-trade the prospect mentions unless that trade is explicitly documented
 - avoid stock lines like "classic ceiling," "middle-stage trap," or other phrases that sound pre-scripted
+- avoid phrases like "glue holding it together," "ownership dies," or "rolls uphill" unless the user already talks that way
 - after price or offer questions, do not give a number; tie the investment conversation back to fit and the cost of staying stuck in their current pattern
 - if they push for a ballpark, range, or rough number, still do not hint at pricing tiers or relative cost
 - if they ask what Greg would do first, give one partial diagnostic insight or first lens, then say the full install depends on their company
@@ -459,14 +460,26 @@ function isPricingIdiom(latest: string) {
 
 function hardenSoftClose(text: string) {
     const strongerCallClose = text.replace(
-        /\b(Worth a (?:quick )?30-minute diagnostic call[^?]*\?|Worth a conversation\?|Worth a look\?|Worth (?:a )?(?:quick )?(?:30-minute )?(?:call|conversation|look|closer look|30 minutes?[^?]*|exploring[^?]*)\?|Does that sound useful\?|Sound like something worth exploring\?|Ready to spend 30 minutes\?|Want to grab 30 minutes\?)\b/gi,
+        /(Worth a (?:quick )?30-minute diagnostic call[^?]*\?|Worth a conversation\?|Worth a look\?|Worth (?:a )?(?:quick )?(?:30-minute )?(?:call|conversation|look|closer look|30 minutes?[^?]*|exploring[^?]*)\?|Does that sound useful\?|Sound like something worth exploring\?|Ready to spend 30 minutes\?|Want to grab 30 minutes\?)/gi,
         'If Greg mapped that with you in 30 minutes, what would you want him to look at first?'
     );
 
     return strongerCallClose.replace(
-        /\b(Does that track\?|Does that sound like where you are\?|That sound like where you are\?|Does that sound like where you're at\?|Does that sound like you\?|Sound like you\?|Does that sound like [^?]{1,80}\?|Sound like [^?]{1,80}\?|Does that sound right\?|Does that resonate\?|Does that land\?|Does that feel true\?|That show up for you\?|What does that look like most\?)\b/gi,
+        /(Does that track\?|Does that sound like where you are\?|That sound like where you are\?|Does that sound like where you're at\?|Does that sound like you\?|Sound like you\?|Does that sound like [^?]{1,80}\?|Sound like [^?]{1,80}\?|Does that sound right\?|Does that resonate\?|Does that land\?|Does that feel true\?|That show up for you\?|What does that look like most\?)/gi,
         'Where does that show up most right now?'
     );
+}
+
+function deScriptify(text: string) {
+    return text
+        .replace(/\bThat'?s a classic ceiling\.\s*/gi, 'That usually means the business still depends on you more than it should. ')
+        .replace(/\bclassic ceiling\b/gi, 'point where the business should carry more without you')
+        .replace(/\bglue holding it together\b/gi, 'backstop keeping it tight')
+        .replace(/\bownership actually dies\b/gi, 'ownership actually breaks')
+        .replace(/\bownership dies\b/gi, 'ownership breaks')
+        .replace(/\broll(?:s|ed)? back uphill to you\b/gi, 'lands back on you')
+        .replace(/\broll(?:s|ed)? uphill to you\b/gi, 'lands back on you')
+        .replace(/\bleadership problem\b/gi, 'leadership ownership gap');
 }
 
 function getGuardrailReply(messages: ChatMessage[]) {
@@ -482,7 +495,17 @@ function getGuardrailReply(messages: ChatMessage[]) {
     }
 
     if (
-        /\b(bad leader|not the problem|not a mess|solid company|built a solid company)\b/.test(latest) ||
+        (revenueMillions !== null || /\b(decent revenue|revenue is fine|good people)\b/.test(latest)) &&
+        /\b(every big decision|big decision|in the middle|stays tight when i'm in the middle|still lands on me|still land on me|still the glue|safety net)\b/.test(
+            latest
+        )
+    ) {
+        return "You've built something real. The issue is the business still needs you in the middle for the hard calls, which usually means the team can run activity but not true ownership. Where does that hit hardest right now?";
+    }
+
+    if (
+        /\b(bad leader|not the problem|not a mess)\b/.test(latest) ||
+        (/\b(solid company|built a solid company)\b/.test(latest) && /\b(telling me|coach talk|coaching talk|problem|bad leader)\b/.test(latest)) ||
         (/\b(telling me|coach talk|coaching talk)\b/.test(latest) && /\b(problem|leader|coaching)\b/.test(latest))
     ) {
         return "I get it. Building a real company and still carrying too much does not make you a bad leader. It usually means the business grew faster than ownership got transferred. Where are you still the safety net?";
@@ -492,6 +515,17 @@ function getGuardrailReply(messages: ChatMessage[]) {
         return "Fair enough — most coaching is fluff. Greg's not selling motivation; he works on ownership, accountability, and leadership inside real restoration and construction businesses. If that ever becomes the pain, you know where to find us.";
     }
 
+    if (/\b(why would greg be different|why would greg be any different|why greg be different)\b/.test(latest)) {
+        return "Because Greg has seen this enough times to spot pretty fast whether the leak is weak GM ownership, bad meeting rhythm, or you still being the approval layer. He's a licensed contractor, not a generic coach parachuting in. What's that costing you most right now?";
+    }
+
+    if (
+        /\b(how is greg different|what makes greg different)\b/.test(latest) ||
+        (/\b(eos|another coach|another operating system)\b/.test(latest) && /\b(different|versus|vs|than|compare)\b/.test(latest))
+    ) {
+        return "Greg's a licensed contractor with 30+ years in restoration and construction, and he's helped 300+ owners through this same pattern. EOS can help with structure, but Greg goes after the harder part: getting managers to own decisions, promises, and accountability so the hard calls stop landing back on you. Where does that break most right now?";
+    }
+
     if (
         /\b(consultant|consultants|consulting|eos)\b/.test(latest) &&
         /\b(didn't stick|did not stick|didnt stick|didn't work|did not work|didnt work|waste of money|waste|slid back|slide back|fell back|faded|backslid|snapped back)\b/.test(
@@ -499,6 +533,10 @@ function getGuardrailReply(messages: ChatMessage[]) {
         )
     ) {
         return "That's a fair concern. Most outside help fades because the new ideas never get embedded into the team's weekly habits, so the hard calls drift right back to the owner. What actually killed it last time?";
+    }
+
+    if (/\b(outside voice for 90 days|outside voice)\b/.test(latest)) {
+        return "Fair. Greg only matters if he helps you spot the pattern your team keeps falling back into after the outside pressure is gone. What keeps boomeranging back to you right now?";
     }
 
     if (/\b(what makes this (actually )?stick|why would this stick|after greg leaves|after he leaves)\b/.test(latest)) {
@@ -584,16 +622,12 @@ function getGuardrailReply(messages: ChatMessage[]) {
         return "He'd probably see a manager or GM with the title but not the hard-call ownership, so meetings surface issues and you still end up being the backstop. Where does that show up most right now?";
     }
 
-    if (/\b(how is greg different|what makes greg different)\b/.test(latest) || /\b(eos|another coach|another operating system)\b/.test(latest)) {
-        return "Greg's a licensed contractor with 30+ years in restoration and construction, and he's helped 300+ owners through this exact ceiling. EOS can help with structure, but Greg goes after the harder part: getting managers to own decisions, promises, and accountability so the business stops rolling uphill to you. Where does that break most right now?";
-    }
-
     if (
-        /\b(what (do|would) you need from me|what info do you need|what do you need to book|what do you need from me)\b/.test(
+        /\b(what (do|would) you need from me|what info do you need|what do you need to book|what do you need from me|what would he actually need from me)\b/.test(
             latest
         )
     ) {
-        return "Just your name, email, timezone, and the biggest challenge you want Greg to look at. That's enough to get the call moving. What's the main thing you'd want him to help untangle?";
+        return "Just your name, email, timezone, and the biggest challenge you want Greg to look at. That's enough to get the call moving. Best next step is booking the 30-minute call through the contact section on the site.";
     }
 
     if (/\b(why do owners stay stuck|why do people stay stuck|why does it stay stuck)\b/.test(latest) && /\b(meetings|org charts|structure)\b/.test(latest)) {
@@ -612,8 +646,8 @@ function getGuardrailReply(messages: ChatMessage[]) {
         return "Because if that pattern stays in place, you keep paying for it in your own time, slower decisions, and managers who never fully step up. Greg's value is spotting the real leak fast so you know what actually has to change. Where is that costing you most right now?";
     }
 
-    if (/\b(what would (he|greg|you) do first|where would (he|greg|you) start|what would be the first move|what's the first move)\b/.test(latest)) {
-        return "First lens is usually where ownership breaks—what decisions, promises, or numbers still bounce back to you instead of living with the team. The full fix depends on your people, margins, and how leadership is actually happening day to day. That's what Greg diagnoses on the call.";
+    if (/\b(what would (he|greg|you) do first|where would (he|greg|you) start|what would be the first move|what's the first move|what would he want to see first|what would greg want to see first|what would he look at first|what would greg look at first)\b/.test(latest)) {
+        return "First thing he'd look at is where the hard calls, missed promises, or key numbers still land back on you instead of staying with the team. That's usually what tells him whether this is a manager problem, a meeting problem, or a bigger ownership gap.";
     }
 
     if (/\b(why greg|why greg specifically|what makes greg different|why greg over)\b/.test(latest)) {
@@ -649,7 +683,7 @@ export const POST: APIRoute = async ({ request }) => {
     const guardrailReply = getGuardrailReply(messages);
 
     if (guardrailReply) {
-        return new Response(JSON.stringify({ content: shapeReply(hardenSoftClose(guardrailReply)) }), {
+        return new Response(JSON.stringify({ content: shapeReply(hardenSoftClose(deScriptify(guardrailReply))) }), {
             headers: { 'Content-Type': 'application/json' },
         });
     }
@@ -671,7 +705,7 @@ export const POST: APIRoute = async ({ request }) => {
         messages,
     });
 
-    const text = response.content[0].type === 'text' ? shapeReply(hardenSoftClose(response.content[0].text)) : '';
+    const text = response.content[0].type === 'text' ? shapeReply(hardenSoftClose(deScriptify(response.content[0].text))) : '';
 
     return new Response(JSON.stringify({ content: text }), {
         headers: { 'Content-Type': 'application/json' },
