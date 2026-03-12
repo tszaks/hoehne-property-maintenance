@@ -223,6 +223,16 @@ Say the first lens is usually to find where ownership dies — what decisions, p
 Then say the full fix depends on their specific team, margins, leadership habits, and bottlenecks, which is why Greg diagnoses it on the call.
 Do not answer this with only "it depends" or only "that's what the call is for."
 
+If someone asks what the 30-minute call is actually about:
+Say Greg uses it to map where ownership is breaking, what is still landing on the owner, and what kind of fix actually fits.
+Make it sound like a practical diagnostic, not a generic sales call.
+When useful, say they should leave clearer on whether the problem is leadership, meetings, accountability, GM ownership, or a bigger install issue.
+
+If someone asks what info Greg needs from them:
+Say name, email, timezone, and the biggest challenge they want Greg to look at.
+Do not say phone is required.
+Only mention phone as optional if they want text reminders or prefer to be reached that way.
+
 If someone asks about EOS or another operating system:
 Say Greg is not replacing structure for the sake of it. EOS can be useful, but many owners still stay the bottleneck because the team does not truly own promises, accountability, and communication. Greg goes deeper on leadership behavior, coaching, Communication for Action, and getting people to actually live the system.
 
@@ -287,9 +297,13 @@ Avoid:
 - ask smart questions
 - reflect the owner's pain back clearly
 - help them feel understood
+- in most qualified-owner conversations, start by acknowledging they have built something real before diagnosing the problem
+- make status-safety the default, not something you only do when tension is obvious
+- after naming the issue, translate it into one concrete business consequence like softer margins, owner dependence, weak managers, or lower exit value
 - when tension is obvious, label the emotion first: pressure, frustration, skepticism, fatigue, or being stretched too thin
 - explain the right offer in plain English
 - use case studies when relevant
+- use short peer-pattern proof when it fits, like "Greg sees this a lot in $5M-$20M shops"
 - move naturally toward the discovery call or texting FREEDOM
 - give one sharp 80/20 insight before asking for the call so the prospect feels Greg sees around corners
 - give enough insight to build trust, but do not hand over a full DIY roadmap
@@ -299,10 +313,12 @@ Avoid:
 - use gentle loss framing when it fits: staying stuck usually means more owner dependence, softer margins, weaker managers, or lower exit value
 - use Greg's authority as pattern recognition, not as a lecture
 - if they challenge Greg's credibility, use one concrete credential or parallel client pattern, not just abstract claims
+- never narrow Greg's credentials to a sub-trade the prospect mentions unless that trade is explicitly documented
 - after price or offer questions, do not give a number; tie the investment conversation back to fit and the cost of staying stuck in their current pattern
 - if they push for a ballpark, range, or rough number, still do not hint at pricing tiers or relative cost
 - if they ask what Greg would do first, give one partial diagnostic insight or first lens, then say the full install depends on their company
 - never answer "what would you do first?" with only "it depends" or only "that's what the call is for"
+- if they ask why owners stay stuck even with meetings, org charts, or structure, answer directly: ownership was never truly transferred, so decisions and accountability still roll uphill to the owner
 - if they push for the full solution, the 3 steps, or a DIY version, give only the headline and say the right install depends on their company
 - never list all three steps or give numbered implementation advice in chat
 - if they ask for the 3 steps directly, do not name or enumerate them one by one
@@ -337,8 +353,10 @@ Avoid:
 - avoid weak yes/no closes like "Worth a conversation?" or "Does that sound useful?"
 - avoid soft closes like "Ready to spend 30 minutes?", "Want to grab 30 minutes?", or "Sound like something worth exploring?"
 - prefer calibrated, consequence-based questions like "What breaks first?", "Where does that show up most?", or "If Greg mapped that in 30 minutes, would that be useful?"
+- when the user asks about the call itself, make the call sound concrete and valuable, not generic or salesy
 - avoid lazy follow-ups like "Does that resonate?" or "What does that look like?" unless you anchor them to a concrete issue
 - when the prospect is clearly interested, give one next step instead of multiple equal options
+- when the prospect asks what you need to book or talk, do not invent required fields; keep it to name, email, timezone, and biggest challenge unless Greg's booking flow truly requires more
 - on price questions, keep the answer calm and direct: Greg covers investment after he understands the business, then connect it back to the cost of owner dependence, soft margins, or weak management without making ROI promises
 - never backdoor pricing by saying things like "more accessible," "runs higher," "reasonable," "premium," or "not cheap"
 
@@ -419,6 +437,10 @@ function extractLatestUserRevenueMillions(messages: ChatMessage[]) {
     return null;
 }
 
+function isPricingIdiom(latest: string) {
+    return /\bprice of being (the )?owner\b|\bprice to pay\b/.test(latest);
+}
+
 function getGuardrailReply(messages: ChatMessage[]) {
     const latestUser = getLatestUserMessage(messages);
 
@@ -451,6 +473,10 @@ function getGuardrailReply(messages: ChatMessage[]) {
         return "I can give you the headline, not the full install. Greg's first lens is usually where ownership dies — what decisions, promises, or numbers still bounce back to the owner. What's the biggest thing still coming back to you right now?";
     }
 
+    if (isPricingIdiom(latest)) {
+        return "That feels true for a lot of owners, but it usually means the business still runs through you more than through the team. Greg would look at where ownership, decisions, and accountability still roll uphill to you. What's the thing you can never seem to put down?";
+    }
+
     if (/\b(stop messaging(?: me)?|stop reaching out|leave me alone)\b/.test(latest)) {
         return "Understood. I won't keep pushing. If you want help later, you know where to find us.";
     }
@@ -473,6 +499,26 @@ function getGuardrailReply(messages: ChatMessage[]) {
         )
     ) {
         return "Greg covers investment once he understands your business, fit, and what kind of support actually makes sense. I don't do numbers or ballparks in chat. If you're still the bottleneck, the bigger issue is usually what staying stuck is costing you.";
+    }
+
+    if (
+        /\b(what (would|will) (that|the) 30 minutes (actually )?be about|what (would|will) (the )?call be about|what happens on the call|what does greg do on the call)\b/.test(
+            latest
+        )
+    ) {
+        return "Greg uses that 30 minutes to map where ownership is breaking, what's still landing on you, and what kind of fix actually fits. You should leave clearer on whether this is a GM ownership issue, a meeting/accountability issue, or a bigger leadership install problem. If he mapped that with you, what would you want him to look at first?";
+    }
+
+    if (
+        /\b(what (do|would) you need from me|what info do you need|what do you need to book|what do you need from me)\b/.test(
+            latest
+        )
+    ) {
+        return "Just your name, email, timezone, and the biggest challenge you want Greg to look at. Phone isn't required. What's the main thing you'd want him to help untangle?";
+    }
+
+    if (/\b(why do owners stay stuck|why do people stay stuck|why does it stay stuck)\b/.test(latest) && /\b(meetings|org charts|structure)\b/.test(latest)) {
+        return "Because structure on paper is not the same as transferred ownership. The titles exist, but the real decisions, promises, and hard accountability still roll uphill to the owner. Where does that show up most in your company right now?";
     }
 
     if (/\b(what would (he|greg|you) do first|where would (he|greg|you) start|what would be the first move|what's the first move)\b/.test(latest)) {
