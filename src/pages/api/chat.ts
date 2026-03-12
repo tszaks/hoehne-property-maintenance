@@ -725,6 +725,26 @@ function getDynamicFallbackReply(messages: ChatMessage[]) {
         return `First thing he'd look at is where the hard calls, missed promises, or key numbers still land back on you instead of staying with the team. Where does that show up most right now?`;
     }
 
+    if (/\b(what kind of business are you best for|what kind of owner gets the most out of greg|who gets the most out of greg|what kind of owner gets the most out|who is greg best for|what kind of business is greg best for)\b/.test(latest)) {
+        return "Greg is best for restoration and construction owners who've built something real, usually around $5M to $35M, but still feel like the hub for the hard calls and key decisions. Where does that still land back on you right now?";
+    }
+
+    if (
+        /\b(what (would|will) (that|the) 30 minutes (actually )?be about|what (would|will) (the )?call be about|what happens on the call|what happens on that call|what happens on the discovery call|what does greg do on the call)\b/.test(
+            latest
+        )
+    ) {
+        return "Greg uses that 30 minutes to map what still depends on you, what breaks first when you step away, and whether the real issue is meetings, manager authority, margins, or a bigger install problem. What's the biggest thing you'd want him to look at first?";
+    }
+
+    if (
+        /\b(what (do|would) you need from me|what info do you need|what do you need to book|what do you need from me|what would he actually need from me)\b/.test(
+            latest
+        )
+    ) {
+        return "Just your name, email, timezone, and the main challenge you want Greg to look at. That's enough to get the call moving.";
+    }
+
     if (
         /\b(what would greg probably see|what would greg see|what would he probably see|what do you think greg would see|what would greg see first|what would he see first|one thing greg would probably see)\b/.test(
             latest
