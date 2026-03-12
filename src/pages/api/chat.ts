@@ -783,6 +783,9 @@ function hardenSoftClose(text: string) {
 
 function deScriptify(text: string) {
     return text
+        .replace(/\bThat'?s the classic pattern Greg sees all the time\.\s*/gi, 'That usually means ')
+        .replace(/\bThat'?s the classic pattern Greg sees all the time at your revenue level\.\s*/gi, 'That usually means ')
+        .replace(/\bYeah, that'?s exactly the kind of breakdown Greg sees all the time at your revenue level\.\s*/gi, "Yeah, that usually means the handoffs and ownership are not tight enough yet. ")
         .replace(/\bThat'?s a classic ceiling\.\s*/gi, 'That usually means the business still depends on you more than it should. ')
         .replace(/\bThat'?s a common ceiling\.\s*/gi, 'That usually means the business still depends on you more than it should. ')
         .replace(/\bThat'?s the classic bottleneck\b/gi, "That's the bottleneck")
