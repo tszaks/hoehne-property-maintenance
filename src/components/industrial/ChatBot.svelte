@@ -39,6 +39,7 @@
         "1-on-1 Coaching",
         "Exit Strategy / Preparing for Sale",
     ];
+    const CHALLENGE_OTHER_VALUE = "__challenge_other__";
     const INTRO_MESSAGE =
         "Hey — I'm Grant, Greg's intake assistant. You running a restoration or construction company? Tell me what's going on and I'll tell you straight whether Greg can help.";
     const SESSION_STORAGE_KEY = "grant-chat-session-id";
@@ -206,6 +207,32 @@
     function addAssistantMessage(content: string) {
         messages = [...messages, { role: "assistant", content }];
         scheduleIdleFinalize();
+    }
+
+    function isAmbiguousChallenge(value: string) {
+        const normalized = value.trim().toLowerCase();
+
+        return (
+            normalized === "not sure" ||
+            normalized === "unsure" ||
+            normalized === "don't know" ||
+            normalized === "dont know" ||
+            normalized === "not really sure" ||
+            normalized === "hard to say" ||
+            normalized === "i'm not sure" ||
+            normalized === "im not sure"
+        );
+    }
+
+    function buildChallengeClarifierChoices() {
+        return [
+            { label: "Jobs aren't profitable enough", value: "Jobs aren't profitable enough" },
+            {
+                label: "People or accountability still land on me",
+                value: "People or accountability still land on me",
+            },
+            { label: "Something else", value: CHALLENGE_OTHER_VALUE },
+        ];
     }
 
     function getChatErrorMessage(error: string) {
@@ -496,7 +523,22 @@
                 return;
 
             case "challenge":
+                if (value === CHALLENGE_OTHER_VALUE) {
+                    booking.choices = [];
+                    addAssistantMessage("No problem. Give me the short version so Greg has real context before the call.");
+                    return;
+                }
+
+                if (isAmbiguousChallenge(value)) {
+                    booking.choices = buildChallengeClarifierChoices();
+                    addAssistantMessage(
+                        "No problem. Usually it starts with one of these: jobs aren't profitable enough, or people and accountability still land on you. Which is closer?"
+                    );
+                    return;
+                }
+
                 if (value.trim().length < 10) {
+                    booking.choices = [];
                     addAssistantMessage(
                         "Give me a little more so Greg has real context. What's the biggest challenge right now?"
                     );
@@ -504,6 +546,7 @@
                 }
 
                 booking.draft.challenge = value.trim();
+                booking.choices = [];
                 booking.suggestedService = inferServiceInterest();
                 booking.phase = "service";
                 booking.choices = buildServiceChoices(booking.suggestedService);
