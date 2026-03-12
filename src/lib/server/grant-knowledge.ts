@@ -416,6 +416,9 @@ export function buildGrantKnowledgeBrief(messages: ChatMessage[]) {
         'TURN REQUIREMENT:',
         `- Primary source-backed lens for this turn: "${primaryCard.title}".`,
         intentRule ? `- ${intentRule.instruction}` : '',
+        intentRule?.intent === 'credibility'
+            ? '- First sentence must include at least one concrete Greg credential before you compare systems or explain the failure pattern.'
+            : '',
         '- Start with the operating read itself. Do not open with filler like "Greg sees this all the time."',
         '- Use one concrete operating detail from these notes before you pivot back to diagnosis or CTA.',
         primaryCard.statusAnchor ? `- Protect status this way: ${primaryCard.statusAnchor}.` : '',
