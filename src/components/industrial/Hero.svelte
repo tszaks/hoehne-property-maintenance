@@ -46,6 +46,8 @@
     }
 
     onMount(() => {
+        const isMobile = window.matchMedia("(max-width: 767px)").matches;
+        const imageParallaxAmount = isMobile ? 52 : 30;
         const tl = gsap.timeline();
 
         // Subtle scale down of image container on load
@@ -100,7 +102,7 @@
 
         // Parallax on background image
         gsap.to(imageContainer, {
-            yPercent: 30,
+            yPercent: imageParallaxAmount,
             ease: "none",
             scrollTrigger: {
                 trigger: containerElement,
