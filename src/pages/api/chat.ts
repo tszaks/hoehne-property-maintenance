@@ -642,6 +642,14 @@ function getGuardrailReply(messages: ChatMessage[]) {
         return "Fair. I'm not here to pitch you. If Greg were actually useful, what would have to change in your week for this to matter?";
     }
 
+    if (/\b(maybe this is worth talking about|maybe the call makes sense|sounds worth talking about|i'?m open to a call|i am open to a call)\b/.test(latest)) {
+        return "Makes sense. Best next step is a 30-minute call with Greg. I just need your name, email, timezone, and the main issue you want him to look at.";
+    }
+
+    if (/\b(what should i do next|what's the next step|what is the next step|what next)\b/.test(latest)) {
+        return "Best next step is booking the 30-minute call with Greg through the site. Send your name, email, timezone, and the main issue, and that gets it moving.";
+    }
+
     if (/\b(why would that be worth my time|why is that worth my time)\b/.test(latest)) {
         return "Because if that pattern stays in place, you keep paying for it in your own time, slower decisions, and managers who never fully step up. Greg's value is spotting the real leak fast so you know what actually has to change. Where is that costing you most right now?";
     }
