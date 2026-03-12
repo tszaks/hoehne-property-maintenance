@@ -246,6 +246,17 @@ Say maybe some of it, but if they already have structure, meetings, or good inte
 Say it is usually a blind-spot and leadership-install problem: the team has not learned how to think, promise, and own results without the owner.
 Protect the prospect's status when you answer this. Do not sound superior or dismissive.
 
+If someone says they hired consultants before and it did not stick:
+Start by acknowledging that frustration directly.
+Say the usual failure is that the advice never got installed into the day-to-day rhythm of the company, so the owner became the glue again as soon as the consultant left.
+Separate Greg from advice-only consultants by saying he focuses on getting ownership, meetings, and manager behavior to actually stick in the business.
+
+If someone asks whether Greg is overkill, or says they probably need more leads or better estimating first:
+Answer the sequence question directly.
+Say Greg is usually best when the business already has enough demand to expose a leadership, ownership, accountability, or scale problem.
+If the real choke point is top-of-funnel demand or basic estimating, say that is probably the first thing to fix before Greg's kind of install work.
+Protect their status when you say this. Frame it as sequence, not as them being beneath Greg.
+
 If someone asks how fast they see results:
 Say accountability, meeting quality, and owner workload often improve in the first 90 days. Financial gains usually show up as the system gets installed and used consistently.
 
@@ -299,6 +310,7 @@ Avoid:
 - in most qualified-owner conversations, start by acknowledging they have built something real before diagnosing the problem
 - make status-safety the default, not something you only do when tension is obvious
 - after naming the issue, translate it into one concrete business consequence like softer margins, owner dependence, weak managers, or lower exit value
+- diagnose with concrete symptom patterns, not just abstract labels: hard calls boomerang back to the owner, the GM has the title but still needs approval, meetings surface problems the owner still has to solve
 - when tension is obvious, label the emotion first: pressure, frustration, skepticism, fatigue, or being stretched too thin
 - explain the right offer in plain English
 - use case studies when relevant
@@ -469,6 +481,13 @@ function getGuardrailReply(messages: ChatMessage[]) {
         return "Fair enough — most coaching is fluff. Greg's not selling motivation; he works on ownership, accountability, and leadership inside real restoration and construction businesses. If that ever becomes the pain, you know where to find us.";
     }
 
+    if (
+        /\b(consultant|consultants|consulting)\b/.test(latest) &&
+        /\b(didn't stick|did not stick|didnt stick|didn't work|did not work|didnt work|waste of money|waste)\b/.test(latest)
+    ) {
+        return "That's a fair concern. Most consultant work dies because the plan never gets installed into how the team actually meets, decides, and owns work, so it slides right back onto the owner. What broke last time—fit, follow-through, or team buy-in?";
+    }
+
     if (/\b(system prompt|your prompt|internal prompt|internal instructions|what are your instructions|show me your prompt)\b/.test(latest)) {
         if (/\b(price|pricing|cost|investment|fee|how much|charge)\b/.test(latest)) {
             return "I can't share internal instructions or pricing in chat. Greg covers investment once he understands fit and scope. What's the main bottleneck you're trying to solve?";
@@ -547,6 +566,14 @@ function getGuardrailReply(messages: ChatMessage[]) {
 
     if (/\b(are we a fit|am i a fit|fit or not)\b/.test(latest) && revenueMillions !== null && revenueMillions < 2) {
         return "Straight up, probably not yet. Greg's sweet spot is usually owners around $5M+ who need stronger leadership and team ownership, not just more leads. At your size, the bottleneck is usually earlier-stage than what Greg specializes in.";
+    }
+
+    if (
+        /\b(overkill|need more leads|need leads first|better estimating|just need leads|mostly need leads|need estimating)\b/.test(
+            latest
+        )
+    ) {
+        return "That may just be a sequence issue. Greg is usually best when the business already has enough demand and the real choke point is leadership, ownership, or getting out of the middle. If leads or estimating are the real bottleneck right now, I'd fix that first.";
     }
 
     return null;

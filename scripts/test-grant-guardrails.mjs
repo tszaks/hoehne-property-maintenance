@@ -68,6 +68,18 @@ const cases = [
         include: ["licensed contractor", "restoration and construction", "300+ owners"],
         exclude: ["roofing and construction"],
     },
+    {
+        name: "consultant-burned trust repair stays concrete",
+        turns: ["We hired consultants before and it didn't stick."],
+        include: ["plan never gets installed", "owner"],
+        exclude: ["just trust Greg"],
+    },
+    {
+        name: "low-fit lead problem gets sequence answer",
+        turns: ["Honestly I probably just need more leads and better estimating. Is Greg overkill?"],
+        include: ["sequence issue", "leadership, ownership", "fix that first"],
+        exclude: ["book", "FREEDOM"],
+    },
 ];
 
 async function runCase(testCase) {
