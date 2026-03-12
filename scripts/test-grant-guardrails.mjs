@@ -125,7 +125,7 @@ const cases = [
     {
         name: "theory objection gets concrete fast-diagnosis answer",
         turns: ["I don't want theory. I want to know if he'd actually see something useful fast."],
-        include: ["tell pretty fast", "approval layer"],
+        include: ["tell pretty fast", "hard-call ownership"],
         exclude: ["That show up", "Does that land"],
     },
     {

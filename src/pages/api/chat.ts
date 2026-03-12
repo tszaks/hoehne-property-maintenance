@@ -439,6 +439,12 @@ function getUserMessages(messages: ChatMessage[]) {
     return messages.filter((message) => message.role === 'user');
 }
 
+function getUserContextText(messages: ChatMessage[]) {
+    return getUserMessages(messages)
+        .map((message) => message.content.toLowerCase())
+        .join(' ');
+}
+
 function extractLatestUserRevenueMillions(messages: ChatMessage[]) {
     const userMessages = [...getUserMessages(messages)].reverse();
 
@@ -452,6 +458,50 @@ function extractLatestUserRevenueMillions(messages: ChatMessage[]) {
     }
 
     return null;
+}
+
+function getLikelyLeak(messages: ChatMessage[]) {
+    const context = getUserContextText(messages);
+
+    if (/\b(meeting|meetings)\b/.test(context) && /\b(gm|manager)\b/.test(context)) {
+        return {
+            description: 'your GM still needs you on the hard calls and the meetings still leave you owning the fix',
+            question: 'When that happens, what lands back on you first?',
+        };
+    }
+
+    if (/\b(meeting|meetings)\b/.test(context)) {
+        return {
+            description: 'meetings surface issues, but the ownership still does not stick after the meeting ends',
+            question: 'What keeps coming back to you after those meetings?',
+        };
+    }
+
+    if (/\b(gm|manager)\b/.test(context)) {
+        return {
+            description: 'a GM or manager with the title but not the hard-call ownership yet',
+            question: 'Where does that show up most right now?',
+        };
+    }
+
+    if (/\b(margin|margins|profit)\b/.test(context)) {
+        return {
+            description: 'decisions and misses still landing back on you, which usually drags margin with it',
+            question: 'Where do you feel that leak most right now?',
+        };
+    }
+
+    if (/\b(step away|two weeks|vacation|in the middle|glue|safety net)\b/.test(context)) {
+        return {
+            description: 'the business only really feels stable when you are still in the middle of it',
+            question: 'What pulls you back in first?',
+        };
+    }
+
+    return {
+        description: 'a manager or GM with the title but not the hard-call ownership, so you still end up being the backstop',
+        question: 'Where does that show up most right now?',
+    };
 }
 
 function isPricingIdiom(latest: string) {
@@ -548,7 +598,8 @@ function getGuardrailReply(messages: ChatMessage[]) {
             latest
         )
     ) {
-        return "Fair. Greg can usually tell pretty fast whether the leak is GM ownership, weak meeting accountability, or you still being the approval layer on the hard calls. Which one feels closest?";
+        const leak = getLikelyLeak(messages);
+        return `Fair. Greg can usually tell pretty fast what's really going on. Usually it's ${leak.description}.`;
     }
 
     if (
@@ -619,7 +670,8 @@ function getGuardrailReply(messages: ChatMessage[]) {
             latest
         )
     ) {
-        return "He'd probably see a manager or GM with the title but not the hard-call ownership, so meetings surface issues and you still end up being the backstop. Where does that show up most right now?";
+        const leak = getLikelyLeak(messages);
+        return `He'd probably see ${leak.description}. ${leak.question}`;
     }
 
     if (
