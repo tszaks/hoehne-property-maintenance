@@ -438,7 +438,7 @@ function extractLatestUserRevenueMillions(messages: ChatMessage[]) {
 }
 
 function isPricingIdiom(latest: string) {
-    return /\bprice of being (the )?owner\b|\bprice to pay\b/.test(latest);
+    return /\bprice of being (the )?owner\b|\bprice of ownership\b/.test(latest);
 }
 
 function getGuardrailReply(messages: ChatMessage[]) {
