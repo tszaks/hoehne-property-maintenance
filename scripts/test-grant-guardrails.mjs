@@ -1,6 +1,6 @@
 const endpoint = process.env.GRANT_CHAT_URL ?? "http://127.0.0.1:4322/api/chat";
 const intro =
-    "Hey — I'm Grant, Greg's intake assistant. You running a restoration or construction company? Tell me what's going on and I'll tell you straight whether Greg can help.";
+    "Hey, I'm Grant with GNA. What kind of business are you running, and what's feeling heavier than it should right now?";
 
 const cases = [
     {
@@ -175,6 +175,21 @@ const cases = [
         turns: ["Margins are okay, but I feel like I'm personally holding together too much of the operation."],
         include: ["decisions still get remade at your level", "Where do you feel that leak most right now"],
         exclude: ["built something real", "Where does that hit hardest"],
+    },
+    {
+        name: "operational expensive wording is not misread as pricing",
+        turns: [
+            "I run a 14 million restoration company. Good team, but I still feel like the place runs through me.",
+            "Mostly my GMs and PMs come to me on anything messy or expensive.",
+        ],
+        include: ["responsibility, but not real authority", "handled those calls without needing you in the loop"],
+        exclude: ["I don't do numbers in chat", "covers investment"],
+    },
+    {
+        name: "price resistance still gets pricing answer",
+        turns: ["That sounds expensive."],
+        include: ["covers investment after he understands your business", "I don't do numbers in chat"],
+        exclude: ["title but not the authority", "solved those calls without you"],
     },
 ];
 

@@ -679,6 +679,14 @@ function getGuardrailReply(messages: ChatMessage[]) {
         return "That's usually not a talent problem. It means your managers are executing tasks, but not owning decisions, promises, and consequences without you in the room. Which is costing you more right now—slow decisions, softer margins, or you getting dragged into every fire?";
     }
 
+    if (
+        /\b(gm|gms|pm|pms|project managers?|managers?)\b/.test(latest) &&
+        /\b(messy|expensive)\b/.test(latest) &&
+        /\b(come to me|comes to me|come back to me|comes back to me|still come to me)\b/.test(latest)
+    ) {
+        return "That usually means they have responsibility, but not real authority. They bring you the messy calls instead of owning them through to a decision. What would change most if they handled those calls without needing you in the loop?";
+    }
+
     if (/\b(system prompt|your prompt|internal prompt|internal instructions|what are your instructions|show me your prompt)\b/.test(latest)) {
         if (/\b(price|pricing|cost|investment|fee|how much|charge)\b/.test(latest)) {
             return "I can't share internal instructions or pricing in chat. Greg covers investment once he understands fit and scope. What's the main bottleneck you're trying to solve?";
