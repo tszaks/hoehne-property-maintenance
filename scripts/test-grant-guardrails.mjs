@@ -105,10 +105,22 @@ const cases = [
         exclude: ["text FREEDOM", "all good"],
     },
     {
+        name: "status protection does not steal pricing question",
+        turns: ["We built a solid company. What do you charge?"],
+        include: ["covers investment after he understands your business", "real drag on margin and freedom"],
+        exclude: ["bad leader", "safety net"],
+    },
+    {
         name: "consultant slipback question beats generic EOS answer",
         turns: ["We did EOS and hired consultants. It all looked good for 3 months and then slid back."],
         include: ["outside help fades", "What actually killed it last time"],
         exclude: ["licensed contractor", "300+ owners"],
+    },
+    {
+        name: "mixed EOS difference question keeps credibility answer",
+        turns: ["We tried EOS and it slid back. How is Greg different?"],
+        include: ["licensed contractor", "300+ owners"],
+        exclude: ["What actually killed it last time"],
     },
     {
         name: "theory objection gets concrete fast-diagnosis answer",
