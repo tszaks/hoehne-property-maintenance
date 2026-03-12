@@ -1,5 +1,6 @@
 import { execFileSync } from 'node:child_process';
-import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -7,101 +8,361 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const repoRoot = path.resolve(__dirname, '..');
 const defaultLegacyRoot = '/Users/tyler/Google Drive/My Drive/Tyler Workspace/Legacy Root/Clients/GNA';
-const legacyRoot = process.env.GNA_SOURCE_ROOT || defaultLegacyRoot;
+const archivedDownloadsRoot = '/Users/tyler/Google Drive/My Drive/Tyler Workspace/Files/Downloads/Archived Downloads';
+const gregDocumentsArchiveRoot = `${archivedDownloadsRoot}/Private & Shared/Greg’s Documents 2097fee997858041a388e29c4e54afee`;
+const gregSalesTeamArchiveRoot = `${archivedDownloadsRoot}/GNA Academy - Greg's Version/Sales Team docs`;
 const outputPath = path.join(repoRoot, 'src/data/grant-knowledge.json');
-const sourceLibraryLabel = 'Legacy Root/Clients/GNA';
-
-const SOURCE_LIBRARY = [
+const DEFAULT_SOURCE_ROOTS = [
+    {
+        label: 'Legacy Root/Clients/GNA',
+        path: defaultLegacyRoot,
+    },
+    {
+        label: 'OneDrive GNA (Tyler)',
+        path: '/Users/tyler/Library/CloudStorage/OneDrive-Personal/GNA (Tyler)',
+    },
+    {
+        label: 'Archived Downloads/Greg Documents',
+        path: gregDocumentsArchiveRoot,
+    },
+    {
+        label: 'Archived Downloads/GNA Academy Sales Team docs',
+        path: gregSalesTeamArchiveRoot,
+    },
+];
+const configuredSourceRoots = process.env.GNA_SOURCE_ROOTS
+    ? process.env.GNA_SOURCE_ROOTS.split(path.delimiter).filter(Boolean).map((sourcePath) => ({
+        label: path.basename(sourcePath),
+        path: sourcePath,
+    }))
+    : DEFAULT_SOURCE_ROOTS;
+const SOURCE_ROOTS = configuredSourceRoots.filter((sourceRoot) => existsSync(sourceRoot.path));
+const EXTRA_SOURCE_RELATIVE_FILES = [
+    'Claude_Conversations/Greg_Neil_Voice_Profile_Analysis.md',
+    'Claude_Conversations/Greg_LinkedIn_Posts_REVISED.md',
+];
+const EXTRA_FALLBACK_SOURCE_FILES = [
+    path.join(archivedDownloadsRoot, 'Three_Steps_to_Power_-_GNA_Academy_Workbook.docx'),
+    path.join(archivedDownloadsRoot, 'GNA PL Diagnostic.pdf'),
+    path.join(archivedDownloadsRoot, 'Jun - Great Leadership Really M eans You’re the Head Coach.docx'),
+    path.join(archivedDownloadsRoot, '2_12_2020_Plan Right-Win Big_FINAL.pptx'),
+];
+const SUPPORTED_EXTENSIONS = new Set(['.doc', '.docx', '.html', '.md', '.pdf', '.ppt', '.pptx', '.txt']);
+const SOURCE_ALLOWLIST_PATTERNS = [
+    /greg_neil_voice_profile_analysis\.md$/i,
+    /greg_linkedin_posts_revised\.md$/i,
+];
+const SOURCE_IGNORE_PATTERNS = [
+    /\/archive\/archive\//i,
+    /\/august project\//i,
+    /\/brand assets\//i,
+    /\/claude_conversations\//i,
+    /\/images?\//i,
+    /\/logos?\//i,
+    /\/graphics?\//i,
+    /\/media\//i,
+    /\/podcasts?\//i,
+    /\/testimonials?\//i,
+    /\/videos?\//i,
+    /batch_\d+_(bounces|unsubscribes)\.txt$/i,
+    /\/claude\.md$/i,
+    /\/project[_-]?memory\.md$/i,
+    /aarons offer/i,
+    /brand template/i,
+    /\/contracts?\//i,
+    /docusign/i,
+    /huge banner/i,
+    /independant contractor agreement/i,
+    /lead tracker/i,
+    /\.gdoc$/i,
+];
+const SOURCE_HINT_RULES = [
     {
         category: 'offers',
         id: 'gna-offer-stack',
-        path: path.join(legacyRoot, 'Sales Content/Sales Materials/GNA_Complete_Offer_Stack.docx'),
+        match: /(gna_complete_offer_stack|gna offers)\.docx$/i,
         tags: ['offers', 'academy', 'coaching', 'management-team', 'weekly-meetings', 'project-management', 'business-development'],
         title: 'GNA Complete Offer Stack',
     },
     {
         category: 'offers',
         id: 'gna-academy-sales-intro',
-        path: path.join(legacyRoot, 'Sales Essentials/GNA Academy Sales Team Intro.pdf'),
+        match: /gna academy sales team intro\.pdf$/i,
         tags: ['academy', 'cadence', 'lms', 'coaching', 'execution', 'positioning'],
         title: 'GNA Academy Sales Team Intro',
     },
     {
         category: 'frameworks',
         id: 'three-steps-workbook',
-        path: path.join(legacyRoot, 'Course Content/3_Steps_To_Power_Academy_Workbook.docx'),
+        match: /(3_steps_to_power_academy_workbook|three_steps_to_power_-_gna_academy_workbook|three steps to power - gna academy workbook)\.docx$/i,
         tags: ['accountability', 'metrics', 'reports', 'weekly-meetings', 'promises', 'coaching', 'breakthrough'],
         title: '3 Steps to Power Academy Workbook',
     },
     {
         category: 'frameworks',
         id: 'real-accountability-workbook',
-        path: path.join(legacyRoot, 'GNA Workbook - Real Accountability.pdf'),
+        match: /gna workbook - real accountability\.pdf$/i,
         tags: ['accountability', 'metrics', 'reports', 'weekly-meetings', 'promises'],
         title: 'Real Accountability Workbook',
     },
     {
         category: 'frameworks',
         id: 'conversation-for-action',
-        path: path.join(legacyRoot, 'Course Content/CFA.pdf'),
+        match: /(^|\/)(cfa\.pdf|conversation_for_action_framework\.docx|com[_ ]4[_ ]action\.docx|conversation[_ ]for[_ ]action\.(ppt|docx))$/i,
         tags: ['communication', 'requests', 'promises', 'conditions-of-satisfaction', 'leadership'],
         title: 'Communication for Action',
     },
     {
         category: 'frameworks',
         id: 'measures-of-successful-leadership',
-        path: path.join(legacyRoot, 'Sales Content/Sales Materials/Measures_of_Successful_Leadership.pdf'),
+        match: /measures[_ ]of[_ ]successful[_ ]leadership\.pdf$/i,
         tags: ['leadership', 'accountability', 'integrity', 'coaching', 'commitment', 'financials'],
         title: 'Measures of Successful Leadership',
     },
     {
         category: 'frameworks',
         id: 'five-stages-of-business',
-        path: path.join(legacyRoot, 'Course Content/Five Stages of Business.pdf'),
+        match: /five stages of business(\.edited)?\.(docx|pdf)$/i,
         tags: ['stages', 'growth', 'owner-dependence', 'management-team', 'exit'],
         title: 'Five Stages of Business',
     },
     {
         category: 'psychology',
         id: 'gregbot-training-manual',
-        path: path.join(legacyRoot, 'Business Operations/GregBot Training Manual.docx'),
+        match: /gregbot training manual\.docx$/i,
         tags: ['autonomy', 'mastery', 'purpose', 'owner-fit', 'positioning', 'transformation'],
         title: 'GregBot Training Manual',
     },
     {
         category: 'operations',
         id: 'pain-points-reference',
-        path: path.join(legacyRoot, 'Sales Content/Sales Materials/Pain_Points_And_Coaching_Topics_Reference.docx'),
+        match: /pain_points_and_coaching_topics_reference\.docx$/i,
         tags: ['owner-bottleneck', 'profit', 'sales', 'management', 'coaching', 'marketing'],
         title: 'Pain Points and Coaching Topics Reference',
     },
     {
         category: 'operations',
         id: 'business-assessment',
-        path: path.join(legacyRoot, 'Business Operations/GNA Business Assessment.pdf'),
+        match: /gna business assessment\.pdf$|gna business assesment\.doc$/i,
         tags: ['assessment', 'financials', 'sales', 'team', 'operations', 'customer'],
         title: 'GNA Business Assessment',
     },
     {
         category: 'operations',
         id: 'bottleneck-assessment',
-        path: path.join(legacyRoot, 'Marketing Materials/bottleneck-assessment.pdf'),
+        match: /(bottleneck-assessment|bottleneck assessment.*)\.pdf$/i,
         tags: ['bottleneck', 'delegation', 'leadership', 'cost-of-inaction'],
         title: 'Bottleneck Assessment',
     },
     {
         category: 'operations',
         id: 'team-empowerment',
-        path: path.join(legacyRoot, 'Sales Content/Presentations/Team_Empowerment_Overview.docx'),
+        match: /team_empowerment_overview\.docx$/i,
         tags: ['empowerment', 'ownership', 'morale', 'productivity', 'culture'],
         title: 'Team Empowerment Overview',
     },
     {
         category: 'operations',
         id: 'project-manager-rules',
-        path: path.join(legacyRoot, 'Course Content/First Year Program/Production/10 Rules.pdf'),
+        match: /(^|\/)10 rules\.pdf$/i,
         tags: ['project-management', 'coordination', 'customer', 'team', 'learning'],
         title: '10 Rules for Project Managers',
+    },
+    {
+        category: 'offers',
+        id: 'all-programs-offer-stack',
+        match: /complete_offer_stack_all_programs\.docx$/i,
+        tags: ['offers', 'academy', 'coaching', 'mastermind', 'weekly-meetings', 'project-management', 'financials'],
+        title: 'Complete Offer Stack All Programs',
+    },
+    {
+        category: 'positioning',
+        id: 'executive-summary',
+        match: /(gna inc\.\s*executive summary|executive summary)\.pdf$/i,
+        tags: ['positioning', 'market', 'construction', 'owner-dependence', 'transformation'],
+        title: 'GNA Executive Summary',
+    },
+    {
+        category: 'positioning',
+        id: 'gna-at-a-glance',
+        match: /gna in a glance\.docx$/i,
+        tags: ['offers', 'positioning', 'weekly-meetings', 'management-team', 'project-management', 'financials'],
+        title: 'GNA in a Glance',
+    },
+    {
+        category: 'frameworks',
+        id: 'seven-steps-program',
+        match: /(^|\/)(7 steps\.pdf|7 steps to power\.pdf|7 steps\.docx|7_steps_to_power_program\.pdf|7_steps_to_power_overview\.pdf)$/i,
+        tags: ['framework', 'breakthrough', 'growth', 'leadership'],
+        title: '7 Steps to Power Program',
+    },
+    {
+        category: 'frameworks',
+        id: 'five-steps-framework',
+        match: /(gna 5 steps v2|5 steps to power|5_steps_to_power_framework)\.docx$|gna 5 steps chart v2\.pdf$/i,
+        tags: ['framework', 'breakthrough', 'leadership', 'stages'],
+        title: '5 Steps to Power Framework',
+    },
+    {
+        category: 'offers',
+        id: 'mastermind-groups',
+        match: /(gna mastermind groups|gna_mm_syllabus_|gna_mastermind_syllabus|mastermind groups source doc|we are excited to announce our new offering of master mind groups|cc[_ ]mmgroups[_ -]4-2023( 1)?)\.docx$/i,
+        tags: ['mastermind', 'peer-group', 'coaching', 'accountability', 'owners', 'gms'],
+        title: 'Mastermind Groups',
+    },
+    {
+        category: 'offers',
+        id: 'mastermind-agenda',
+        match: /(mastermind agenda|masterminds call agenda|mm grp startup)\.docx$/i,
+        tags: ['mastermind', 'peer-group', 'cadence', 'accountability', 'financials'],
+        title: 'Mastermind Group Agenda',
+    },
+    {
+        category: 'operations',
+        id: 'delegation-blueprint',
+        match: /gna-delegation-blueprint\.pdf$/i,
+        tags: ['delegation', 'owner-bottleneck', 'leadership', 'hand-offs'],
+        title: 'Delegation Blueprint',
+    },
+    {
+        category: 'operations',
+        id: 'financial-consulting-outline',
+        match: /ouline for financial consulting .*\.docx$/i,
+        tags: ['financials', 'profit', 'reports', 'planning', 'cash-flow'],
+        title: 'Financial Consulting Outline',
+    },
+    {
+        category: 'psychology',
+        id: 'hiring-mistakes',
+        match: /(5 hiring mistakes|aug -  5 hiring mistakes)\.(doc|pptx)$/i,
+        tags: ['hiring', 'team', 'culture', 'performance'],
+        title: 'Five Hiring Mistakes',
+    },
+    {
+        category: 'psychology',
+        id: 'employee-burnout',
+        match: /how_to_avoid_employee_burnout.*\.pptx$/i,
+        tags: ['burnout', 'team', 'management', 'psychology', 'leadership'],
+        title: 'How to Avoid Employee Burnout',
+    },
+    {
+        category: 'psychology',
+        id: 'emotional-intelligence',
+        match: /emotional intelligence of your key employees\.docx$/i,
+        tags: ['emotional-intelligence', 'coaching', 'leadership', 'team'],
+        title: 'Emotional Intelligence of Your Key Employees',
+    },
+    {
+        category: 'psychology',
+        id: 'evaluate-performance',
+        match: /evaluate performance\.pdf$/i,
+        tags: ['performance', 'coaching', 'leadership', 'accountability'],
+        title: 'Evaluate Performance',
+    },
+    {
+        category: 'psychology',
+        id: 'productivity-challenges',
+        match: /(jul - 3 challenges that kill your companys productivity|jul_-_3_challenges_that_kill_your_companys_productivity)\.doc$/i,
+        tags: ['productivity', 'team', 'leadership', 'owner-bottleneck'],
+        title: 'Three Challenges That Kill Productivity',
+    },
+    {
+        category: 'psychology',
+        id: 'employee-performance-challenges',
+        match: /(oct[ _-]+2 challenges to great employee performance|oct_-__2_challenges_to_great_employee_performance|email[ _-]+how[ _-]+to[ _-]+increase[ _-]+employees[ _-]+performance)\.doc$/i,
+        tags: ['performance', 'team', 'leadership', 'coaching'],
+        title: 'Two Challenges to Great Employee Performance',
+    },
+    {
+        category: 'operations',
+        id: 'profit-barriers',
+        match: /(sept - 3 barriers that stop contractors from profits|sept_-_3_barriers_that_stop_contractors_from_profits)\.doc$/i,
+        tags: ['profit', 'hiring', 'marketing', 'sales', 'margin'],
+        title: 'Three Barriers That Stop Contractors from Profits',
+    },
+    {
+        category: 'sales',
+        id: 'sales-letter-facts',
+        match: /(the_facts_of_business_sales_letter|the facts of bus)\.docx$/i,
+        tags: ['sales', 'positioning', 'pain', 'authority'],
+        title: 'The Facts of Business Sales Letter',
+    },
+    {
+        category: 'sales',
+        id: 'pain-sales-script',
+        match: /(the_pain_sales_script|the pain)\.docx$/i,
+        tags: ['sales', 'pain', 'owner-bottleneck', 'authority'],
+        title: 'Pain Sales Script',
+    },
+    {
+        category: 'sales',
+        id: 'freedom-email-sequence',
+        match: /freedom_workshop_10_email_sequence\.docx$/i,
+        tags: ['sales', 'email', 'freedom', 'positioning'],
+        title: 'Freedom Workshop Email Sequence',
+    },
+    {
+        category: 'sales',
+        id: 'mastermind-email-sequence',
+        match: /(mastermind_promotion_10_email_sequence|gna 10 emails to promote mastermind)\.docx$/i,
+        tags: ['sales', 'email', 'mastermind', 'positioning'],
+        title: 'Mastermind Promotion Email Sequence',
+    },
+    {
+        category: 'sales',
+        id: 'linkedin-outreach',
+        match: /linkedin_(outreach_sequence_30_day_60_day|response_scripts|response_templates|sales_navigator_message_templates)\.docx$/i,
+        tags: ['sales', 'linkedin', 'outreach', 'positioning'],
+        title: 'LinkedIn Outreach Templates',
+    },
+    {
+        category: 'sales',
+        id: 'social-video-scripts',
+        match: /(social_media_90_second_video_scripts|gna scripts for 90 second videos)\.docx$/i,
+        tags: ['sales', 'video', 'positioning', 'authority'],
+        title: '90 Second Video Scripts',
+    },
+    {
+        category: 'sales',
+        id: 'greg-linkedin-posts',
+        match: /greg_linkedin_posts_revised\.md$/i,
+        tags: ['sales', 'linkedin', 'positioning', 'authority'],
+        title: 'Greg LinkedIn Posts Revised',
+    },
+    {
+        category: 'operations',
+        id: 'pl-diagnostic',
+        match: /gna pl diagnostic\.pdf$/i,
+        tags: ['financials', 'profit', 'margin', 'cash-flow', 'diagnostic'],
+        title: 'GNA P&L Diagnostic',
+    },
+    {
+        category: 'frameworks',
+        id: 'plan-right-win-big',
+        match: /(2_12_2020_plan[_ ]right-win[_ ]big_final( 1)?|2_12_2020_plan right-win big_final)\.pptx$/i,
+        tags: ['planning', 'financials', 'framework', 'performance'],
+        title: 'Plan Right Win Big',
+    },
+    {
+        category: 'positioning',
+        id: 'uvp-discovery-questionnaire',
+        match: /chat[_ ]doc_?( 1)?\.docx$/i,
+        tags: ['positioning', 'sales', 'authority', 'uvp'],
+        title: 'UVP Discovery Questionnaire',
+    },
+    {
+        category: 'psychology',
+        id: 'head-coach-leadership',
+        match: /(jun - great leadership really m eans you.re the head coach|jun_-_great_leadership_really_m_eans_youre_the_head_coach)\.docx$/i,
+        tags: ['leadership', 'coaching', 'management-team', 'performance'],
+        title: 'Great Leadership Means You Are the Head Coach',
+    },
+    {
+        category: 'psychology',
+        id: 'greg-voice-profile',
+        match: /greg_neil_voice_profile_analysis\.md$/i,
+        tags: ['voice', 'authority', 'positioning', 'psychology'],
+        title: 'Greg Neil Voice Profile Analysis',
     },
 ];
 
@@ -113,11 +374,24 @@ const CURATED_CARDS = [
         id: 'greg-credibility',
         priority: 14,
         questionAngles: ['Where does that show up most right now?', 'What keeps finding its way back to you?'],
-        sourceIds: ['gna-academy-sales-intro', 'gregbot-training-manual'],
+        sourceIds: ['gna-academy-sales-intro', 'gregbot-training-manual', 'greg-voice-profile'],
         statusAnchor: 'Talk to them like they have built something real and are looking for an operator who has seen this movie before.',
         tags: ['credibility', 'fit', 'restoration', 'construction', 'coach'],
         text: 'Greg is a licensed contractor who has spent three decades building teams, fixing broken execution, and helping restoration and construction owners stop being the driving force of the company. His authority comes from pattern recognition in real shops, not generic business-coach language.',
         title: 'Greg credibility and point of view',
+    },
+    {
+        category: 'sales-psychology',
+        cues: ['tone', 'how would greg say it', 'how does greg talk', 'what is greg like', 'will greg just pitch me', 'is greg pushy'],
+        detailOptions: ['calm and direct', 'specific instead of theatrical', 'serious about the cost without sounding alarmist', 'operator language instead of motivational fluff'],
+        id: 'greg-voice-posture',
+        priority: 12,
+        questionAngles: ['What would make this conversation feel useful instead of salesy for you?', 'Which part of this are you most skeptical about right now?'],
+        sourceIds: ['greg-voice-profile', 'greg-linkedin-posts'],
+        statusAnchor: 'Sound grounded, unsurprised, and deeply familiar with the pattern, while still respecting that the problem feels heavy to them.',
+        tags: ['authority', 'voice', 'trust', 'sales', 'skepticism'],
+        text: 'Greg’s communication style is calm, surgical, and specific. He sounds like someone who has seen this pattern many times before, but he never talks down to the owner or acts like the pain is trivial. That combination of steadiness and precision is a big part of why his sales language feels credible.',
+        title: 'Greg voice posture and trust',
     },
     {
         category: 'fit',
@@ -422,6 +696,84 @@ const CURATED_CARDS = [
         title: 'DIY open loop',
     },
     {
+        category: 'offers',
+        cues: ['mastermind', 'peer group', 'peer groups', 'other owners', 'group coaching'],
+        detailOptions: ['monthly confidential owner and GM discussions', 'financial facts plus one deep-dive business each session', 'peer accountability with one-to-one follow-up between group meetings'],
+        id: 'mastermind-groups-offer',
+        priority: 12,
+        questionAngles: ['Would peer accountability or custom one-to-one support move faster for you?', 'Do you need direct install help or a room of sharp operators to pressure-test decisions with?'],
+        sourceIds: ['mastermind-groups', 'mastermind-agenda', 'mastermind-email-sequence'],
+        statusAnchor: 'Position mastermind as structured peer accountability for serious operators, not networking.',
+        tags: ['mastermind', 'peer-group', 'coaching', 'accountability', 'owners', 'gms'],
+        text: 'GNA mastermind groups are monthly confidential sessions for owners and GMs who want peer accountability, a hard look at financial facts, and best-practice problem solving with other operators. Greg treats them as a faster-learning room, not a social group, and pairs the group cadence with direct follow-up so insights actually turn into execution.',
+        title: 'Mastermind groups as peer accountability',
+    },
+    {
+        category: 'operations',
+        cues: ['delegation', 'delegate', 'let go', 'hand things off', 'everything still comes back to me'],
+        detailOptions: ['delegate outcomes, not just tasks', 'tie new ownership to reports, metrics, and weekly follow-through', 'start with the most expensive hard-call layer that still boomerangs back to the owner'],
+        id: 'delegation-install',
+        priority: 13,
+        questionAngles: ['Which decision type still boomerangs back to you most?', 'What have you delegated that is still really being supervised by you?'],
+        sourceIds: ['delegation-blueprint', 'three-steps-workbook', 'project-manager-rules'],
+        statusAnchor: 'Talk like delegation is an install problem, not a willpower problem.',
+        tags: ['delegation', 'owner-bottleneck', 'leadership', 'accountability', 'reports'],
+        text: 'Greg does not treat delegation like dumping work. Real delegation means moving an outcome, the decision rights around it, and the reporting rhythm that proves ownership has actually shifted. If the owner still has to chase, re-decide, or rescue it, the delegation never really happened.',
+        title: 'Delegation install versus task dumping',
+    },
+    {
+        category: 'operations',
+        cues: ['financials', 'budget', 'balance sheet', 'p and l', 'p&l', 'cash flow', 'numbers', 'reports'],
+        detailOptions: ['clear GP targets and margins', 'simple reports that expose breakdowns fast', 'financial planning that lets the owner lead instead of guess'],
+        id: 'financial-clarity-install',
+        priority: 12,
+        questionAngles: ['Which number still feels the foggiest right now?', 'Where do you feel blind financially even though you know the pain is real?'],
+        sourceIds: ['financial-consulting-outline', 'executive-summary', 'gna-at-a-glance', 'business-assessment'],
+        statusAnchor: 'Treat money confusion like an operating clarity problem that can be fixed, not a character flaw.',
+        tags: ['financials', 'profit', 'reports', 'cash-flow', 'planning', 'metrics'],
+        text: 'Greg’s financial lane is about making the business legible. That means better reports, tighter GP and margin visibility, clearer planning, and simple financial disciplines that let the owner see where profit is leaking before it turns into stress and guesswork.',
+        title: 'Financial clarity and profit discipline',
+    },
+    {
+        category: 'psychology',
+        cues: ['burnout', 'hiring', 'cannot find good people', 'retention', 'bad hires', 'employees are checked out'],
+        detailOptions: ['good people hide behind average resumes', 'burnout often traces back to poor role clarity and weak leadership support', 'evaluate coachability, emotional intelligence, and follow-through instead of just skill'],
+        id: 'hiring-and-burnout-diagnosis',
+        priority: 12,
+        questionAngles: ['Is the real issue bad hiring, weak leadership, or overloaded good people?', 'Where do you feel the people problem most right now: hiring, managing, or keeping them?'],
+        sourceIds: ['hiring-mistakes', 'employee-burnout', 'emotional-intelligence', 'evaluate-performance'],
+        statusAnchor: 'Treat people problems as predictable leadership-system problems, not random bad luck.',
+        tags: ['hiring', 'burnout', 'emotional-intelligence', 'performance', 'team', 'leadership'],
+        text: 'Greg’s people lens is sharper than “we need better employees.” He looks at hiring discipline, emotional intelligence, coachability, role clarity, leadership support, and whether good people are burning out because the company keeps asking them to win inside broken systems.',
+        title: 'Hiring, burnout, and people-system diagnosis',
+    },
+    {
+        category: 'sales-psychology',
+        cues: ['sell me', 'why should i do this', 'sounds expensive', 'already tried', 'not sure this is worth it', 'can greg really help'],
+        detailOptions: ['speak to the pain without humiliating the owner', 'tie the problem to freedom, margin, and time back', 'make the next step feel practical instead of pitchy'],
+        id: 'pain-and-freedom-sales-frame',
+        priority: 13,
+        questionAngles: ['Which part feels most expensive right now: stress, margin, or the fact everything still depends on you?', 'If this actually got lighter, what would change first for you?'],
+        sourceIds: ['pain-sales-script', 'sales-letter-facts', 'freedom-email-sequence', 'greg-linkedin-posts', 'gregbot-training-manual'],
+        statusAnchor: 'Hold both sides at once: the pain is real, and there is a believable path to relief.',
+        tags: ['sales', 'pain', 'freedom', 'authority', 'objections'],
+        text: 'Greg’s sales language does not just push on pain. It connects the owner’s current pressure to a cleaner future: stronger margins, less daily drag, more trust in the team, and the ability to step away without the business wobbling. That balance is what makes the pitch feel grounded instead of manipulative.',
+        title: 'Pain plus freedom sales framing',
+    },
+    {
+        category: 'framework',
+        cues: ['5 steps', '7 steps', 'framework', 'pathway', 'steps to power', 'what is the system'],
+        detailOptions: ['Greg has multiple step-based teaching frameworks', 'the point is staged install, not theory for theory’s sake', 'the chat should point to the direction of the system without dumping the whole map'],
+        id: 'step-frameworks',
+        priority: 11,
+        questionAngles: ['Which part of the install are you really asking about: leadership, meetings, delegation, or profit?', 'Do you want the high-level path or the first practical move?'],
+        sourceIds: ['five-steps-framework', 'seven-steps-program', 'three-steps-workbook'],
+        statusAnchor: 'Use the frameworks to sound structured, but do not hand over the whole install in chat.',
+        tags: ['framework', 'steps', 'breakthrough', 'leadership', 'install'],
+        text: 'Greg teaches in staged frameworks because owners need a sequence, not random advice. The important thing for Grant is to show there is a real install path behind the work, then stay focused on the one part of that path that matters most to the current conversation.',
+        title: 'Step-based install frameworks',
+    },
+    {
         category: 'psychology',
         cues: ['owner stress', 'work weekends', 'exhausted', 'retire', 'do it myself'],
         id: 'owner-emotional-load',
@@ -449,10 +801,240 @@ function wordCount(text) {
     return text.trim().split(/\s+/).filter(Boolean).length;
 }
 
+function slugify(value) {
+    return value
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '')
+        .slice(0, 80);
+}
+
+function titleizeFileName(filePath) {
+    return path
+        .basename(filePath, path.extname(filePath))
+        .replace(/[_-]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .replace(/\b\w/g, (character) => character.toUpperCase());
+}
+
+function stripHtml(text) {
+    return text
+        .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+        .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/&nbsp;/gi, ' ')
+        .replace(/&amp;/gi, '&')
+        .replace(/&quot;/gi, '"');
+}
+
+function inferCategory(filePath) {
+    const normalizedPath = filePath.replaceAll('\\', '/').toLowerCase();
+
+    if (normalizedPath.includes('/business operations/')) return 'operations';
+    if (normalizedPath.includes('/sales content/email marketing/')) return 'sales';
+    if (normalizedPath.includes('/sales content/linkedin outreach/')) return 'sales';
+    if (normalizedPath.includes('/sales essentials/')) return 'sales';
+    if (normalizedPath.includes('/sales content/offers and programs/')) return 'offers';
+    if (normalizedPath.includes('/sales content/sales materials/')) return 'sales';
+    if (normalizedPath.includes('/marketing materials/')) return 'offers';
+    if (normalizedPath.includes('/course content/')) return 'frameworks';
+    if (normalizedPath.includes('voice_profile')) return 'psychology';
+
+    return 'operations';
+}
+
+function inferTags(filePath) {
+    const normalizedPath = filePath.replaceAll('\\', '/').toLowerCase();
+    const tags = new Set();
+
+    const tagRules = [
+        { regex: /academy/, tags: ['academy', 'coaching', 'execution'] },
+        { regex: /mastermind/, tags: ['mastermind', 'peer-group', 'coaching', 'accountability'] },
+        { regex: /delegation/, tags: ['delegation', 'owner-bottleneck', 'leadership'] },
+        { regex: /five stages|5 steps|7 steps|steps to power/, tags: ['framework', 'stages', 'breakthrough', 'leadership'] },
+        { regex: /cfa|conversation for action|promise/, tags: ['communication', 'promises', 'requests'] },
+        { regex: /meeting|accountability|metrics|report/, tags: ['weekly-meetings', 'accountability', 'metrics', 'reports'] },
+        { regex: /project|production|coordinator/, tags: ['project-management', 'coordination', 'production'] },
+        { regex: /sales|marketing|outreach|linkedin|email|brochure|flyer|workshop/, tags: ['sales', 'marketing', 'business-development', 'positioning'] },
+        { regex: /hiring|employee|burnout|emotional intelligence|coachable|performance/, tags: ['team', 'performance', 'coaching', 'leadership'] },
+        { regex: /financial|profit|margin|cash|budget|wip|collection/, tags: ['financials', 'profit', 'margin', 'cash-flow'] },
+        { regex: /owner|bottleneck|freedom|retire|exit|succession/, tags: ['owner-bottleneck', 'freedom', 'exit'] },
+        { regex: /gregbot|voice profile|integrity|purpose/, tags: ['psychology', 'authority', 'autonomy', 'mastery', 'purpose'] },
+    ];
+
+    for (const rule of tagRules) {
+        if (rule.regex.test(normalizedPath)) {
+            for (const tag of rule.tags) tags.add(tag);
+        }
+    }
+
+    if (!tags.size) {
+        tags.add('leadership');
+    }
+
+    return [...tags];
+}
+
+function describeSource(filePath) {
+    const normalizedPath = filePath.replaceAll('\\', '/');
+    const hinted = SOURCE_HINT_RULES.find((rule) => rule.match.test(normalizedPath));
+
+    if (hinted) {
+        return {
+            category: hinted.category,
+            hinted: true,
+            id: hinted.id,
+            tags: hinted.tags,
+            title: hinted.title,
+        };
+    }
+
+    return {
+        category: inferCategory(normalizedPath),
+        hinted: false,
+        id: slugify(normalizedPath.replace(/^\/users\/tyler\//i, '').replace(path.extname(normalizedPath), '')),
+        tags: inferTags(normalizedPath),
+        title: titleizeFileName(normalizedPath),
+    };
+}
+
+function shouldIgnoreSource(filePath) {
+    const normalizedPath = filePath.replaceAll('\\', '/');
+    const extension = path.extname(normalizedPath).toLowerCase();
+
+    if (!SUPPORTED_EXTENSIONS.has(extension)) return true;
+    if (SOURCE_ALLOWLIST_PATTERNS.some((pattern) => pattern.test(normalizedPath))) return false;
+
+    return SOURCE_IGNORE_PATTERNS.some((pattern) => pattern.test(normalizedPath));
+}
+
+function walkFiles(rootPath) {
+    const found = [];
+    const entries = readdirSync(rootPath, { withFileTypes: true });
+
+    for (const entry of entries) {
+        const fullPath = path.join(rootPath, entry.name);
+
+        if (entry.isDirectory()) {
+            found.push(...walkFiles(fullPath));
+            continue;
+        }
+
+        if (!entry.isFile()) continue;
+        if (shouldIgnoreSource(fullPath)) continue;
+
+        found.push(fullPath);
+    }
+
+    return found;
+}
+
+function sortByRootPriority(left, right) {
+    if (left.rootIndex !== right.rootIndex) {
+        return left.rootIndex - right.rootIndex;
+    }
+
+    return left.filePath.localeCompare(right.filePath);
+}
+
+function describeLooseSourceRoot(filePath) {
+    if (filePath.startsWith(`${archivedDownloadsRoot}/`)) {
+        return {
+            rootIndex: SOURCE_ROOTS.length,
+            rootLabel: 'Archived Downloads',
+            rootPath: archivedDownloadsRoot,
+        };
+    }
+
+    return {
+        rootIndex: SOURCE_ROOTS.length,
+        rootLabel: path.basename(path.dirname(filePath)),
+        rootPath: path.dirname(filePath),
+    };
+}
+
+function resolveExtraSourceFiles() {
+    const resolved = [];
+    const seenPaths = new Set();
+
+    for (const relativePath of EXTRA_SOURCE_RELATIVE_FILES) {
+        for (const sourceRoot of SOURCE_ROOTS) {
+            const candidatePath = path.join(sourceRoot.path, relativePath);
+            if (!existsSync(candidatePath) || seenPaths.has(candidatePath)) continue;
+            seenPaths.add(candidatePath);
+            resolved.push(candidatePath);
+        }
+    }
+
+    for (const fallbackPath of EXTRA_FALLBACK_SOURCE_FILES) {
+        if (!existsSync(fallbackPath) || seenPaths.has(fallbackPath)) continue;
+        seenPaths.add(fallbackPath);
+        resolved.push(fallbackPath);
+    }
+
+    return resolved;
+}
+
+function discoverSourceCandidates() {
+    const seenPaths = new Set();
+    const candidates = [];
+
+    for (const [index, sourceRoot] of SOURCE_ROOTS.entries()) {
+        for (const filePath of walkFiles(sourceRoot.path)) {
+            if (seenPaths.has(filePath)) continue;
+            seenPaths.add(filePath);
+            candidates.push({
+                filePath,
+                rootIndex: index,
+                rootLabel: sourceRoot.label,
+                rootPath: sourceRoot.path,
+            });
+        }
+    }
+
+    for (const filePath of resolveExtraSourceFiles()) {
+        if (!existsSync(filePath) || shouldIgnoreSource(filePath) || seenPaths.has(filePath)) continue;
+        seenPaths.add(filePath);
+        const extraRoot = describeLooseSourceRoot(filePath);
+        candidates.push({
+            filePath,
+            rootIndex: extraRoot.rootIndex,
+            rootLabel: extraRoot.rootLabel,
+            rootPath: extraRoot.rootPath,
+        });
+    }
+
+    return candidates.sort(sortByRootPriority);
+}
+
+const PPTX_TEXT_SCRIPT = `
+from zipfile import ZipFile
+from pathlib import Path
+import html
+import re
+import sys
+
+parts = []
+with ZipFile(Path(sys.argv[1])) as archive:
+    slide_names = sorted(
+        name for name in archive.namelist()
+        if re.match(r"ppt/slides/slide\\d+\\.xml$", name)
+    )
+    for name in slide_names:
+        data = archive.read(name).decode("utf-8", errors="ignore")
+        texts = [html.unescape(value) for value in re.findall(r"<a:t>(.*?)</a:t>", data)]
+        cleaned = " ".join(text.strip() for text in texts if text.strip())
+        if cleaned:
+            parts.append(cleaned)
+
+print("\\n\\n".join(parts))
+`;
+
 function extractText(filePath) {
     const extension = path.extname(filePath).toLowerCase();
 
-    if (extension === '.docx') {
+    if (extension === '.doc' || extension === '.docx') {
         return execFileSync('textutil', ['-convert', 'txt', '-stdout', filePath], {
             encoding: 'utf8',
             maxBuffer: 20 * 1024 * 1024,
@@ -464,6 +1046,32 @@ function extractText(filePath) {
             encoding: 'utf8',
             maxBuffer: 20 * 1024 * 1024,
         });
+    }
+
+    if (extension === '.pptx') {
+        return execFileSync('python3', ['-c', PPTX_TEXT_SCRIPT, filePath], {
+            encoding: 'utf8',
+            maxBuffer: 20 * 1024 * 1024,
+        });
+    }
+
+    if (extension === '.ppt') {
+        return execFileSync('strings', ['-n', '8', filePath], {
+            encoding: 'utf8',
+            maxBuffer: 20 * 1024 * 1024,
+        })
+            .split('\n')
+            .map((line) => line.trim())
+            .filter((line) => line.length >= 20)
+            .join('\n\n');
+    }
+
+    if (extension === '.html') {
+        return stripHtml(readFileSync(filePath, 'utf8'));
+    }
+
+    if (extension === '.md' || extension === '.txt') {
+        return readFileSync(filePath, 'utf8');
     }
 
     throw new Error(`Unsupported file type: ${filePath}`);
@@ -488,6 +1096,10 @@ function isUsefulParagraph(paragraph) {
         return false;
     }
 
+    if (/(adobe photoshop|xmpmeta|rdf:rdf|photoshop cs2|jfif|iccprofile|native digest|click to edit master|default design)/i.test(text)) {
+        return false;
+    }
+
     if (/\$\s*\d|\b15,?000\b|\b1,800\b|\bper year\b|\bper month\b|\binvestment\b|\breturn on investment\b|\broi\b|\d+\s*%/i.test(text)) {
         return false;
     }
@@ -496,7 +1108,52 @@ function isUsefulParagraph(paragraph) {
         return false;
     }
 
+    if (/untitled\s*\d+/i.test(text)) {
+        return false;
+    }
+
+    if (/\[(report preparer|insert [^\]]+|enter [^\]]+|your [^\]]+)\]/i.test(text)) {
+        return false;
+    }
+
     return true;
+}
+
+function splitLongParagraph(paragraph, maxWords = 110) {
+    if (wordCount(paragraph) <= maxWords) {
+        return [paragraph];
+    }
+
+    const sentences = paragraph
+        .split(/(?<=[.!?])\s+/)
+        .map((sentence) => sentence.trim())
+        .filter(Boolean);
+
+    if (!sentences.length || sentences.every((sentence) => wordCount(sentence) > maxWords)) {
+        const words = paragraph.split(/\s+/).filter(Boolean);
+        const parts = [];
+        for (let index = 0; index < words.length; index += maxWords) {
+            parts.push(words.slice(index, index + maxWords).join(' '));
+        }
+        return parts;
+    }
+
+    const parts = [];
+    let current = '';
+
+    for (const sentence of sentences) {
+        const combined = current ? `${current} ${sentence}` : sentence;
+        if (wordCount(combined) > maxWords) {
+            if (current) parts.push(current);
+            current = sentence;
+            continue;
+        }
+        current = combined;
+    }
+
+    if (current) parts.push(current);
+
+    return parts.flatMap((part) => (wordCount(part) > maxWords ? splitLongParagraph(part, maxWords) : [part]));
 }
 
 function paragraphToChunks(source, text) {
@@ -504,6 +1161,7 @@ function paragraphToChunks(source, text) {
         .split(/\n\s*\n/)
         .map((paragraph) => paragraph.replace(/\s*\n\s*/g, ' ').trim())
         .filter(isUsefulParagraph);
+    const segments = paragraphs.flatMap((paragraph) => splitLongParagraph(paragraph));
 
     const chunks = [];
     let current = '';
@@ -520,12 +1178,12 @@ function paragraphToChunks(source, text) {
         current = '';
     };
 
-    for (const paragraph of paragraphs) {
-        const combined = current ? `${current}\n${paragraph}` : paragraph;
+    for (const segment of segments) {
+        const combined = current ? `${current}\n${segment}` : segment;
 
         if (wordCount(combined) > 120) {
             pushCurrent();
-            current = paragraph;
+            current = segment;
             continue;
         }
 
@@ -546,30 +1204,94 @@ function paragraphToChunks(source, text) {
     }));
 }
 
+function shouldPreserveAlias(primarySource, duplicateSource) {
+    return duplicateSource.hinted && duplicateSource.id !== primarySource.id;
+}
+
 function buildBundle() {
     const sources = [];
     const rawCards = [];
+    const skippedSources = [];
+    const seenHashes = new Map();
+    const seenSourceIds = new Set();
 
-    for (const source of SOURCE_LIBRARY) {
-        const extracted = extractText(source.path);
-        const normalized = normalizeWhitespace(extracted);
+    for (const candidate of discoverSourceCandidates()) {
+        const hintedSource = describeSource(candidate.filePath);
 
-        sources.push({
-            category: source.category,
-            id: source.id,
-            path: path.relative(legacyRoot, source.path),
-            tags: source.tags,
-            title: source.title,
-            wordCount: wordCount(normalized),
-        });
+        try {
+            const extracted = extractText(candidate.filePath);
+            const normalized = normalizeWhitespace(extracted);
+            const totalWords = wordCount(normalized);
 
-        rawCards.push(...paragraphToChunks(source, normalized));
+            if (totalWords < 80) {
+                skippedSources.push({
+                    path: candidate.filePath,
+                    reason: 'too-short',
+                });
+                continue;
+            }
+
+            const contentHash = createHash('sha1').update(normalized).digest('hex');
+            if (seenHashes.has(contentHash)) {
+                const primarySource = seenHashes.get(contentHash);
+
+                if (shouldPreserveAlias(primarySource, hintedSource) && !seenSourceIds.has(hintedSource.id)) {
+                    sources.push({
+                        aliasOf: primarySource.id,
+                        category: hintedSource.category,
+                        id: hintedSource.id,
+                        path: `${candidate.rootLabel}/${path.relative(candidate.rootPath, candidate.filePath).replaceAll('\\', '/')}`,
+                        tags: hintedSource.tags,
+                        title: hintedSource.title,
+                        wordCount: totalWords,
+                    });
+                    seenSourceIds.add(hintedSource.id);
+                    continue;
+                }
+
+                skippedSources.push({
+                    path: candidate.filePath,
+                    reason: 'duplicate-content',
+                });
+                continue;
+            }
+
+            const sourceId = seenSourceIds.has(hintedSource.id)
+                ? `${hintedSource.id}-${contentHash.slice(0, 8)}`
+                : hintedSource.id;
+            const relativePath = path.relative(candidate.rootPath, candidate.filePath).replaceAll('\\', '/');
+            const source = {
+                ...hintedSource,
+                id: sourceId,
+                path: `${candidate.rootLabel}/${relativePath}`,
+            };
+
+            seenHashes.set(contentHash, source);
+            seenSourceIds.add(sourceId);
+
+            sources.push({
+                category: source.category,
+                id: source.id,
+                path: source.path,
+                tags: source.tags,
+                title: source.title,
+                wordCount: totalWords,
+            });
+
+            rawCards.push(...paragraphToChunks(source, normalized));
+        } catch (error) {
+            skippedSources.push({
+                path: candidate.filePath,
+                reason: error instanceof Error ? error.message : String(error),
+            });
+        }
     }
 
     return {
         cards: [...CURATED_CARDS, ...rawCards],
         generatedAt: new Date().toISOString(),
-        sourceLibraryPath: sourceLibraryLabel,
+        skippedSources,
+        sourceLibraryPath: SOURCE_ROOTS.map((sourceRoot) => `${sourceRoot.label}: ${sourceRoot.path}`).join(' | '),
         sources,
     };
 }
@@ -577,9 +1299,11 @@ function buildBundle() {
 function main() {
     assertToolAvailable('textutil');
     assertToolAvailable('pdftotext');
+    assertToolAvailable('python3');
+    assertToolAvailable('strings');
 
-    if (!existsSync(legacyRoot)) {
-        throw new Error(`GNA source library not found at "${legacyRoot}". Set GNA_SOURCE_ROOT to the archive path and rerun.`);
+    if (!SOURCE_ROOTS.length) {
+        throw new Error('No GNA source roots were found. Set GNA_SOURCE_ROOTS to one or more archive paths and rerun.');
     }
 
     const bundle = buildBundle();
@@ -588,6 +1312,7 @@ function main() {
     writeFileSync(outputPath, `${JSON.stringify(bundle, null, 2)}\n`, 'utf8');
 
     console.log(`Wrote ${bundle.cards.length} knowledge cards from ${bundle.sources.length} source documents.`);
+    console.log(`Skipped ${bundle.skippedSources.length} files (duplicates, placeholders, or low-signal docs).`);
     console.log(outputPath);
 }
 

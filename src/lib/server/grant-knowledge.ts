@@ -6,6 +6,7 @@ type ChatMessage = {
 };
 
 type GrantKnowledgeSource = {
+    aliasOf?: string;
     category: string;
     id: string;
     path: string;
@@ -31,6 +32,10 @@ type GrantKnowledgeCard = {
 type GrantKnowledgeBundle = {
     cards: GrantKnowledgeCard[];
     generatedAt: string;
+    skippedSources?: Array<{
+        path: string;
+        reason: string;
+    }>;
     sourceLibraryPath: string;
     sources: GrantKnowledgeSource[];
 };
@@ -136,6 +141,22 @@ const TOPIC_RULES: TopicRule[] = [
     {
         regex: /\b(hire|hiring|turnover|morale|employee|employees|team|culture|coachable|uncoachable)\b/i,
         tags: ['hiring', 'team', 'culture', 'coaching'],
+    },
+    {
+        regex: /\b(mastermind|peer group|peer groups|other owners|other gms)\b/i,
+        tags: ['mastermind', 'peer-group', 'coaching', 'accountability'],
+    },
+    {
+        regex: /\b(delegate|delegation|let go|hand things off|handoff authority)\b/i,
+        tags: ['delegation', 'owner-bottleneck', 'leadership'],
+    },
+    {
+        regex: /\b(burnout|burned out|overloaded|checked out|emotional intelligence)\b/i,
+        tags: ['burnout', 'emotional-intelligence', 'team', 'coaching'],
+    },
+    {
+        regex: /\b(5 steps|7 steps|steps to power|framework|install sequence)\b/i,
+        tags: ['framework', 'steps', 'breakthrough', 'leadership'],
     },
     {
         regex: /\b(eos|consultant|consultants|did not stick|didn't stick|slid back|slide back|waste of money|already tried)\b/i,
