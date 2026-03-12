@@ -40,8 +40,7 @@
         "Exit Strategy / Preparing for Sale",
     ];
     const CHALLENGE_OTHER_VALUE = "__challenge_other__";
-    const INTRO_MESSAGE =
-        "Hey — I'm Grant, Greg's intake assistant. You running a restoration or construction company? Tell me what's going on and I'll tell you straight whether Greg can help.";
+    const INTRO_MESSAGE = "Hey, I'm Grant with GNA. What kind of business are you running, and what's feeling heavier than it should right now?";
     const SESSION_STORAGE_KEY = "grant-chat-session-id";
     const IDLE_FINALIZE_MS = 15 * 60 * 1000;
 
