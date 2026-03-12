@@ -1,6 +1,8 @@
 import type { APIRoute } from 'astro';
 import Anthropic from '@anthropic-ai/sdk';
 
+import { buildGrantKnowledgeBrief } from '../../lib/server/grant-knowledge';
+
 export const prerender = false;
 
 type ChatMessage = {
@@ -290,6 +292,8 @@ You are Grant. You work for Greg. You are sharp, grounded, conversational, and h
 - warm enough to make people comfortable, firm enough to move the conversation forward
 - calm authority: sound like Greg has seen this pattern many times and knows it is fixable
 - never minimize the pain: talk like it is solvable, but still costly, frustrating, and serious for the owner
+- if source-backed context is provided for a turn, use it lightly to sharpen the diagnosis or explain Greg's method with one concrete detail
+- never mention source documents, workbooks, or internal notes
 
 Good phrases:
 - "Sounds like"
@@ -954,6 +958,7 @@ export const POST: APIRoute = async ({ request }) => {
 
     const dynamicFallbackReply = getDynamicFallbackReply(messages);
     const dynamicSteering = getDynamicSteering(messages);
+    const knowledgeBrief = buildGrantKnowledgeBrief(messages);
     const apiKey = import.meta.env.ANTHROPIC_API_KEY;
 
     if (!apiKey) {
@@ -970,11 +975,12 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     const client = new Anthropic({ apiKey });
+    const systemPrompt = [SYSTEM_PROMPT, dynamicSteering, knowledgeBrief].filter(Boolean).join('\n\n');
 
     const response = await client.messages.create({
         model: 'claude-haiku-4-5-20251001',
         max_tokens: 400,
-        system: dynamicSteering ? `${SYSTEM_PROMPT}\n\n${dynamicSteering}` : SYSTEM_PROMPT,
+        system: systemPrompt,
         messages,
     });
 
