@@ -38,6 +38,30 @@ const cases = [
         include: ["won't keep pushing"],
         exclude: ["FREEDOM", "book", "calendar"],
     },
+    {
+        name: "price idiom is not treated as pricing",
+        turns: ["Part of me thinks this is just the price of being the owner."],
+        include: ["business still runs through you", "ownership"],
+        exclude: ["investment", "ballparks", "numbers"],
+    },
+    {
+        name: "call explanation stays diagnostic",
+        turns: ["If I did talk to Greg, what would that 30 minutes actually be about?"],
+        include: ["map where ownership is breaking", "what kind of fix actually fits"],
+        exclude: ["discovery call", "sound worth exploring"],
+    },
+    {
+        name: "booking requirements do not invent phone",
+        turns: ["Okay, say I wanted to talk to him. What would you need from me?"],
+        include: ["name, email, timezone", "Phone isn't required"],
+        exclude: ["phone number is required"],
+    },
+    {
+        name: "structure question gets a direct answer",
+        turns: ["Why do owners stay stuck there even when they have meetings and org charts?"],
+        include: ["structure on paper is not the same as transferred ownership", "roll uphill"],
+        exclude: ["does that sound like what's happening with yours"],
+    },
 ];
 
 async function runCase(testCase) {
