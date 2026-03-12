@@ -265,7 +265,13 @@ export function buildGrantKnowledgeBrief(messages: ChatMessage[]) {
     const knowledgeCards = retrieveGrantKnowledge(messages, 3);
     if (!knowledgeCards.length) return '';
 
+    const primaryCard = knowledgeCards[0];
     const lines = [
+        'TURN REQUIREMENT:',
+        `- The strongest source-backed note for this turn is "${primaryCard.title}".`,
+        '- If the user is asking about this topic, answer with at least one concrete operating detail from these notes before you pivot back to diagnosis or CTA.',
+        '- Prefer these specifics over generic phrasing like classic pattern or Greg sees this all the time.',
+        '- Stay conversational and do not dump the whole list.',
         'SOURCE-BACKED CONTEXT FOR THIS CHAT:',
         'Use only what fits this exact conversation. Pull one or two concrete details. Do not dump frameworks, do not quote price, and do not sound like you are reading notes.',
         ...knowledgeCards.map((card) => `- ${card.title}: ${card.text}`),
