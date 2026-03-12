@@ -352,6 +352,7 @@ Avoid:
 - avoid weak yes/no closes like "Worth a conversation?" or "Does that sound useful?"
 - avoid soft closes like "Ready to spend 30 minutes?", "Want to grab 30 minutes?", or "Sound like something worth exploring?"
 - prefer calibrated, consequence-based questions like "What breaks first?", "Where does that show up most?", or "If Greg mapped that in 30 minutes, would that be useful?"
+- never ask "Worth a call?" or "Worth a diagnostic call?" after you already diagnosed the issue; either ask what they would want Greg to look at first or offer the next concrete step
 - when the user asks about the call itself, make the call sound concrete and valuable, not generic or salesy
 - avoid lazy follow-ups like "Does that resonate?" or "What does that look like?" unless you anchor them to a concrete issue
 - when the prospect is clearly interested, give one next step instead of multiple equal options
@@ -438,6 +439,13 @@ function extractLatestUserRevenueMillions(messages: ChatMessage[]) {
 
 function isPricingIdiom(latest: string) {
     return /\bprice of being (the )?owner\b|\bprice of ownership\b/.test(latest);
+}
+
+function hardenSoftClose(text: string) {
+    return text.replace(
+        /\b(Worth a (?:quick )?30-minute diagnostic call[^?]*\?|Worth a conversation\?|Does that sound useful\?|Sound like something worth exploring\?|Ready to spend 30 minutes\?|Want to grab 30 minutes\?)\b/gi,
+        'If Greg mapped that with you in 30 minutes, what would you want him to look at first?'
+    );
 }
 
 function getGuardrailReply(messages: ChatMessage[]) {
@@ -549,7 +557,7 @@ export const POST: APIRoute = async ({ request }) => {
     const guardrailReply = getGuardrailReply(messages);
 
     if (guardrailReply) {
-        return new Response(JSON.stringify({ content: shapeReply(guardrailReply) }), {
+        return new Response(JSON.stringify({ content: shapeReply(hardenSoftClose(guardrailReply)) }), {
             headers: { 'Content-Type': 'application/json' },
         });
     }
@@ -571,7 +579,7 @@ export const POST: APIRoute = async ({ request }) => {
         messages,
     });
 
-    const text = response.content[0].type === 'text' ? shapeReply(response.content[0].text) : '';
+    const text = response.content[0].type === 'text' ? shapeReply(hardenSoftClose(response.content[0].text)) : '';
 
     return new Response(JSON.stringify({ content: text }), {
         headers: { 'Content-Type': 'application/json' },
