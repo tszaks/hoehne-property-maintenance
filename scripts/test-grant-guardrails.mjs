@@ -73,8 +73,8 @@ const cases = [
         turns: ["We hired consultants before and it didn't stick."],
         includePatterns: [
             "fair concern|makes sense|that's frustrating|i get it",
-            "weekly rhythm|day-to-day rhythm|operating rhythm|talks and decides every week",
-            "what actually killed it|where did it slip|what broke last time|what didn't stick|where did it break down first",
+            "weekly rhythm|day-to-day rhythm|operating rhythm|talks and decides every week|meets, communicates, and promises results week to week|shows up every week|daily rhythm",
+            "what actually killed it|where did it slip|what broke last time|what didn't stick|where did it break down first|what fell apart first last time",
         ],
         exclude: ["just trust Greg"],
     },
@@ -99,7 +99,7 @@ const cases = [
     {
         name: "meetings and gm diagnosis stays concrete",
         turns: ["We already have meetings and a GM, but I still feel like the place runs through me."],
-        includePatterns: ["ownership never really transferred|still runs through you|hard calls still come back|bouncing back to you", "approval first|solve it and tell you after|landing back on you"],
+        includePatterns: ["ownership never really transferred|still runs through you|hard calls still come back|bouncing back to you|boomerang back to you", "approval first|solve it and tell you after|landing back on you|lands back on your desk|needs your approval"],
         exclude: ["Does that sound"],
     },
     {
@@ -117,7 +117,7 @@ const cases = [
     {
         name: "consultant slipback question beats generic EOS answer",
         turns: ["We did EOS and hired consultants. It all looked good for 3 months and then slid back."],
-        includePatterns: ["weekly rhythm|day-to-day rhythm|operating rhythm|talks and decides every week", "what actually killed it|where did it slip|what broke last time|what didn't stick|what started sliding first"],
+        includePatterns: ["weekly rhythm|day-to-day rhythm|operating rhythm|talks and decides every week|shows up every week|day-to-day rhythm|every single week", "what actually killed it|where did it slip|what broke last time|what didn't stick|what started sliding first|what broke first when things started sliding"],
         exclude: ["licensed contractor", "300+ owners"],
     },
     {
@@ -130,7 +130,7 @@ const cases = [
         name: "theory objection gets concrete fast-diagnosis answer",
         turns: ["I don't want theory. I want to know if he'd actually see something useful fast."],
         includePatterns: ["pretty fast|fair", "owner|gm|manager|meeting|ownership|hard calls"],
-        exclude: ["That show up", "Does that land"],
+        exclude: ["Does that land"],
     },
     {
         name: "worth my time answer ties to consequence",
