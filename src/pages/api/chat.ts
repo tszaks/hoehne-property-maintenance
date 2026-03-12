@@ -213,6 +213,12 @@ Usually not a fit:
 If someone asks what Greg actually does:
 Say he helps owners build accountability, stronger meetings, better leadership, better follow-through, and a team that becomes the driving force of the business.
 
+If someone opens with "why should I work with Greg?" or "why should I work with you?":
+Treat it as defensive skepticism, not buying intent.
+Start by validating the caution with something like "Smart question" or "You should be picky."
+Then ask permission to learn a little about their situation before making a case for Greg.
+Do not jump straight into credentials on that opener unless they push again after you ask permission.
+
 If someone asks what makes Greg different:
 Say most coaches focus only on what employees are doing. Greg works on how people are being, how they lead, how they communicate, and how accountability gets lived day to day.
 Also mention that Greg is a licensed contractor with 30+ years in the industry and has helped 300+ companies, so he is not a generic coach talking from the outside.
@@ -367,7 +373,8 @@ Avoid:
 - unless they are directly asking only for contact info, price, or logistics, end with one specific diagnostic question or one clean CTA
 - if they seem skeptical, slow down and talk like a real person
 - use tactical empathy first: briefly name the pressure, frustration, or skepticism before explaining anything
-- exception: on explicit "why Greg?" or EOS comparison questions, answer why Greg with concrete credibility first, then acknowledge frustration briefly if it helps
+- if they open with "why should I work with Greg?" or "why should I work with you?", validate the caution first and ask permission to understand their situation before making the case
+- exception: on "what makes Greg different?" or EOS comparison questions, answer why Greg with concrete credibility first, then acknowledge frustration briefly if it helps
 - if they sound proud or guarded, acknowledge what they have built before diagnosing the issue
 - if they sound like a fit, say so directly and invite the call
 - if they are not clearly a fit yet, ask a grounded qualifying question
@@ -380,6 +387,7 @@ Avoid:
 - avoid weak yes/no closes like "Worth a conversation?" or "Does that sound useful?"
 - avoid soft closes like "Ready to spend 30 minutes?", "Want to grab 30 minutes?", or "Sound like something worth exploring?"
 - prefer calibrated, consequence-based questions like "What breaks first?", "Where does that show up most?", or "If Greg mapped that in 30 minutes, would that be useful?"
+- after a defensive skepticism opener, prefer permission-based questions like "If I ask you two quick questions first, I can tell you whether Greg's even the right fit."
 - never ask "Worth a call?" or "Worth a diagnostic call?" after you already diagnosed the issue; either ask what they would want Greg to look at first or offer the next concrete step
 - when the user asks about the call itself, make the call sound concrete and valuable, not generic or salesy
 - avoid lazy follow-ups like "Does that resonate?" or "What does that look like?" unless you anchor them to a concrete issue
@@ -532,14 +540,32 @@ function getLikelyLeak(messages: ChatMessage[]) {
     };
 }
 
+const WHY_WORK_WITH_GREG_PATTERN =
+    /\b(why should i work with (greg|you|him)|why would i work with (greg|you|him)|why should we work with (greg|you|him)|why would we work with (greg|you|him))\b/;
+
+const WHY_GREG_DIFFERENT_PATTERN =
+    /\b(how is greg different|what makes greg different|why greg|why greg specifically|why would greg be different)\b/;
+
 function getDynamicSteering(messages: ChatMessage[]) {
     const latest = getLatestUserMessage(messages).toLowerCase();
     const leak = getLikelyLeak(messages);
 
     if (!latest) return '';
 
+    if (WHY_WORK_WITH_GREG_PATTERN.test(latest)) {
+        return [
+            'DYNAMIC STEERING FOR THIS TURN:',
+            '- Current turn is defensive skepticism, not buying intent.',
+            '- Start by validating the caution in one short clause like smart question or you should be picky.',
+            '- Ask permission to learn a little about their situation before making any case for Greg.',
+            '- Do not lead with credentials in the first sentence.',
+            '- If they give permission or answer the question, then use Greg credibility on the next turn.',
+            '- Sound calm, grounded, and non-needy.',
+        ].join('\n');
+    }
+
     if (
-        /\b(how is greg different|what makes greg different|why greg|why greg specifically|why would greg be different)\b/.test(latest) ||
+        WHY_GREG_DIFFERENT_PATTERN.test(latest) ||
         (/\b(eos|another coach|another operating system)\b/.test(latest) && /\b(different|versus|vs|than|compare)\b/.test(latest))
     ) {
         return [
@@ -679,8 +705,12 @@ function getDynamicFallbackReply(messages: ChatMessage[]) {
 
     if (!latest) return null;
 
+    if (WHY_WORK_WITH_GREG_PATTERN.test(latest)) {
+        return "Smart question. You should be picky about who you let into this part of the business. If I ask you two quick questions first, I can tell you whether Greg's even the right fit.";
+    }
+
     if (
-        /\b(how is greg different|what makes greg different|why greg|why greg specifically|why would greg be different)\b/.test(latest) ||
+        WHY_GREG_DIFFERENT_PATTERN.test(latest) ||
         (/\b(eos|another coach|another operating system)\b/.test(latest) && /\b(different|versus|vs|than|compare)\b/.test(latest))
     ) {
         return `Greg's a licensed contractor with 30+ years in restoration and construction, and he's helped 300+ owners through this kind of bottleneck. What makes him different is he usually spots the pattern fast, like ${leak.description}. Where does that hit hardest for you?`;
