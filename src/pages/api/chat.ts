@@ -762,7 +762,7 @@ function hardenSoftClose(text: string) {
     );
 
     return strongerCallClose.replace(
-        /(Does that track\?|Does that sound like where you are\?|That sound like where you are\?|Does that sound like where you're at\?|Does that sound like you\?|Sound like you\?|Does that sound like [^?]{1,80}\?|Sound like [^?]{1,80}\?|Does that sound right\?|Does that resonate\?|Does that land\?|Does that feel true\?|That show up for you\?|What does that look like most\?)/gi,
+        /(Does that track\?|Does that sound like where you are\?|That sound like where you are\?|Does that sound like where you're at\?|Does that sound like you\?|Sound like you\?|Does that sound like [^?]{1,80}\?|Sound like [^?]{1,80}\?|Does that sound right\?|Sound about right\?|About right\?|Does that resonate\?|Does that land\?|Does that feel true\?|That show up for you\?|What does that look like most\?)/gi,
         'Where does that show up most right now?'
     );
 }
