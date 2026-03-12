@@ -84,16 +84,12 @@
             class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16"
         >
             <div class="footer-reveal lg:col-span-1">
-                <a href="/industrial" class="flex items-center gap-2 mb-6">
-                    <div
-                        class="w-8 h-8 bg-ind-accent flex items-center justify-center font-bold text-black"
-                    >
-                        G
-                    </div>
-                    <span
-                        class="font-bold text-xl tracking-tight uppercase text-white"
-                        >GNA</span
-                    >
+                <a href="/industrial" class="mb-6 inline-flex items-center">
+                    <img
+                        src="/gna-logo-light.png"
+                        alt="GNA Inc — Breakthrough Performance"
+                        class="h-8 w-auto object-contain"
+                    />
                 </a>
                 <p class="text-ind-steel text-sm leading-relaxed max-w-xs">
                     Greg Neil has spent 30 years helping restoration and
