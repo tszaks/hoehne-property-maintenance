@@ -525,7 +525,7 @@ function getDynamicSteering(messages: ChatMessage[]) {
         (/\b(eos|another coach|another operating system)\b/.test(latest) && /\b(different|versus|vs|than|compare)\b/.test(latest))
     ) {
         hints.push(
-            "Current turn is a credibility question. Lead with one concrete credential, then one precise pattern Greg would spot fast. Sound unsurprised and capable, but make the consequence feel expensive and serious."
+            "Current turn is a credibility question. Lead with two concrete authority signals: licensed contractor plus 30+ years and/or 300+ owners helped. Then name one precise pattern Greg would spot fast. Sound unsurprised and capable, but make the consequence feel expensive and serious."
         );
     }
 
