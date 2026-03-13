@@ -72,7 +72,8 @@
                     class="text-ind-steel text-lg md:text-xl font-medium max-w-xl"
                 >
                     Stop running your business on willpower. Let's build the
-                    team, the culture, and the systems that set you free.
+                    team, the culture, and the systems that set you free and
+                    make the company more valuable when it is time to sell.
                 </p>
             </div>
             <a href="#contact" class="ind-button px-12 py-5 text-lg w-full md:w-auto">
@@ -93,8 +94,8 @@
                 </a>
                 <p class="text-ind-steel text-sm leading-relaxed max-w-xs">
                     Greg Neil has spent 30 years helping restoration and
-                    construction owners build teams, grow profits, and take back
-                    their lives.
+                    construction owners build teams, grow profits, prepare for
+                    sale, and take back their lives.
                 </p>
             </div>
 
@@ -105,7 +106,7 @@
                     Capabilities
                 </h4>
                 <ul class="space-y-4">
-                    {#each ["One-to-One Coaching", "Mastermind Groups", "Succession & Exit", "Team & Culture"] as item}
+                    {#each ["Succession & Exit", "One-to-One Coaching", "Mastermind Groups", "Team & Culture"] as item}
                         <li>
                             <a
                                 href="#"

@@ -14,17 +14,17 @@
     const services = [
         {
             id: "01",
+            title: "Succession & Exit",
+            description:
+                "You've built it for years. Now let's get it ready to command the best possible sale price. In 2–3 years we strengthen your financials, tighten operations, and build a management team buyers can trust.",
+            image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80",
+        },
+        {
+            id: "02",
             title: "One-to-One Coaching",
             description:
                 "Full-service business coaching that touches every area of your company. Unlimited support for ownership, leadership, accountability, sales, financial management, and team performance.",
             image: "https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&q=80",
-        },
-        {
-            id: "02",
-            title: "Succession & Exit",
-            description:
-                "You've built it for years — now cash out. In 2–3 years we get your financials strong and operations buttoned up to attract the best possible sale price.",
-            image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80",
         },
         {
             id: "03",
@@ -101,9 +101,9 @@
                 </h3>
             </div>
             <p class="text-ind-steel max-w-md text-sm md:text-base font-medium">
-                Every program is built around one goal: getting you out of
-                the day-to-day so your business runs without you holding
-                it together.
+                Every program is built around one goal: getting you out of the
+                day-to-day so your business runs without you holding it
+                together, and becomes more valuable when it is time to sell.
             </p>
         </div>
 
