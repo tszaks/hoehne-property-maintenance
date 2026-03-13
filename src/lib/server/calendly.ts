@@ -1,3 +1,5 @@
+import { getServerEnv } from './runtime-env';
+
 const CALENDLY_API_BASE = 'https://api.calendly.com';
 const DEFAULT_WINDOW_DAYS = 7;
 const DEFAULT_SLOT_LIMIT = 5;
@@ -47,9 +49,9 @@ type BookingInput = {
 };
 
 function getConfig() {
-    const pat = import.meta.env.CALENDLY_PAT;
-    const eventTypeUri = import.meta.env.CALENDLY_EVENT_TYPE_URI;
-    const serviceQuestion = import.meta.env.CALENDLY_SERVICE_QUESTION ?? DEFAULT_SERVICE_QUESTION;
+    const pat = getServerEnv('CALENDLY_PAT');
+    const eventTypeUri = getServerEnv('CALENDLY_EVENT_TYPE_URI');
+    const serviceQuestion = getServerEnv('CALENDLY_SERVICE_QUESTION') ?? DEFAULT_SERVICE_QUESTION;
 
     if (!pat || !eventTypeUri) {
         throw new Error('Calendly is not configured');

@@ -1,4 +1,5 @@
 import postgres from 'postgres';
+import { getServerEnv } from './runtime-env';
 
 export type StoredMessage = {
     content: string;
@@ -72,7 +73,7 @@ let initPromise: Promise<void> | null = null;
 let sqlClient: ReturnType<typeof postgres> | null = null;
 
 function getSql() {
-    const connectionString = import.meta.env.DATABASE_URL;
+    const connectionString = getServerEnv('DATABASE_URL');
 
     if (!connectionString) {
         throw new Error('Database is not configured');

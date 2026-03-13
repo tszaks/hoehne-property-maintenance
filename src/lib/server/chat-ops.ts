@@ -7,6 +7,7 @@ import {
     type ChatSessionRecord,
     type ChatSummary,
 } from './chat-store';
+import { getServerEnv } from './runtime-env';
 
 export type FinalizeReason = 'booked' | 'closed' | 'idle' | 'pagehide';
 
@@ -15,12 +16,12 @@ const DEFAULT_FROM_EMAIL = 'GNA Works <onboarding@resend.dev>';
 const DEFAULT_REPLY_TO_EMAIL = 'greg@gnaworks.com';
 
 function getAnthropicClient() {
-    const apiKey = import.meta.env.ANTHROPIC_API_KEY;
+    const apiKey = getServerEnv('ANTHROPIC_API_KEY');
     return apiKey ? new Anthropic({ apiKey }) : null;
 }
 
 function getSummaryRecipients() {
-    const raw = import.meta.env.GRANT_SUMMARY_TO_EMAILS ?? DEFAULT_SUMMARY_RECIPIENTS;
+    const raw = getServerEnv('GRANT_SUMMARY_TO_EMAILS') ?? DEFAULT_SUMMARY_RECIPIENTS;
     return raw
         .split(',')
         .map((value) => value.trim())
@@ -28,7 +29,7 @@ function getSummaryRecipients() {
 }
 
 function getInboxUrl(sessionId: string) {
-    const token = import.meta.env.GRANT_INBOX_TOKEN;
+    const token = getServerEnv('GRANT_INBOX_TOKEN');
     if (!token) return null;
 
     return `https://www.gnaworks.com/grant-inbox?token=${encodeURIComponent(token)}&session=${encodeURIComponent(sessionId)}`;
@@ -185,7 +186,7 @@ ${formatTranscript(session)}`,
 }
 
 async function sendSummaryEmail(session: ChatSessionRecord, summary: ChatSummary) {
-    const apiKey = import.meta.env.RESEND_API_KEY;
+    const apiKey = getServerEnv('RESEND_API_KEY');
     if (!apiKey) {
         return false;
     }
@@ -195,8 +196,8 @@ async function sendSummaryEmail(session: ChatSessionRecord, summary: ChatSummary
         return false;
     }
 
-    const replyTo = import.meta.env.GRANT_SUMMARY_REPLY_TO ?? DEFAULT_REPLY_TO_EMAIL;
-    const from = import.meta.env.RESEND_FROM_EMAIL ?? DEFAULT_FROM_EMAIL;
+    const replyTo = getServerEnv('GRANT_SUMMARY_REPLY_TO') ?? DEFAULT_REPLY_TO_EMAIL;
+    const from = getServerEnv('RESEND_FROM_EMAIL') ?? DEFAULT_FROM_EMAIL;
     const inboxUrl = getInboxUrl(session.sessionId);
     const transcript = formatTranscript(session);
     const html = `
