@@ -12,27 +12,27 @@
     const faqs = [
         {
             question: "Who is your ideal client?",
-            answer: "Restoration and construction business owners doing between $5M and $35M annually. You're good at the craft — but you're still stuck in the business, doing too much yourself, and not sure how to build a team that actually runs things without you.",
+            answer: "Restoration and construction owners doing between $5M and $35M annually who want a real succession plan or future exit. You are good at the craft, but the business still leans too hard on you and that keeps value trapped.",
         },
         {
             question: "How quickly do clients see results?",
-            answer: "Most clients see meaningful shifts in team accountability and owner workload within the first 90 days. Significant financial results — margins up, overhead tightening, productivity climbing — typically emerge within 6 to 12 months. The goal is 1,000% ROI. We've hit 3,000%.",
+            answer: "Most clients see meaningful shifts in accountability, meetings, and owner dependence within the first 90 days. Stronger margins, tighter operations, and the deeper exit-readiness work usually build over 6 to 12 months and continue compounding from there.",
         },
         {
             question: "What makes your approach different from other business coaches?",
-            answer: "Most coaches focus on what your employees are doing. Greg focuses on how they're being — the culture, the mindset, the accountability structures. That's what drives discretionary effort: people giving their best even when no one's watching. That's where the real gains come from.",
+            answer: "Most coaches sell growth as the end goal. Greg treats growth, stronger managers, and better margins as proof that the business is becoming transferable. He works on culture, accountability, and leadership because that is what makes succession planning and exit strategy actually hold up.",
         },
         {
             question: "Do you work with companies preparing to sell?",
-            answer: "Yes. Succession and exit strategy is one of Greg's specialties. In 2–3 years, we get your financials strong, your operations documented, and your management team running independently — which directly increases your sale price and makes you attractive to acquirers.",
+            answer: "Yes. Succession and exit strategy is one of Greg's specialties. Real preparation usually takes a minimum of 3 to 5 years to strengthen financials, document operations, and build a management team that can run independently, which is what increases sale value and handoff strength.",
         },
         {
             question: "What does the Mastermind Group program look like?",
-            answer: "Monthly virtual meetings (2–2.5 hours) with 7 or fewer non-competing restoration owners and GMs. Each session covers financial facts, a deep dive on one member's business, and best-practice solutions to the group's biggest current challenges. Plus one-on-one coaching between sessions.",
+            answer: "Monthly virtual meetings with 7 or fewer non-competing restoration owners and GMs. Each session helps members solve the leadership, financial, and operational issues that keep the owner trapped and keep the business from becoming truly exit-ready.",
         },
         {
             question: "How do I get started?",
-            answer: "Start with a free 30-minute discovery call. Greg will walk through your specific situation, identify your biggest gaps, and tell you exactly which program is the right fit. No pressure, no pitch — just a straight conversation about what's possible for your business.",
+            answer: "Start with a free 30-minute discovery call. Greg will look at where owner dependence is still showing up, what that is doing to value, and which path makes the most sense if you want a cleaner succession or exit down the road.",
         },
     ];
 
@@ -82,12 +82,12 @@
                 <span class="w-12 h-[1px] bg-ind-accent"></span> Questions
                 <span class="w-12 h-[1px] bg-ind-accent"></span>
             </h2>
-            <h3
-                class="text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tighter uppercase"
-            >
-                Common Questions
-            </h3>
-        </div>
+                <h3
+                    class="text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tighter uppercase"
+                >
+                    Exit Strategy Questions
+                </h3>
+            </div>
 
         <div class="space-y-0">
             {#each faqs as faq, i}

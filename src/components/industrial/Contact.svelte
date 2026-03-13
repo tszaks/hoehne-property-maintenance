@@ -64,7 +64,7 @@
             <h3
                 class="text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tighter uppercase max-w-3xl"
             >
-                Apply for Coaching
+                Start the Exit Conversation
             </h3>
         </div>
 
@@ -156,10 +156,10 @@
                 <div class="mb-6 border-b border-ind-border/40 pb-4">
                     <div class="ind-metadata mb-2 text-ind-accent">Direct Intake</div>
                     <h4 class="text-xl font-black uppercase tracking-tight text-white md:text-2xl">
-                        Tell Greg Where the Business Stands
+                        Tell Greg About the Exit Goal
                     </h4>
                     <p class="mt-2 max-w-xl text-sm leading-relaxed text-ind-steel">
-                        Give him a clean read on the business, the pressure point, and what needs to change so he can point you toward the right next move.
+                        Give him a clean read on the business, where owner dependence is still showing up, and what kind of succession or exit outcome you want.
                     </p>
                 </div>
 
@@ -262,14 +262,14 @@
                                 rows="4"
                                 aria-describedby="message-helper"
                                 class="block w-full resize-none border border-ind-border/50 bg-black/50 px-4 py-3 pl-5 text-sm leading-relaxed text-white outline-none transition-all placeholder:text-ind-steel/25 focus:border-ind-accent/60 focus:bg-black/65"
-                                placeholder="Tell Greg about the business, the bottleneck, and what needs to change."
+                                placeholder="Tell Greg about the business, how dependent it still is on you, and what kind of exit or succession you want."
                             ></textarea>
                         </div>
                         <p
                             id="message-helper"
                             class="mt-2 text-[0.62rem] uppercase tracking-[0.16em] text-ind-steel/70"
                         >
-                            The clearer this is, the better Greg can prep.
+                            The clearer the exit goal, the better Greg can prep.
                         </p>
                     </div>
 
@@ -277,7 +277,7 @@
                         type="submit"
                         class="group relative flex w-full items-center justify-center gap-3 overflow-hidden border border-ind-accent bg-ind-accent px-8 py-3.5 text-sm font-black uppercase tracking-[0.16em] text-black transition-all duration-300 hover:border-white hover:bg-white"
                     >
-                        <span class="relative z-10">Apply for Coaching</span>
+                        <span class="relative z-10">Start My Exit Plan</span>
                         <ArrowRight
                             size={16}
                             class="relative z-10 transform transition-transform group-hover:translate-x-1"

@@ -12,25 +12,25 @@
             id: "01",
             title: "Assessment",
             description:
-                "A deep dive into your financials, operations, team, and culture. We find exactly where the gaps are — the hidden breakdowns costing you money, time, and sanity.",
+                "A deep dive into your financials, operations, team, and culture. Greg finds the owner-dependent breakdowns that suppress value and make the business hard to sell or hand off.",
         },
         {
             id: "02",
-            title: "Design",
+            title: "Exit Plan",
             description:
-                "A custom coaching roadmap built around your specific business and goals. No templates, no generic playbooks — just the exact pathway to get you where you want to go.",
+                "A custom roadmap built around your exit goals and timeline. No generic playbook, just the leadership, financial, and operational work required to make the company transferable.",
         },
         {
             id: "03",
             title: "Install",
             description:
-                "Weekly coaching sessions, accountability structures, meeting frameworks, and team practices get installed into the DNA of your business. Your people start owning the results.",
+                "Weekly coaching sessions, accountability structures, meeting rhythms, and management practices get installed into the business. Your people start owning the results instead of kicking them back to you.",
         },
         {
             id: "04",
-            title: "Freedom",
+            title: "Transferable Value",
             description:
-                "Your management team becomes the driving force. You step out of the day-to-day, profits climb, and the business becomes more valuable, more sellable, and far less dependent on you.",
+                "Your management team becomes the driving force, your numbers get cleaner, and the company becomes more valuable. Owner freedom, stronger margins, and a cleaner sale or succession are the result.",
         },
     ];
 
@@ -110,12 +110,12 @@
             >
                 <span class="w-12 h-[1px] bg-ind-accent"></span> How It Works
             </h2>
-            <h3
-                class="text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tighter uppercase max-w-3xl"
-            >
-                The Path to Freedom
-            </h3>
-        </div>
+                <h3
+                    class="text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tighter uppercase max-w-3xl"
+                >
+                    The Path to an Exit-Ready Business
+                </h3>
+            </div>
 
         <!-- Timeline -->
         <div class="relative">

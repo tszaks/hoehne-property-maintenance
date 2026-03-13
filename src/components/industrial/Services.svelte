@@ -16,28 +16,28 @@
             id: "01",
             title: "One-to-One Coaching",
             description:
-                "Full-service business coaching that touches every area of your company. Unlimited support for ownership, leadership, accountability, sales, financial management, and team performance.",
+                "Hands-on coaching for owners who need the whole company moving toward succession or sale. Greg works across leadership, accountability, financial management, operations, and team performance so the business gets more valuable without leaning on you.",
             image: "https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&q=80",
         },
         {
             id: "02",
             title: "Succession & Exit",
             description:
-                "When the time is right, we help you strengthen your financials, tighten operations, and build a management team that makes the business more attractive to the next buyer.",
+                "The core offer. Over a minimum 3 to 5 years, Greg helps you strengthen financials, install operating discipline, and build management depth so the business can be sold or handed off cleanly and at a stronger valuation.",
             image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80",
         },
         {
             id: "03",
             title: "Mastermind Groups",
             description:
-                "Monthly peer-to-peer sessions for restoration owners and GMs. Share challenges, get perspective from non-competing peers, and accelerate results faster than you can alone.",
+                "Monthly sessions for owners and GMs who want a more transferable company. Get outside perspective, pressure-test decisions, and solve the leadership and operational issues that hold exit readiness back.",
             image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80",
         },
         {
             id: "04",
             title: "Team & Culture",
             description:
-                "Build a management team that becomes the driving force of your business. Hire right, coach effectively, and create a culture where every employee gives their best — every day.",
+                "Succession planning fails without leaders who can truly carry the company. Greg helps you build a management team, stronger accountability, and a culture that keeps performance moving when you are not in the middle.",
             image: "https://images.unsplash.com/photo-1714974528737-3e6c7e4d11af?auto=format&fit=crop&q=80",
         },
     ];
@@ -97,13 +97,13 @@
                 <h3
                     class="text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tighter uppercase max-w-3xl"
                 >
-                    Built for Construction and Restoration
+                    Built Around the Exit
                 </h3>
             </div>
             <p class="text-ind-steel max-w-md text-sm md:text-base font-medium">
-                Every program is built around one goal: empowering key staff to
-                become the driving force of your business, so owners get relief
-                from the stress of long days and holding it all together.
+                Every program points at the same result: a company that can be
+                sold or handed off because the team, numbers, and operations
+                no longer depend on you holding the whole thing together.
             </p>
         </div>
 

@@ -20,16 +20,16 @@
         {
             id: "02",
             title: "Carolina Restoration Group",
-            category: "TEAM & CULTURE",
-            metric: "Owner exhausted after 20+ years as sole driver. Greg built a full management team around a promoted GM — revenue doubled, company sold to a national firm.",
+            category: "SUCCESSION PLANNING",
+            metric: "Owner exhausted after 20+ years as sole driver. Greg built a management team around a promoted GM, doubled revenue, and helped make the company strong enough to sell to a national firm.",
             value: "$7M → $14M",
             image: "https://images.unsplash.com/photo-1768321917806-b4b6fbbef837?auto=format&fit=crop&q=80",
         },
         {
             id: "03",
             title: "Highland Construction",
-            category: "OPERATIONS & GROWTH",
-            metric: "Kenny was working 7 days a week — every decision, every estimate through him. Greg installed a GM, rebuilt the team structure, and Kenny opened 2 new branches with +10 points added to margins.",
+            category: "EXIT-READY OPERATIONS",
+            metric: "Kenny was working 7 days a week with every decision flowing through him. Greg installed a GM, rebuilt the team structure, and created the kind of operating depth that lifted margins and opened two new branches.",
             value: "2 New Branches",
             image: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&q=80",
         },
@@ -87,14 +87,14 @@
                 <h3
                     class="text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tighter uppercase"
                 >
-                    Client Results
+                    Exit-Focused Results
                 </h3>
             </div>
             <a
                 href="#contact"
                 class="text-ind-fg hover:text-white font-semibold uppercase tracking-wider text-sm flex items-center gap-2 group transition-colors"
             >
-                Apply for Coaching
+                Start Your Exit Plan
                 <ArrowRight
                     size={16}
                     class="transform transition-transform group-hover:translate-x-1"
