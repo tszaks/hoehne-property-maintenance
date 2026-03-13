@@ -1,10 +1,11 @@
 ---
 import IndustrialLayout from '../layouts/IndustrialLayout.astro';
 import { getChatSession, listChatSessions } from '../lib/server/chat-store';
+import { getServerEnv } from '../lib/server/runtime-env';
 
 export const prerender = false;
 
-const expectedToken = import.meta.env.GRANT_INBOX_TOKEN;
+const expectedToken = getServerEnv('GRANT_INBOX_TOKEN');
 const providedToken = Astro.url.searchParams.get('token')?.trim() ?? '';
 const requestedSessionId = Astro.url.searchParams.get('session')?.trim() ?? '';
 const authorized = Boolean(expectedToken) && providedToken === expectedToken;

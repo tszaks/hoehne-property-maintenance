@@ -2,6 +2,7 @@ import type { APIRoute } from 'astro';
 import Anthropic from '@anthropic-ai/sdk';
 
 import { buildGrantKnowledgeBrief } from '../../lib/server/grant-knowledge';
+import { getServerEnv } from '../../lib/server/runtime-env';
 
 export const prerender = false;
 
@@ -1022,7 +1023,7 @@ export const POST: APIRoute = async ({ request }) => {
     const dynamicFallbackReply = getDynamicFallbackReply(messages);
     const dynamicSteering = getDynamicSteering(messages);
     const knowledgeBrief = buildGrantKnowledgeBrief(messages);
-    const apiKey = import.meta.env.ANTHROPIC_API_KEY;
+    const apiKey = getServerEnv('ANTHROPIC_API_KEY');
 
     if (!apiKey) {
         if (dynamicFallbackReply) {
