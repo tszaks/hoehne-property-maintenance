@@ -116,19 +116,19 @@
                     >
                         Greg Neil has spent 30 years coaching restoration and
                         construction business owners to build stronger
-                        companies that can run without the owner sitting in the
-                        middle of every important decision.
+                        businesses that can run without the owner in every
+                        day-to-day decision.
                     </p>
                     <p class="text-ind-steel leading-relaxed">
-                        He has worked with hundreds of companies, from $5M
+                        He's worked with hundreds of companies — from $5M
                         owner-operated businesses to $25M+ firms preparing for
                         acquisition. His clients have achieved as much as 3,000%
-                        ROI, sold to national buyers, and finally moved out of
+                        ROI, sold to national buyers, and finally gotten out of
                         the day-to-day grind.
                     </p>
                     <p class="text-ind-steel leading-relaxed">
-                        Greg's approach is simple. Change the culture, and
-                        everything else follows. Productivity, profits, and
+                        Greg's approach is simple: change the culture, and
+                        everything else follows. Productivity, profits,
                         accountability all flow from an environment where people
                         are empowered to give their best.
                     </p>

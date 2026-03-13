@@ -10,27 +10,35 @@
     const steps = [
         {
             id: "01",
-            title: "Reality Check",
+            title: "Assessment",
             description:
-                "We start with a one-on-one meeting for a deep dive into your financials, operations, team, and culture. We find exactly where the gaps are, and the hidden breakdowns costing you money, time, and sanity.",
+                `We start with a one-on-one session to do a deep dive into your
+financials, operations, team, and culture. We find exactly where
+the gaps are — the hidden breakdowns costing you money, time, and sanity.`,
         },
         {
             id: "02",
-            title: "Custom Roadmap",
+            title: "Design",
             description:
-                "From that assessment, we build a custom blueprint for your business. We keep it practical and focused on what you and your team can actually execute.",
+                `The framework is designed to create a leadership machine your
+people can run. Clear roles, decision rights, meeting cadence, and
+reporting rhythm are built for your team, not your calendar.`,
         },
         {
             id: "03",
             title: "Install the Rhythm",
             description:
-                "Weekly coaching actions, accountability systems, meeting frameworks, and team practices are installed into the DNA of your company. Your framework for success starts running daily.",
+                `Weekly coaching actions, accountability structures, meeting
+frameworks, and team practices get installed into the DNA of
+your business.`,
         },
         {
             id: "04",
-            title: "More Options",
+            title: "Freedom",
             description:
-                "Your team becomes the driving force of the business, productivity rises, profits follow, and you run the business instead of it running you.",
+                `Your team becomes the driving force of the business, productivity
+goes up and profits follow, as you step out of the day-to-day
+operations and run the business instead of it running you.`,
         },
     ];
 
