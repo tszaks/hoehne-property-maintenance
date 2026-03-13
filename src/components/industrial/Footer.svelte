@@ -97,6 +97,10 @@
                     construction owners build businesses that can be handed
                     off, sold, or run with far less owner dependence.
                 </p>
+                <p class="text-ind-steel text-sm leading-relaxed max-w-xs mt-3">
+                    30+ Years Building Teams, Driving Success, Preparing for
+                    Sale.
+                </p>
             </div>
 
             <div class="footer-reveal">
