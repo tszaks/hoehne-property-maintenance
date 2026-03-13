@@ -156,10 +156,10 @@
                 <div class="mb-6 border-b border-ind-border/40 pb-4">
                     <div class="ind-metadata mb-2 text-ind-accent">Direct Intake</div>
                     <h4 class="text-xl font-black uppercase tracking-tight text-white md:text-2xl">
-                        Tell Greg What Is Going On
+                        Tell Greg Where the Business Stands
                     </h4>
                     <p class="mt-2 max-w-xl text-sm leading-relaxed text-ind-steel">
-                        Give him a clean read on the business, the pressure point, and what needs to change.
+                        Give him a clean read on the business, the pressure point, and what needs to change, especially if you are trying to prepare the company for a future sale.
                     </p>
                 </div>
 

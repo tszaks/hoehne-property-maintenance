@@ -30,7 +30,7 @@
             id: "04",
             title: "Freedom",
             description:
-                "Your management team becomes the driving force. You step out of the day-to-day, profits climb, and you finally run the business — instead of it running you.",
+                "Your management team becomes the driving force. You step out of the day-to-day, profits climb, and the business becomes more valuable, more sellable, and far less dependent on you.",
         },
     ];
 

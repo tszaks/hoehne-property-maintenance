@@ -211,8 +211,9 @@
                 class="hero-fade text-lg md:text-xl text-ind-steel max-w-xl mx-auto lg:mx-0 mb-12 font-medium"
             >
                 30 years. 300+ clients. One mission: turn restoration and
-                construction owners into true leaders — and their businesses
-                into machines that run without them.
+                construction owners into true leaders, build companies that run
+                without them, and make the business stronger when it is time to
+                sell.
             </p>
 
             <div class="hero-fade-up flex flex-wrap items-center gap-6">
