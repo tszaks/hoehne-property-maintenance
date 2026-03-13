@@ -12,25 +12,25 @@
             id: "01",
             title: "Assessment",
             description:
-                "A deep dive into your financials, operations, team, and culture. We find exactly where the gaps are — the hidden breakdowns costing you money, time, and sanity.",
+                "We start with a one-on-one meeting for a deep dive into your financials, operations, team, and culture. We find exactly where the gaps are, and the hidden breakdowns costing you money, time, and sanity.",
         },
         {
             id: "02",
             title: "Design",
             description:
-                "A custom coaching roadmap built around your specific business and goals. No templates, no generic playbooks — just the exact pathway to get you where you want to go.",
+                "From that assessment, we build a custom blueprint for your business. We keep it practical and focused on what you and your team can actually execute.",
         },
         {
             id: "03",
             title: "Install",
             description:
-                "Weekly coaching sessions, accountability structures, meeting frameworks, and team practices get installed into the DNA of your business. Your people start owning the results.",
+                "Weekly coaching actions, accountability systems, meeting frameworks, and team practices are installed into the DNA of your company. Your framework for success starts running daily.",
         },
         {
             id: "04",
             title: "Freedom",
             description:
-                "Your management team becomes the driving force. You step out of the day-to-day, profits climb, and the business becomes more valuable, more sellable, and far less dependent on you.",
+                "Your team becomes the driving force of the business, productivity rises, profits follow, and you run the business instead of it running you.",
         },
     ];
 

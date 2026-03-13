@@ -120,17 +120,17 @@
                         the owner role they actually want.
                     </p>
                     <p class="text-ind-steel leading-relaxed">
-                        He's worked with hundreds of companies — from $5M
-                        owner-operated businesses to $35M+ firms preparing for
-                        acquisition. His clients have doubled revenue, sold to
-                        national buyers, and finally gotten out of the
-                        day-to-day grind they were stuck in for years.
+                        He has worked with hundreds of companies, from $5M
+                        owner-operated businesses to $25M+ firms preparing for
+                        acquisition. His clients have achieved as much as 3,000%
+                        ROI, sold to national buyers, and finally moved out of
+                        the day-to-day grind.
                     </p>
                     <p class="text-ind-steel leading-relaxed">
-                        Greg's approach is simple: change the culture, and
-                        everything else follows. Productivity, profits,
-                        accountability — they all flow from an environment
-                        where people are empowered to give their best.
+                        Greg's approach is simple. Change the culture, and
+                        everything else follows. Productivity, profits, and
+                        accountability all flow from an environment where people
+                        are empowered to give their best.
                     </p>
                 </div>
 
