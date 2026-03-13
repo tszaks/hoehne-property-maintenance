@@ -262,7 +262,6 @@
                                 rows="4"
                                 aria-describedby="message-helper"
                                 class="block w-full resize-none border border-ind-border/50 bg-black/50 px-4 py-3 pl-5 text-sm leading-relaxed text-white outline-none transition-all placeholder:text-ind-steel/25 focus:border-ind-accent/60 focus:bg-black/65"
-                                    placeholder="Give him a clear read on the business, where owner dependence is still showing up, and whether your goal is succession, more freedom, or an eventual sale."
                             ></textarea>
                         </div>
                         <p
