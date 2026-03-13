@@ -71,9 +71,9 @@
                 <p
                     class="text-ind-steel text-lg md:text-xl font-medium max-w-xl"
                 >
-                    Build the team, operating discipline, and financial
-                    strength that create more freedom now and a stronger
-                    succession or sale path later.
+                    Build the team, and financial strength that will create
+                    more freedom for you now, and a stronger succession or
+                    sale later.
                 </p>
             </div>
             <a href="#contact" class="ind-button px-12 py-5 text-lg w-full md:w-auto">
