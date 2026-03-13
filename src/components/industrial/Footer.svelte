@@ -54,7 +54,7 @@
     <div class="max-w-7xl mx-auto px-6 lg:px-12 relative">
         <div class="ind-ruler-x w-full absolute top-0 left-0 opacity-20"></div>
         <div class="ind-metadata absolute -top-12 left-6 lg:left-12 opacity-50">
-            SEC. 06 // TERMINAL // FOOTER
+            SEC. 08 // TERMINAL // FOOTER
         </div>
 
         <!-- Massive CTA -->
