@@ -158,9 +158,6 @@
                     <h4 class="text-xl font-black uppercase tracking-tight text-white md:text-2xl">
                         Tell Greg What Your Biggest Challenges Are
                     </h4>
-                    <p class="mt-2 max-w-xl text-sm leading-relaxed text-ind-steel">
-                        Give him a clear read on your biggest business challenges, and whether your goal is sale, succession, or growth and profitability.
-                    </p>
                 </div>
 
                 <form class="space-y-5">
