@@ -14,17 +14,17 @@
     const services = [
         {
             id: "01",
+            title: "A Real Succession Path",
+            description:
+                "The core offer. Greg helps you strengthen financials, install operating discipline, and build management depth so the company can be handed off, sold, or run with far less owner dependence.",
+            image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80",
+        },
+        {
+            id: "02",
             title: "Less Owner Dependence",
             description:
                 "Hands-on coaching that helps move decisions, accountability, and day-to-day leadership out of the owner's head and into the business where they belong.",
             image: "https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&q=80",
-        },
-        {
-            id: "02",
-            title: "A Real Succession Path",
-            description:
-                "The core offer. Over a minimum 3 to 5 years, Greg helps you strengthen financials, install operating discipline, and build management depth so the company can be handed off, sold, or run with far less owner dependence.",
-            image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80",
         },
         {
             id: "03",
@@ -102,7 +102,7 @@
             </div>
             <p class="text-ind-steel max-w-md text-sm md:text-base font-medium">
                 Greg's work is not about one event at the end. It is about
-                building a stronger company over 3 to 5 years so succession,
+                building a stronger company over time so succession,
                 owner step-back, or an eventual sale all become real options.
             </p>
         </div>

@@ -64,7 +64,7 @@
             <h3
                 class="text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tighter uppercase max-w-3xl"
             >
-                Talk Through the Next 3 to 5 Years
+                Talk Through the Next Phase
             </h3>
         </div>
 
@@ -262,7 +262,7 @@
                                 rows="4"
                                 aria-describedby="message-helper"
                                 class="block w-full resize-none border border-ind-border/50 bg-black/50 px-4 py-3 pl-5 text-sm leading-relaxed text-white outline-none transition-all placeholder:text-ind-steel/25 focus:border-ind-accent/60 focus:bg-black/65"
-                                placeholder="Tell Greg about the business, what is still landing on you, and what you want the company to look like over the next 3 to 5 years."
+                                placeholder="Tell Greg about the business, what is still landing on you, and what you want the company to look like as it gets stronger and less dependent on you."
                             ></textarea>
                         </div>
                         <p

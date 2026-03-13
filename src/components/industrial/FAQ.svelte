@@ -16,7 +16,7 @@
         },
         {
             question: "How quickly do clients see results?",
-            answer: "Most clients see meaningful shifts in accountability, meetings, and owner dependence within the first 90 days. Stronger margins, tighter operations, and the deeper succession or sale-readiness work usually build over 6 to 12 months and keep compounding over a 3 to 5 year window.",
+            answer: "Most clients see meaningful shifts in accountability, meetings, and owner dependence within the first 90 days. Stronger margins, tighter operations, and the deeper succession or sale-readiness work usually build over time and vary from business to business.",
         },
         {
             question: "What makes your approach different from other business coaches?",
@@ -24,7 +24,7 @@
         },
         {
             question: "Do you work with companies preparing to sell?",
-            answer: "Yes. Greg helps owners prepare for that, but he does not treat selling as the only goal. Real preparation usually takes a minimum of 3 to 5 years to strengthen financials, document operations, and build a management team that can run independently, which is what improves both sale value and handoff strength.",
+            answer: "Yes. Greg helps owners prepare for that, but he does not treat selling as the only goal. Real preparation takes time to strengthen financials, document operations, and build a management team that can run independently, and the timeline varies by business.",
         },
         {
             question: "What does the Mastermind Group program look like?",
@@ -32,7 +32,7 @@
         },
         {
             question: "How do I get started?",
-            answer: "Start with a free 30-minute discovery call. Greg will look at where owner dependence is still showing up, what that is costing the business, and which path makes the most sense for the next 3 to 5 years.",
+            answer: "Start with a free 30-minute discovery call. Greg will look at where owner dependence is still showing up, what that is costing the business, and which path makes the most sense for your next phase of growth and transition.",
         },
     ];
 

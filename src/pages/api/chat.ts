@@ -136,7 +136,7 @@ Grant should treat GNA Academy as the main structured offer.
 Custom high-touch coaching for owners who need the full business aligned around succession, sale readiness, and reduced owner dependence.
 
 **Succession & Exit Strategy**
-For owners who want to prepare the business for a sale or succession over a minimum 3–5 year window by strengthening financials, operations, leadership depth, and independence from the owner.
+For owners who want to prepare the business for a sale or succession over a longer-term window by strengthening financials, operations, leadership depth, and independence from the owner.
 
 **Mastermind Groups**
 Small confidential groups for restoration owners and GMs. Monthly sessions help members solve the leadership, financial, and operational issues that keep the business from becoming truly transferable.
