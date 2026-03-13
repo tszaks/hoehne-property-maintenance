@@ -1,21 +1,16 @@
 import type { APIRoute } from 'astro';
 
+import { json, options } from '../../../lib/server/api-response';
 import { createInvitee, isValidEmail, isValidTimezone, normalizeServiceInterest } from '../../../lib/server/calendly';
 
 export const prerender = false;
-
-function json(status: number, body: Record<string, unknown>) {
-    return new Response(JSON.stringify(body), {
-        headers: { 'Content-Type': 'application/json' },
-        status,
-    });
-}
+export const OPTIONS: APIRoute = async ({ request }) => options(request);
 
 export const POST: APIRoute = async ({ request }) => {
     const body = await request.json().catch(() => null);
 
     if (!body || typeof body !== 'object') {
-        return json(400, { error: 'Missing booking details' });
+        return json(request, 400, { error: 'Missing booking details' });
     }
 
     const email = typeof body.email === 'string' ? body.email.trim().toLowerCase() : '';
@@ -26,19 +21,19 @@ export const POST: APIRoute = async ({ request }) => {
     const timezone = typeof body.timezone === 'string' ? body.timezone.trim() : '';
 
     if (!name) {
-        return json(400, { error: 'Full name is required' });
+        return json(request, 400, { error: 'Full name is required' });
     }
 
     if (!isValidEmail(email)) {
-        return json(400, { error: 'A valid email is required' });
+        return json(request, 400, { error: 'A valid email is required' });
     }
 
     if (!isValidTimezone(timezone)) {
-        return json(400, { error: 'A valid timezone is required' });
+        return json(request, 400, { error: 'A valid timezone is required' });
     }
 
     if (!startTime) {
-        return json(400, { error: 'Pick a time before booking' });
+        return json(request, 400, { error: 'Pick a time before booking' });
     }
 
     try {
@@ -51,7 +46,7 @@ export const POST: APIRoute = async ({ request }) => {
             timezone,
         });
 
-        return json(200, {
+        return json(request, 200, {
             cancelUrl: invitee.cancel_url,
             event: invitee.event,
             rescheduleUrl: invitee.reschedule_url,
@@ -59,6 +54,6 @@ export const POST: APIRoute = async ({ request }) => {
         });
     } catch (error) {
         const message = error instanceof Error ? error.message : 'Unable to book that time';
-        return json(500, { error: message });
+        return json(request, 500, { error: message });
     }
 };
