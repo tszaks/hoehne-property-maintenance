@@ -24,11 +24,11 @@
         },
         {
             question: "Do you work with companies preparing to sell?",
-            answer: "Yes. Succession and exit strategy is one of Greg's specialties. In 2–3 years, we get your financials strong, your operations documented, and your management team running independently — which directly increases your sale price and makes you attractive to acquirers.",
+            answer: "Yes. Succession and exit strategy is one of Greg's specialties. In 3 to 5 years, we get your financials strong, your operations documented, and your management team running independently. This makes your business more attractive to buyers and helps maximize sale price.",
         },
         {
             question: "What does the Mastermind Group program look like?",
-            answer: "Monthly virtual meetings (2–2.5 hours) with 7 or fewer non-competing restoration owners and GMs. Each session covers financial facts, a deep dive on one member's business, and best-practice solutions to the group's biggest current challenges. Plus one-on-one coaching between sessions.",
+            answer: "Monthly virtual meetings for non-competing restoration owners and GMs, with seven or fewer participants and one optional one-on-one coaching call between sessions. Each meeting reviews financials, a deep dive on one member's business, and practical solutions to the biggest current challenges. We need at least three people to start a group.",
         },
         {
             question: "How do I get started?",
