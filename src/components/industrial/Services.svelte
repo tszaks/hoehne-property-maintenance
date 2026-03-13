@@ -14,17 +14,17 @@
     const services = [
         {
             id: "01",
-            title: "One-to-One Coaching",
-            description:
-                "The Path to Freedom starts with one-on-one sessions designed to build a stronger owner and leadership team one action at a time.",
-            image: "https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&q=80",
-        },
-        {
-            id: "02",
             title: "Succession & Exit Strategy",
             description:
                 "You've invested years in building your business. Now let's get you ready to cash out. In 3 to 5 years we strengthen every area so you can attract the strongest sale price possible.",
             image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80",
+        },
+        {
+            id: "02",
+            title: "One-to-One Coaching",
+            description:
+                "The Path to Freedom starts with one-on-one sessions designed to build a stronger owner and leadership team one action at a time.",
+            image: "https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&q=80",
         },
         {
             id: "03",
@@ -120,6 +120,10 @@
                     <div
                         class="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-105 filter grayscale group-hover:grayscale-0 opacity-70 group-hover:opacity-90"
                         style="background-image: url('{service.image}')"
+                    ></div>
+
+                    <div
+                        class="absolute inset-0 bg-gradient-to-b from-ind-accent/30 via-ind-accent/10 to-transparent opacity-70 group-hover:opacity-80 transition-opacity duration-500"
                     ></div>
 
                     <!-- Gradient overlay -->
