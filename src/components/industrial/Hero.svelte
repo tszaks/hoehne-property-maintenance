@@ -191,6 +191,9 @@
 
         <!-- Main Content with Character Stagger -->
         <div class="lg:col-span-8 flex flex-col justify-end">
+            <div class="hero-fade-up ind-metadata text-ind-accent mb-4">
+                BUILT FOR CONSTRUCTION AND RESTORATION
+            </div>
             <h1
                 class="ind-hero-title text-5xl md:text-7xl lg:text-[7rem] leading-[0.85] font-black text-white tracking-tighter uppercase mb-8"
             >
@@ -198,7 +201,7 @@
                     ><span class="title-line block">BUILDING</span></span
                 >
                 <span class="block overflow-hidden pb-2"
-                    ><span class="title-line block text-ind-accent">BETTER</span
+                    ><span class="title-line block text-ind-accent">POWERFUL</span
                     ></span
                 >
                 <span class="block overflow-hidden pb-2"
@@ -210,10 +213,10 @@
             <p
                 class="hero-fade text-lg md:text-xl text-ind-steel max-w-xl mx-auto lg:mx-0 mb-12 font-medium"
             >
-                30 years. 300+ clients. One mission: turn restoration and
-                construction owners into true leaders, build companies that run
-                without them, and make the business stronger when it is time to
-                sell.
+                30 years. 300+ clients. One mission: build leaders at every
+                level of the business and turn your company into a well-run
+                machine led by your team, so you as the owner can step back and
+                breathe again.
             </p>
 
             <div class="hero-fade-up flex flex-wrap items-center gap-6">
