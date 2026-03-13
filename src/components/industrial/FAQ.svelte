@@ -12,27 +12,27 @@
     const faqs = [
         {
             question: "Who is your ideal client?",
-            answer: "Restoration and construction owners doing between $5M and $35M annually who want a real succession plan or future exit. You are good at the craft, but the business still leans too hard on you and that keeps value trapped.",
+            answer: "Restoration and construction owners doing between $5M and $35M annually who want a stronger company with less owner dependence. Many want a real succession plan or eventual exit, but the immediate need is usually building a business that can run without them in the middle of everything.",
         },
         {
             question: "How quickly do clients see results?",
-            answer: "Most clients see meaningful shifts in accountability, meetings, and owner dependence within the first 90 days. Stronger margins, tighter operations, and the deeper exit-readiness work usually build over 6 to 12 months and continue compounding from there.",
+            answer: "Most clients see meaningful shifts in accountability, meetings, and owner dependence within the first 90 days. Stronger margins, tighter operations, and the deeper succession or sale-readiness work usually build over 6 to 12 months and keep compounding over a 3 to 5 year window.",
         },
         {
             question: "What makes your approach different from other business coaches?",
-            answer: "Most coaches sell growth as the end goal. Greg treats growth, stronger managers, and better margins as proof that the business is becoming transferable. He works on culture, accountability, and leadership because that is what makes succession planning and exit strategy actually hold up.",
+            answer: "Most coaches sell growth as the end goal. Greg treats stronger managers, better margins, and tighter operations as proof the company is getting healthier and less owner-dependent. That is what makes succession planning, owner freedom, and eventual sale-readiness actually hold up.",
         },
         {
             question: "Do you work with companies preparing to sell?",
-            answer: "Yes. Succession and exit strategy is one of Greg's specialties. Real preparation usually takes a minimum of 3 to 5 years to strengthen financials, document operations, and build a management team that can run independently, which is what increases sale value and handoff strength.",
+            answer: "Yes. Greg helps owners prepare for that, but he does not treat selling as the only goal. Real preparation usually takes a minimum of 3 to 5 years to strengthen financials, document operations, and build a management team that can run independently, which is what improves both sale value and handoff strength.",
         },
         {
             question: "What does the Mastermind Group program look like?",
-            answer: "Monthly virtual meetings with 7 or fewer non-competing restoration owners and GMs. Each session helps members solve the leadership, financial, and operational issues that keep the owner trapped and keep the business from becoming truly exit-ready.",
+            answer: "Monthly virtual meetings with 7 or fewer non-competing restoration owners and GMs. Each session helps members solve the leadership, financial, and operational issues that keep the owner trapped and keep the business from becoming stronger and more transferable.",
         },
         {
             question: "How do I get started?",
-            answer: "Start with a free 30-minute discovery call. Greg will look at where owner dependence is still showing up, what that is doing to value, and which path makes the most sense if you want a cleaner succession or exit down the road.",
+            answer: "Start with a free 30-minute discovery call. Greg will look at where owner dependence is still showing up, what that is costing the business, and which path makes the most sense for the next 3 to 5 years.",
         },
     ];
 
@@ -85,7 +85,7 @@
                 <h3
                     class="text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tighter uppercase"
                 >
-                    Exit Strategy Questions
+                    Common Owner Questions
                 </h3>
             </div>
 

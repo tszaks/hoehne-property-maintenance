@@ -198,14 +198,14 @@
                 class="ind-hero-title text-5xl md:text-7xl lg:text-[7rem] leading-[0.85] font-black text-white tracking-tighter uppercase mb-8"
             >
                 <span class="block overflow-hidden pb-2"
-                    ><span class="title-line block">BUILD A</span></span
+                    ><span class="title-line block">PREPARING</span></span
                 >
                 <span class="block overflow-hidden pb-2"
-                    ><span class="title-line block text-ind-accent">SELLABLE</span
+                    ><span class="title-line block text-ind-accent">SALE-READY</span
                     ></span
                 >
                 <span class="block overflow-hidden pb-2"
-                    ><span class="title-line block">BUSINESS</span></span
+                    ><span class="title-line block">BUSINESSES</span></span
                 >
             </h1>
 
@@ -214,8 +214,9 @@
                 class="hero-fade text-lg md:text-xl text-ind-steel max-w-xl mx-auto lg:mx-0 mb-12 font-medium"
             >
                 30 years. 300+ clients. One mission: help restoration and
-                construction owners build a sellable, transferable business
-                led by the team, not held together by the owner.
+                construction owners build companies their team can run, their
+                family can inherit, or a buyer can trust when the time is
+                right.
             </p>
 
             <div class="hero-fade-up flex flex-wrap items-center gap-6">

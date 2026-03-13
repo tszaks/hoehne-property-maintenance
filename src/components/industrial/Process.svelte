@@ -10,27 +10,27 @@
     const steps = [
         {
             id: "01",
-            title: "Assessment",
+            title: "Reality Check",
             description:
-                "A deep dive into your financials, operations, team, and culture. Greg finds the owner-dependent breakdowns that suppress value and make the business hard to sell or hand off.",
+                "Greg takes a hard look at your financials, operations, team, and culture to find where the business still depends too much on you.",
         },
         {
             id: "02",
-            title: "Exit Plan",
+            title: "3 to 5 Year Roadmap",
             description:
-                "A custom roadmap built around your exit goals and timeline. No generic playbook, just the leadership, financial, and operational work required to make the company transferable.",
+                "You get a custom roadmap built around your goals. That might mean succession, owner freedom, or an eventual sale, but the work starts with making the company stronger and more transferable.",
         },
         {
             id: "03",
-            title: "Install",
+            title: "Install the Rhythm",
             description:
-                "Weekly coaching sessions, accountability structures, meeting rhythms, and management practices get installed into the business. Your people start owning the results instead of kicking them back to you.",
+                "Weekly coaching, accountability structures, meeting rhythms, and management practices get installed into the business so your people start owning results instead of kicking them back to you.",
         },
         {
             id: "04",
-            title: "Transferable Value",
+            title: "More Options",
             description:
-                "Your management team becomes the driving force, your numbers get cleaner, and the company becomes more valuable. Owner freedom, stronger margins, and a cleaner sale or succession are the result.",
+                "Your management team becomes the driving force, your numbers get cleaner, and the company gets stronger. Owner freedom, stronger margins, succession readiness, and sale readiness become the result.",
         },
     ];
 
@@ -110,12 +110,12 @@
             >
                 <span class="w-12 h-[1px] bg-ind-accent"></span> How It Works
             </h2>
-                <h3
-                    class="text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tighter uppercase max-w-3xl"
-                >
-                    The Path to an Exit-Ready Business
-                </h3>
-            </div>
+            <h3
+                class="text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tighter uppercase max-w-3xl"
+            >
+                The Path to a Stronger, More Transferable Business
+            </h3>
+        </div>
 
         <!-- Timeline -->
         <div class="relative">

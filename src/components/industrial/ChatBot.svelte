@@ -40,7 +40,7 @@
         "1-on-1 Coaching",
     ];
     const CHALLENGE_OTHER_VALUE = "__challenge_other__";
-    const INTRO_MESSAGE = "Hey, I'm Grant with GNA. Are you trying to build toward succession or an exit, or are you still too buried in the day-to-day to even think about that yet?";
+    const INTRO_MESSAGE = "Hey, I'm Grant with GNA. Are you trying to build a stronger business with less owner dependence, or are you still too buried in the day-to-day to think about that yet?";
     const SESSION_STORAGE_KEY = "grant-chat-session-id";
     const IDLE_FINALIZE_MS = 15 * 60 * 1000;
 
