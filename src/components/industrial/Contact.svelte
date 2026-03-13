@@ -159,7 +159,7 @@
                         Tell Greg Where the Business Stands
                     </h4>
                     <p class="mt-2 max-w-xl text-sm leading-relaxed text-ind-steel">
-                        Give him a clean read on the business, the pressure point, and what needs to change, especially if you are trying to prepare the company for a future sale.
+                        Give him a clean read on the business, the pressure point, and what needs to change so he can point you toward the right next move.
                     </p>
                 </div>
 

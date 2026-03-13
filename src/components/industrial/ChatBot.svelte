@@ -752,7 +752,7 @@
 {#if !isOpen}
     <button
         onclick={openChat}
-        class="fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-ind-accent text-black font-bold px-5 py-3 shadow-2xl hover:bg-white transition-all duration-300 group"
+        class="fixed right-4 bottom-[calc(env(safe-area-inset-bottom)+1rem)] z-50 flex items-center gap-3 bg-ind-accent text-black font-bold px-5 py-3 shadow-2xl hover:bg-white transition-all duration-300 group sm:right-6 sm:bottom-6"
         aria-label="Chat with Grant"
     >
         <div class="text-left">
@@ -765,11 +765,11 @@
 
 {#if isOpen}
     <div
-        class="fixed bottom-6 right-6 z-50 w-[360px] max-w-[calc(100vw-2rem)] flex flex-col shadow-2xl border border-ind-border bg-[#0d0d0d]"
-        style="height: {isMinimized ? 'auto' : '520px'};"
+        class="fixed inset-x-3 bottom-[calc(env(safe-area-inset-bottom)+0.5rem)] z-50 flex flex-col shadow-2xl border border-ind-border bg-[#0d0d0d] rounded-2xl sm:rounded-none sm:inset-x-auto sm:bottom-6 sm:right-6 sm:w-[360px] sm:max-w-[calc(100vw-2rem)]"
+        style="height: {isMinimized ? 'auto' : 'min(90dvh, 520px)'}; max-height: {isMinimized ? 'none' : 'calc(100dvh - 1rem - env(safe-area-inset-bottom))'};"
     >
         <div
-            class="flex items-center gap-3 px-4 py-3 bg-[#111] border-b border-ind-border shrink-0 cursor-pointer"
+            class="flex items-center gap-3 px-4 py-3 bg-[#111] border-b border-ind-border shrink-0 cursor-pointer rounded-t-2xl sm:rounded-none"
             onclick={() => (isMinimized = !isMinimized)}
             role="button"
             tabindex="0"
@@ -801,7 +801,7 @@
                         e.stopPropagation();
                         isMinimized = !isMinimized;
                     }}
-                    class="text-ind-steel hover:text-white transition-colors p-1"
+                    class="text-ind-steel hover:text-white transition-colors p-2.5 sm:p-1"
                     aria-label="Minimize"
                 >
                     <ChevronDown
@@ -814,7 +814,7 @@
                         e.stopPropagation();
                         closeChat();
                     }}
-                    class="text-ind-steel hover:text-white transition-colors p-1"
+                    class="text-ind-steel hover:text-white transition-colors p-2.5 sm:p-1"
                     aria-label="Close chat"
                 >
                     <X size={16} />
@@ -882,21 +882,24 @@
                         {#each booking.choices as choice}
                             <button
                                 onclick={() => chooseChoice(choice)}
-                                class="text-xs border border-ind-border/60 bg-[#1a1a1a] text-ind-fg hover:border-ind-accent hover:text-ind-accent transition-colors px-3 py-2"
+                                class="text-xs border border-ind-border/60 bg-[#1a1a1a] text-ind-fg hover:border-ind-accent hover:text-ind-accent transition-colors px-3 py-3 min-h-11"
                             >
                                 {choice.label}
                             </button>
                         {/each}
                         <button
                             onclick={() => chooseChoice({ label: "Cancel booking", value: "cancel" })}
-                            class="text-xs border border-ind-border/30 text-ind-steel hover:text-white transition-colors px-3 py-2"
+                            class="text-xs border border-ind-border/30 text-ind-steel hover:text-white transition-colors px-3 py-3 min-h-11"
                         >
                             Cancel
                         </button>
                     </div>
                 {/if}
 
-                <div class="p-3 flex gap-2">
+                <div
+                    class="p-3 flex gap-2"
+                    style="padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));"
+                >
                     <textarea
                         bind:this={inputEl}
                         bind:value={inputValue}
