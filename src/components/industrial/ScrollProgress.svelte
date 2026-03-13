@@ -26,5 +26,5 @@
 <div
     bind:this={progressBar}
     class="fixed top-0 left-0 w-full h-[3px] bg-ind-accent z-[9999] origin-left scale-x-0"
-    style="box-shadow: 0 0 10px rgba(255, 90, 0, 0.5), 0 0 20px rgba(255, 90, 0, 0.2);"
+    style="box-shadow: 0 0 10px rgba(111, 158, 206, 0.35), 0 0 20px rgba(111, 158, 206, 0.15);"
 ></div>
