@@ -40,7 +40,7 @@
         "1-on-1 Coaching",
     ];
     const CHALLENGE_OTHER_VALUE = "__challenge_other__";
-    const INTRO_MESSAGE = "Hey, I'm Grant with GNA. What kind of business are you running, and what's feeling heavier than it should right now?";
+    const INTRO_MESSAGE = "Hey, I'm Grant with GNA. How can I help?";
     const API_ORIGIN =
         typeof window !== "undefined" && window.location.hostname === "gnaworks.com"
             ? "https://www.gnaworks.com"
