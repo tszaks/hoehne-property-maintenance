@@ -24,7 +24,7 @@
         },
         {
             question: "Do you work with companies preparing to sell?",
-            answer: "Yes. Succession and exit strategy is one of Greg's specialties. In 3-5 years, we get your financials strong, your operations documented, and your management team running independently. This directly increases your sale price and makes you far more attractive to buyers.",
+            answer: "Yes. Succession and exit strategy is one of Greg's specialties. We get your financials strong, your operations documented, and your management team running independently. This directly increases your sale price and makes you far more attractive to buyers.",
         },
         {
             question: "What does the Mastermind Group program look like?",
