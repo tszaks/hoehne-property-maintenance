@@ -121,7 +121,7 @@ operations and run the business instead of it running you.`,
             <h3
                 class="text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tighter uppercase max-w-3xl"
             >
-                The Path to a Stronger, More Transferable Business
+                The Path to Freedom
             </h3>
         </div>
 
