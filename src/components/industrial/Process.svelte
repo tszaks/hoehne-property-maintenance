@@ -16,7 +16,7 @@
         },
         {
             id: "02",
-            title: "3 to 5 Year Roadmap",
+            title: "Custom Roadmap",
             description:
                 "You get a custom roadmap built around your goals. That might mean succession, owner freedom, or an eventual sale, but the work starts with making the company stronger and more transferable.",
         },
