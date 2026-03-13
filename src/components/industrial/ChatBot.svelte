@@ -40,7 +40,11 @@
         "1-on-1 Coaching",
     ];
     const CHALLENGE_OTHER_VALUE = "__challenge_other__";
-    const INTRO_MESSAGE = "Hey, I'm Grant with GNA. Are you trying to build a stronger business with less owner dependence, or are you still too buried in the day-to-day to think about that yet?";
+    const INTRO_MESSAGE = "Hey, I'm Grant with GNA. What kind of business are you running, and what's feeling heavier than it should right now?";
+    const API_ORIGIN =
+        typeof window !== "undefined" && window.location.hostname === "gnaworks.com"
+            ? "https://www.gnaworks.com"
+            : "";
     const SESSION_STORAGE_KEY = "grant-chat-session-id";
     const IDLE_FINALIZE_MS = 15 * 60 * 1000;
 
@@ -78,6 +82,10 @@
 
     function buildIntroMessages() {
         return [{ role: "assistant", content: INTRO_MESSAGE }] satisfies Message[];
+    }
+
+    function apiPath(path: string) {
+        return `${API_ORIGIN}${path}`;
     }
 
     function hasUserConversation() {
@@ -266,13 +274,13 @@
         try {
             if (useBeacon && navigator.sendBeacon) {
                 navigator.sendBeacon(
-                    "/api/chat/session",
+                    apiPath("/api/chat/session"),
                     new Blob([payload], { type: "application/json" })
                 );
                 return;
             }
 
-            await fetch("/api/chat/session", {
+            await fetch(apiPath("/api/chat/session"), {
                 body: payload,
                 headers: { "Content-Type": "application/json" },
                 keepalive: true,
@@ -313,7 +321,7 @@
             }
 
             didFinalizeSession = true;
-            const response = await fetch("/api/chat/finalize", {
+            const response = await fetch(apiPath("/api/chat/finalize"), {
                 body: payload,
                 headers: { "Content-Type": "application/json" },
                 keepalive: true,
@@ -438,7 +446,7 @@
     async function loadAvailability() {
         booking.choices = [];
 
-        const response = await fetch("/api/calendly/availability", {
+        const response = await fetch(apiPath("/api/calendly/availability"), {
             body: JSON.stringify({ timezone: booking.draft.timezone }),
             headers: { "Content-Type": "application/json" },
             method: "POST",
@@ -468,7 +476,7 @@
         const email = booking.draft.email;
         const slotLabel = formatSlot(booking.draft.startTime);
 
-        const response = await fetch("/api/calendly/book", {
+        const response = await fetch(apiPath("/api/calendly/book"), {
             body: JSON.stringify(booking.draft),
             headers: { "Content-Type": "application/json" },
             method: "POST",
@@ -646,7 +654,7 @@
             if (booking.active && booking.phase !== "idle") {
                 await handleBookingReply(value);
             } else {
-                const response = await fetch("/api/chat", {
+                const response = await fetch(apiPath("/api/chat"), {
                     body: JSON.stringify({
                         messages: messages.map((message) => ({
                             content: message.content,

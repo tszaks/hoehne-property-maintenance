@@ -120,20 +120,17 @@
                         middle of every important decision.
                     </p>
                     <p class="text-ind-steel leading-relaxed">
-                        He's worked with hundreds of companies — from $5M
-                        owner-operated businesses to $35M+ firms preparing for
-                        succession, scale, or acquisition. His clients have
-                        doubled revenue, built real management teams, sold to
-                        national buyers, and gotten out of the day-to-day
-                        because the business no longer depends on owner
-                        heroics.
+                        He has worked with hundreds of companies, from $5M
+                        owner-operated businesses to $25M+ firms preparing for
+                        acquisition. His clients have achieved as much as 3,000%
+                        ROI, sold to national buyers, and finally moved out of
+                        the day-to-day grind.
                     </p>
                     <p class="text-ind-steel leading-relaxed">
-                        Greg's approach is simple: build the company around
-                        stronger leadership, accountability, and transferable
-                        value. Culture, discipline, and profit matter because
-                        they give owners more freedom now and more options
-                        later.
+                        Greg's approach is simple. Change the culture, and
+                        everything else follows. Productivity, profits, and
+                        accountability all flow from an environment where people
+                        are empowered to give their best.
                     </p>
                 </div>
 

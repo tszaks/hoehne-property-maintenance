@@ -1,8 +1,10 @@
 import type { APIRoute } from 'astro';
 
+import { json, options } from '../../../lib/server/api-response';
 import { BREAKTHROUGH_SERVICE_OPTIONS, getAvailableSlots, isValidTimezone } from '../../../lib/server/calendly';
 
 export const prerender = false;
+export const OPTIONS: APIRoute = async ({ request }) => options(request);
 
 export const POST: APIRoute = async ({ request }) => {
     try {
@@ -14,22 +16,14 @@ export const POST: APIRoute = async ({ request }) => {
 
         const slots = await getAvailableSlots();
 
-        return new Response(
-            JSON.stringify({
-                serviceOptions: BREAKTHROUGH_SERVICE_OPTIONS,
-                slots,
-                timezone,
-            }),
-            {
-                headers: { 'Content-Type': 'application/json' },
-            }
-        );
+        return json(request, 200, {
+            serviceOptions: BREAKTHROUGH_SERVICE_OPTIONS,
+            slots,
+            timezone,
+        });
     } catch (error) {
         const message = error instanceof Error ? error.message : 'Unable to load availability';
 
-        return new Response(JSON.stringify({ error: message }), {
-            headers: { 'Content-Type': 'application/json' },
-            status: 500,
-        });
+        return json(request, 500, { error: message });
     }
 };

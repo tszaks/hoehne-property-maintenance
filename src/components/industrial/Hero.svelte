@@ -213,10 +213,11 @@
             <p
                 class="hero-fade text-lg md:text-xl text-ind-steel max-w-xl mx-auto lg:mx-0 mb-12 font-medium"
             >
-                30 years. 300+ clients. One mission: help restoration and
-                construction owners build companies their team can run, their
-                family can inherit, or a buyer can trust when the time is
-                right.
+                With over 30 years of working with teams, we have ONE Mission.
+                We build leaders at all levels of the business and turn your
+                company into a well-run machine led by your leadership team, so
+                you as the owner can step back and do whatever you love doing
+                the most.
             </p>
 
             <div class="hero-fade-up flex flex-wrap items-center gap-6">
