@@ -278,7 +278,7 @@
 /* 14. Grid Paper / Technical Drawing Background */
 .ind-gridpaper {
   background-image:
-    linear-gradient(rgba(255, 90, 0, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 90, 0, 0.03) 1px, transparent 1px);
+    linear-gradient(rgba(111, 158, 206, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(111, 158, 206, 0.03) 1px, transparent 1px);
   background-size: 40px 40px;
 }
