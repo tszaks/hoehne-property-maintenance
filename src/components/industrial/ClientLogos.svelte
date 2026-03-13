@@ -1,15 +1,15 @@
 <script lang="ts">
     const clients = [
-        "RESTORATION",
-        "CONSTRUCTION",
-        "LEADERSHIP",
+        "SUCCESSION",
+        "EXIT STRATEGY",
+        "TRANSFERABLE VALUE",
+        "MANAGEMENT DEPTH",
         "ACCOUNTABILITY",
-        "CULTURE",
-        "PERFORMANCE",
-        "FREEDOM",
-        "PROFITS",
-        "OWNERSHIP",
-        "GROWTH",
+        "MARGINS",
+        "OWNER INDEPENDENCE",
+        "SALE READINESS",
+        "LEADERSHIP",
+        "HANDOFF",
     ];
 
     // Double for seamless loop
@@ -21,7 +21,7 @@
 >
     <div class="max-w-7xl mx-auto px-6 lg:px-12 mb-10">
         <div class="ind-metadata text-center opacity-60">
-            BUILT FOR RESTORATION & CONSTRUCTION OWNERS
+            BUILT FOR OWNERS WHO WANT A BUSINESS THAT CAN OUTLAST THEM
         </div>
     </div>
 

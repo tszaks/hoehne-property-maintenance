@@ -66,17 +66,17 @@
                 <h2
                     class="text-4xl md:text-6xl lg:text-7xl font-black text-white tracking-tighter uppercase mb-4"
                 >
-                    Ready to <span class="text-ind-accent">Grow.</span>
+                    Ready to <span class="text-ind-accent">Build for the Exit?</span>
                 </h2>
                 <p
                     class="text-ind-steel text-lg md:text-xl font-medium max-w-xl"
                 >
-                    Stop running your business on willpower. Let's build the
-                    team, the culture, and the systems that set you free.
+                    Build the team, operating discipline, and financial
+                    strength that make succession real and exit value stronger.
                 </p>
             </div>
             <a href="#contact" class="ind-button px-12 py-5 text-lg w-full md:w-auto">
-                Apply for Coaching
+                Start Your Exit Plan
             </a>
         </div>
 
@@ -93,8 +93,8 @@
                 </a>
                 <p class="text-ind-steel text-sm leading-relaxed max-w-xs">
                     Greg Neil has spent 30 years helping restoration and
-                    construction owners build teams, grow profits, and take
-                    back their lives.
+                    construction owners build businesses that can be sold,
+                    handed off, and run with far less owner dependence.
                 </p>
             </div>
 
@@ -105,7 +105,7 @@
                     Capabilities
                 </h4>
                 <ul class="space-y-4">
-                    {#each ["One-to-One Coaching", "Succession & Exit", "Mastermind Groups", "Team & Culture"] as item}
+                    {#each ["Succession & Exit", "One-to-One Coaching", "Mastermind Groups", "Team & Culture"] as item}
                         <li>
                             <a
                                 href="#"

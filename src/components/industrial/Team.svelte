@@ -115,22 +115,23 @@
                         class="text-lg md:text-xl text-white/90 font-medium leading-relaxed"
                     >
                         Greg Neil has spent 30 years coaching restoration and
-                        construction business owners to build high-performing
-                        teams, break through revenue plateaus, and step into
-                        the owner role they actually want.
+                        construction business owners to build companies that
+                        can be sold, handed off, or run without the owner
+                        sitting in the middle of every important decision.
                     </p>
                     <p class="text-ind-steel leading-relaxed">
                         He's worked with hundreds of companies — from $5M
                         owner-operated businesses to $35M+ firms preparing for
-                        acquisition. His clients have doubled revenue, sold to
-                        national buyers, and finally gotten out of the
-                        day-to-day grind they were stuck in for years.
+                        acquisition. His clients have doubled revenue, built
+                        real management teams, sold to national buyers, and
+                        gotten out of the day-to-day because the business no
+                        longer depends on owner heroics.
                     </p>
                     <p class="text-ind-steel leading-relaxed">
-                        Greg's approach is simple: change the culture, and
-                        everything else follows. Productivity, profits,
-                        accountability — they all flow from an environment
-                        where people are empowered to give their best.
+                        Greg's approach is simple: build the company around
+                        transferable value. Culture, accountability, leadership,
+                        and profit matter because they are what make succession
+                        planning real and exit strategy credible.
                     </p>
                 </div>
 

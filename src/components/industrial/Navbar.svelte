@@ -59,7 +59,7 @@
                 </a>
             {/each}
 
-            <a href="#contact" class="ind-button px-6 py-2.5 text-sm"> Apply Now </a>
+            <a href="#contact" class="ind-button px-6 py-2.5 text-sm"> Start Your Exit Plan </a>
         </div>
 
         <!-- Mobile Toggle -->
@@ -114,7 +114,7 @@
                     class="ind-button px-8 py-4 mt-8 w-full block text-center"
                     on:click={toggleMenu}
                 >
-                    Apply Now
+                    Start Your Exit Plan
                 </a>
             </div>
         </div>

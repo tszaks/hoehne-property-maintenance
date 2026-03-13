@@ -198,14 +198,14 @@
                 class="ind-hero-title text-5xl md:text-7xl lg:text-[7rem] leading-[0.85] font-black text-white tracking-tighter uppercase mb-8"
             >
                 <span class="block overflow-hidden pb-2"
-                    ><span class="title-line block">BUILDING</span></span
+                    ><span class="title-line block">BUILD A</span></span
                 >
                 <span class="block overflow-hidden pb-2"
-                    ><span class="title-line block text-ind-accent">POWERFUL</span
+                    ><span class="title-line block text-ind-accent">SELLABLE</span
                     ></span
                 >
                 <span class="block overflow-hidden pb-2"
-                    ><span class="title-line block">LEADERS</span></span
+                    ><span class="title-line block">BUSINESS</span></span
                 >
             </h1>
 
@@ -213,10 +213,9 @@
             <p
                 class="hero-fade text-lg md:text-xl text-ind-steel max-w-xl mx-auto lg:mx-0 mb-12 font-medium"
             >
-                30 years. 300+ clients. One mission: build leaders at every
-                level of the business and turn your company into a well-run
-                machine led by your team, so you as the owner can step back and
-                breathe again.
+                30 years. 300+ clients. One mission: help restoration and
+                construction owners build a sellable, transferable business
+                led by the team, not held together by the owner.
             </p>
 
             <div class="hero-fade-up flex flex-wrap items-center gap-6">

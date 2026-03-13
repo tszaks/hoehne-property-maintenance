@@ -34,13 +34,13 @@
     };
 
     const SERVICE_OPTIONS: ServiceInterest[] = [
+        "Exit Strategy / Preparing for Sale",
         "Online Mastermind Groups",
         "GNA Academy Self-Guided Online Curriculum",
         "1-on-1 Coaching",
-        "Exit Strategy / Preparing for Sale",
     ];
     const CHALLENGE_OTHER_VALUE = "__challenge_other__";
-    const INTRO_MESSAGE = "Hey, I'm Grant with GNA. What kind of business are you running, and what's feeling heavier than it should right now?";
+    const INTRO_MESSAGE = "Hey, I'm Grant with GNA. Are you trying to build toward succession or an exit, or are you still too buried in the day-to-day to even think about that yet?";
     const SESSION_STORAGE_KEY = "grant-chat-session-id";
     const IDLE_FINALIZE_MS = 15 * 60 * 1000;
 
@@ -69,7 +69,7 @@
         },
         phase: "idle",
         slots: [],
-        suggestedService: "1-on-1 Coaching",
+        suggestedService: "Exit Strategy / Preparing for Sale",
     });
 
     function getBrowserTimezone() {
@@ -212,7 +212,7 @@
             },
             phase: "idle",
             slots: [],
-            suggestedService: "1-on-1 Coaching",
+            suggestedService: "Exit Strategy / Preparing for Sale",
         };
     }
 
