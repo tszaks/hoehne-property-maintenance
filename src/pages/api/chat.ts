@@ -1,10 +1,12 @@
 import type { APIRoute } from 'astro';
 import Anthropic from '@anthropic-ai/sdk';
 
+import { json, options } from '../../lib/server/api-response';
 import { buildGrantKnowledgeBrief } from '../../lib/server/grant-knowledge';
 import { getServerEnv } from '../../lib/server/runtime-env';
 
 export const prerender = false;
+export const OPTIONS: APIRoute = async ({ request }) => options(request);
 
 type ChatMessage = {
     content: string;
@@ -1006,18 +1008,13 @@ export const POST: APIRoute = async ({ request }) => {
     const messages = (body.messages ?? []) as ChatMessage[];
 
     if (!messages.length) {
-        return new Response(JSON.stringify({ error: 'No messages provided' }), {
-            status: 400,
-            headers: { 'Content-Type': 'application/json' },
-        });
+        return json(request, 400, { error: 'No messages provided' });
     }
 
     const guardrailReply = getGuardrailReply(messages);
 
     if (guardrailReply) {
-        return new Response(JSON.stringify({ content: shapeReply(hardenSoftClose(deScriptify(guardrailReply))) }), {
-            headers: { 'Content-Type': 'application/json' },
-        });
+        return json(request, 200, { content: shapeReply(hardenSoftClose(deScriptify(guardrailReply))) });
     }
 
     const dynamicFallbackReply = getDynamicFallbackReply(messages);
@@ -1027,15 +1024,12 @@ export const POST: APIRoute = async ({ request }) => {
 
     if (!apiKey) {
         if (dynamicFallbackReply) {
-            return new Response(JSON.stringify({ content: shapeReply(hardenSoftClose(deScriptify(dynamicFallbackReply))) }), {
-                headers: { 'Content-Type': 'application/json' },
+            return json(request, 200, {
+                content: shapeReply(hardenSoftClose(deScriptify(dynamicFallbackReply))),
             });
         }
 
-        return new Response(JSON.stringify({ error: 'API key not configured' }), {
-            status: 500,
-            headers: { 'Content-Type': 'application/json' },
-        });
+        return json(request, 500, { error: 'API key not configured' });
     }
 
     const client = new Anthropic({ apiKey });
@@ -1050,7 +1044,5 @@ export const POST: APIRoute = async ({ request }) => {
 
     const text = response.content[0].type === 'text' ? shapeReply(hardenSoftClose(deScriptify(response.content[0].text))) : '';
 
-    return new Response(JSON.stringify({ content: text }), {
-        headers: { 'Content-Type': 'application/json' },
-    });
+    return json(request, 200, { content: text });
 };
