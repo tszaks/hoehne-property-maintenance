@@ -226,7 +226,7 @@
                                 for="program"
                                 class="mb-2 block text-[0.65rem] font-bold uppercase tracking-[0.22em] text-ind-steel/90 transition-colors group-focus-within:text-ind-accent"
                             >
-                                <span aria-hidden="true">04 // </span>Interested In
+                                <span aria-hidden="true">04 // </span>Biggest Challenges
                             </label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 w-[2px] bg-ind-accent/20 transition-colors group-focus-within:bg-ind-accent"></div>
