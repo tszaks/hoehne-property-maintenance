@@ -24,11 +24,11 @@
         },
         {
             question: "Do you work with companies preparing to sell?",
-            answer: "Yes. Greg helps owners prepare for that, but he does not treat selling as the only goal. Real preparation takes time to strengthen financials, document operations, and build a management team that can run independently, and the timeline varies by business.",
+            answer: "Yes. Succession and exit strategy is one of Greg's specialties. In 3 to 5 years, we get your financials strong, your operations documented, and your management team running independently. This makes your business more attractive to buyers and helps maximize sale price.",
         },
         {
             question: "What does the Mastermind Group program look like?",
-            answer: "Monthly virtual meetings with 7 or fewer non-competing restoration owners and GMs. Each session helps members solve the leadership, financial, and operational issues that keep the owner trapped and keep the business from becoming stronger and more transferable.",
+            answer: "Monthly virtual meetings for non-competing restoration owners and GMs, with seven or fewer participants and one optional one-on-one coaching call between sessions. Each meeting reviews financials, a deep dive on one member's business, and practical solutions to the biggest current challenges. We need at least three people to start a group.",
         },
         {
             question: "How do I get started?",

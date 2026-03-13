@@ -12,25 +12,25 @@
             id: "01",
             title: "Reality Check",
             description:
-                "Greg takes a hard look at your financials, operations, team, and culture to find where the business still depends too much on you.",
+                "We start with a one-on-one meeting for a deep dive into your financials, operations, team, and culture. We find exactly where the gaps are, and the hidden breakdowns costing you money, time, and sanity.",
         },
         {
             id: "02",
             title: "Custom Roadmap",
             description:
-                "You get a custom roadmap built around your goals. That might mean succession, owner freedom, or an eventual sale, but the work starts with making the company stronger and more transferable.",
+                "From that assessment, we build a custom blueprint for your business. We keep it practical and focused on what you and your team can actually execute.",
         },
         {
             id: "03",
             title: "Install the Rhythm",
             description:
-                "Weekly coaching, accountability structures, meeting rhythms, and management practices get installed into the business so your people start owning results instead of kicking them back to you.",
+                "Weekly coaching actions, accountability systems, meeting frameworks, and team practices are installed into the DNA of your company. Your framework for success starts running daily.",
         },
         {
             id: "04",
             title: "More Options",
             description:
-                "Your management team becomes the driving force, your numbers get cleaner, and the company gets stronger. Owner freedom, stronger margins, succession readiness, and sale readiness become the result.",
+                "Your team becomes the driving force of the business, productivity rises, profits follow, and you run the business instead of it running you.",
         },
     ];
 

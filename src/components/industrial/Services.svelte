@@ -14,30 +14,30 @@
     const services = [
         {
             id: "01",
-            title: "A Real Succession Path",
+            title: "Succession & Exit Strategy",
             description:
-                "The core offer. Greg helps you strengthen financials, install operating discipline, and build management depth so the company can be handed off, sold, or run with far less owner dependence.",
+                "You've invested years in building your business. Now let's get you ready to cash out. In 3 to 5 years we strengthen every area so you can attract the strongest sale price possible.",
             image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80",
         },
         {
             id: "02",
-            title: "Less Owner Dependence",
+            title: "One-to-One Coaching",
             description:
-                "Hands-on coaching that helps move decisions, accountability, and day-to-day leadership out of the owner's head and into the business where they belong.",
+                "The Path to Freedom starts with one-on-one sessions designed to build a stronger owner and leadership team one action at a time.",
             image: "https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&q=80",
         },
         {
             id: "03",
-            title: "Stronger Leaders",
+            title: "Master Minds",
             description:
-                "Monthly sessions for owners and GMs who want a stronger leadership bench. Pressure-test decisions, solve operational bottlenecks, and build managers who can carry more of the load.",
+                "Master Minds are peer-to-peer sessions for key employees, leaders, and owners. Share current challenges, compare solutions, and get faster clarity from people who run similar businesses.",
             image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80",
         },
         {
             id: "04",
-            title: "More Value and More Options",
+            title: "Team & Culture Performance Development",
             description:
-                "When the team can lead, the numbers are cleaner, and operations are tighter, owners gain more freedom now and more options later. Greg helps build that foundation.",
+                "Your team becomes the driving force of the business. Better hiring, stronger accountability, and a culture of ownership make high performance repeatable.",
             image: "https://images.unsplash.com/photo-1714974528737-3e6c7e4d11af?auto=format&fit=crop&q=80",
         },
     ];
@@ -97,13 +97,13 @@
                 <h3
                     class="text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tighter uppercase max-w-3xl"
                 >
-                    More Freedom, More Value, More Options
+                    Built For Construction and Restoration
                 </h3>
             </div>
             <p class="text-ind-steel max-w-md text-sm md:text-base font-medium">
-                Greg's work is not about one event at the end. It is about
-                building a stronger company over time so succession,
-                owner step-back, or an eventual sale all become real options.
+                Every program is built around one goal: empowering key staff to be
+                the driving force of your business, allowing owners freedom from
+                the enormous stress of long days and keeping it all together.
             </p>
         </div>
 
@@ -120,6 +120,10 @@
                     <div
                         class="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-105 filter grayscale group-hover:grayscale-0 opacity-70 group-hover:opacity-90"
                         style="background-image: url('{service.image}')"
+                    ></div>
+
+                    <div
+                        class="absolute inset-0 bg-gradient-to-b from-ind-accent/30 via-ind-accent/10 to-transparent opacity-70 group-hover:opacity-80 transition-opacity duration-500"
                     ></div>
 
                     <!-- Gradient overlay -->

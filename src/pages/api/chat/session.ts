@@ -1,8 +1,10 @@
 import type { APIRoute } from 'astro';
 
+import { json, options } from '../../../lib/server/api-response';
 import { saveChatSession } from '../../../lib/server/chat-store';
 
 export const prerender = false;
+export const OPTIONS: APIRoute = async ({ request }) => options(request);
 
 async function parseBody(request: Request) {
     const text = await request.text().catch(() => '');
@@ -19,10 +21,7 @@ export const POST: APIRoute = async ({ request }) => {
     const body = await parseBody(request);
 
     if (!body || typeof body !== 'object') {
-        return new Response(JSON.stringify({ error: 'Missing session payload' }), {
-            headers: { 'Content-Type': 'application/json' },
-            status: 400,
-        });
+        return json(request, 400, { error: 'Missing session payload' });
     }
 
     const sessionId = typeof body.sessionId === 'string' ? body.sessionId.trim() : '';
@@ -30,31 +29,20 @@ export const POST: APIRoute = async ({ request }) => {
     const booking = typeof body.booking === 'object' && body.booking !== null ? body.booking : undefined;
 
     if (!sessionId) {
-        return new Response(JSON.stringify({ error: 'Missing session id' }), {
-            headers: { 'Content-Type': 'application/json' },
-            status: 400,
-        });
+        return json(request, 400, { error: 'Missing session id' });
     }
 
     if (!messages.length) {
-        return new Response(JSON.stringify({ error: 'Missing messages' }), {
-            headers: { 'Content-Type': 'application/json' },
-            status: 400,
-        });
+        return json(request, 400, { error: 'Missing messages' });
     }
 
     try {
         await saveChatSession({ booking, messages, sessionId });
 
-        return new Response(JSON.stringify({ ok: true }), {
-            headers: { 'Content-Type': 'application/json' },
-        });
+        return json(request, 200, { ok: true });
     } catch (error) {
         const message = error instanceof Error ? error.message : 'Unable to save chat session';
 
-        return new Response(JSON.stringify({ error: message }), {
-            headers: { 'Content-Type': 'application/json' },
-            status: 500,
-        });
+        return json(request, 500, { error: message });
     }
 };
