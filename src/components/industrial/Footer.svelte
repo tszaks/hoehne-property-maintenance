@@ -1,185 +1,73 @@
 <script lang="ts">
-    import { onMount } from "svelte";
-    import gsap from "gsap";
-    import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
-
-    if (typeof window !== "undefined") {
-        gsap.registerPlugin(ScrollTrigger);
-    }
-
-    let footerRef: HTMLElement;
-    let ctaRef: HTMLElement;
-    let footerRule: HTMLElement;
-
-    onMount(() => {
-        // Reveal text in footer
-        gsap.from(".footer-reveal", {
-            scrollTrigger: {
-                trigger: footerRef,
-                start: "top 90%",
-            },
-            y: 30,
-            opacity: 0,
-            duration: 0.8,
-            stagger: 0.1,
-            ease: "power2.out",
-        });
-
-        // Footer rule expansion
-        ScrollTrigger.create({
-            trigger: footerRule,
-            start: "top 90%",
-            onEnter: () => footerRule.classList.add("is-visible"),
-        });
-
-        // Reveal lines in footer
-        const revealLines = footerRef.querySelectorAll(".ind-reveal-line");
-        revealLines.forEach((el) => {
-            ScrollTrigger.create({
-                trigger: el,
-                start: "top 90%",
-                onEnter: () => el.classList.add("is-visible"),
-            });
-        });
-    });
 </script>
 
-<footer bind:this={footerRef} class="bg-black pt-24 pb-12 relative z-10">
-    <!-- Animated top rule -->
-    <div
-        bind:this={footerRule}
-        class="ind-footer-rule w-full h-[1px] bg-ind-accent absolute top-0 left-0"
-    ></div>
-
-    <div class="max-w-7xl mx-auto px-6 lg:px-12 relative">
-        <div class="ind-ruler-x w-full absolute top-0 left-0 opacity-20"></div>
-        <div class="ind-metadata absolute -top-12 left-6 lg:left-12 opacity-50">
-            SEC. 08 // TERMINAL // FOOTER
-        </div>
-
-        <!-- Massive CTA -->
-        <div
-            bind:this={ctaRef}
-            class="footer-reveal mb-24 pb-24 border-b border-ind-border/30 text-center md:text-left flex flex-col md:flex-row items-center justify-between gap-8"
-        >
+<footer class="py-16 bg-[#070707] relative z-10 border-t border-ind-border/20">
+    <div class="max-w-7xl mx-auto px-6 lg:px-12">
+        <!-- Top CTA bar -->
+        <div class="border border-ind-border/30 p-8 lg:p-12 mb-12 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
             <div>
-                <h2
-                    class="text-4xl md:text-6xl lg:text-7xl font-black text-white tracking-tighter uppercase mb-4"
-                >
-                    Ready to <span class="text-ind-accent">Build More Options?</span>
-                </h2>
-                <p
-                    class="text-ind-steel text-lg md:text-xl font-medium max-w-xl"
-                >
-                    Build the team, and financial strength that will create
-                    more freedom for you now, and a stronger succession or
-                    sale later.
-                </p>
+                <div class="ind-metadata text-ind-steel mb-2">SEC. 08 // TERMINAL</div>
+                <h3 class="text-2xl lg:text-3xl font-black text-white uppercase tracking-tight">Ready to Get the Job Done?</h3>
+                <p class="text-ind-steel text-sm mt-2">Call, text, or fill out the form. We'll get back to you fast.</p>
             </div>
-            <a href="#contact" class="ind-button px-12 py-5 text-lg w-full md:w-auto">
-                Start the Conversation
-            </a>
-        </div>
-
-        <div
-            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16"
-        >
-            <div class="footer-reveal lg:col-span-1">
-                <a href="/industrial" class="mb-6 inline-flex items-center">
-                    <img
-                        src="/gna-logo-light.png"
-                        alt="GNA Inc — Breakthrough Performance"
-                        class="h-8 w-auto object-contain"
-                    />
+            <div class="flex flex-col sm:flex-row gap-4 shrink-0">
+                <a href="tel:+16104126424" class="ind-button px-6 py-3 text-sm font-bold uppercase tracking-wider text-center">
+                    (610) 412-6424
                 </a>
-                <p class="text-ind-steel text-sm leading-relaxed max-w-xs">
-                    Greg Neil has spent 30 years helping restoration and
-                    construction owners build businesses that can be handed
-                    off, sold, or run with far less owner dependence.
-                </p>
-                <p class="text-ind-steel text-sm leading-relaxed max-w-xs mt-3">
-                    30+ Years Building Teams, Driving Success, Preparing for
-                    Sale.
+                <a href="#contact" class="px-6 py-3 text-sm font-bold uppercase tracking-wider border border-ind-border/50 text-white hover:border-ind-accent hover:text-ind-accent transition-all duration-300 text-center">
+                    Free Estimate
+                </a>
+            </div>
+        </div>
+
+        <!-- Footer grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            <div>
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-8 h-8 bg-ind-accent flex items-center justify-center">
+                        <span class="text-black font-black text-sm">H</span>
+                    </div>
+                    <div>
+                        <div class="text-white font-black text-sm uppercase">Hoehne</div>
+                        <div class="ind-metadata text-ind-steel" style="font-size:0.5rem">Property Maintenance & Remodeling</div>
+                    </div>
+                </div>
+                <p class="text-ind-steel text-sm leading-relaxed">
+                    Veteran-owned property maintenance and remodeling serving Pottstown, PA and surrounding communities since 2004.
                 </p>
             </div>
 
-            <div class="footer-reveal">
-                <h4
-                    class="text-white font-bold uppercase tracking-widest text-sm mb-6"
-                >
-                    Capabilities
-                </h4>
-                <ul class="space-y-4">
-                    {#each ["Succession & Exit", "One-to-One Coaching", "Mastermind Groups", "Team & Culture"] as item}
-                        <li>
-                            <a
-                                href="#"
-                                class="text-ind-steel hover:text-ind-accent text-sm transition-colors"
-                                >{item}</a
-                            >
-                        </li>
-                    {/each}
+            <div>
+                <h4 class="text-white font-bold uppercase text-xs tracking-widest mb-4">Services</h4>
+                <ul class="space-y-2 text-ind-steel text-sm">
+                    <li>Home Remodeling</li>
+                    <li>Handyman Services</li>
+                    <li>Interior & Exterior Painting</li>
+                    <li>Lawn Care & Landscaping</li>
+                    <li>Snow Removal</li>
+                    <li>Deck Building & Repair</li>
                 </ul>
             </div>
 
-            <div class="footer-reveal">
-                <h4
-                    class="text-white font-bold uppercase tracking-widest text-sm mb-6"
-                >
-                    Company
-                </h4>
-                <ul class="space-y-4">
-                    {#each ["About Greg", "Free Discovery Call", "Podcast", "Client Results"] as item}
-                        <li>
-                            <a
-                                href="#"
-                                class="text-ind-steel hover:text-ind-accent text-sm transition-colors"
-                                >{item}</a
-                            >
-                        </li>
-                    {/each}
-                </ul>
-            </div>
-
-            <div class="footer-reveal">
-                <h4
-                    class="text-white font-bold uppercase tracking-widest text-sm mb-6"
-                >
-                    Contact
-                </h4>
-                <ul class="space-y-4 text-sm text-ind-steel">
-                    <li>Redding, CA</li>
-                    <li>
-                        <a
-                            href="tel:+14156998512"
-                            class="hover:text-white transition-colors"
-                            >(415) 699-8512</a
-                        >
-                    </li>
-                    <li>
-                        <a
-                            href="mailto:greg@gnaworks.com"
-                            class="hover:text-white transition-colors"
-                            >greg@gnaworks.com</a
-                        >
-                    </li>
+            <div>
+                <h4 class="text-white font-bold uppercase text-xs tracking-widest mb-4">Contact</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="tel:+16104126424" class="text-ind-steel hover:text-ind-accent transition-colors">(610) 412-6424</a></li>
+                    <li><a href="mailto:aaron@hoehnepropertymaintenance.com" class="text-ind-steel hover:text-ind-accent transition-colors">aaron@hoehnepropertymaintenance.com</a></li>
+                    <li class="text-ind-steel">Pottstown, PA 19464</li>
+                    <li class="text-ind-steel">Mon–Fri 7am–6pm</li>
+                    <li class="text-ind-steel">Sat 8am–4pm</li>
                 </ul>
             </div>
         </div>
 
-        <div
-            class="footer-reveal flex flex-col md:flex-row items-center justify-between text-xs text-ind-steel font-medium uppercase tracking-widest pt-8 border-t border-ind-border/30"
-        >
-            <p>
-                &copy; {new Date().getFullYear()} GNA Inc. All rights reserved.
-            </p>
-            <div class="flex gap-6 mt-4 md:mt-0">
-                <a href="#" class="hover:text-white transition-colors"
-                    >Privacy Policy</a
-                >
-                <a href="#" class="hover:text-white transition-colors"
-                    >Terms of Service</a
-                >
+        <!-- Bottom bar -->
+        <div class="border-t border-ind-border/20 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="ind-metadata text-ind-steel/40 text-center md:text-left">
+                © {new Date().getFullYear()} Hoehne Property Maintenance & Remodeling LLC — Pottstown, PA
+            </div>
+            <div class="ind-metadata text-ind-steel/40">
+                Veteran Owned & Operated
             </div>
         </div>
     </div>

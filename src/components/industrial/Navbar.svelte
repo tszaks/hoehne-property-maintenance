@@ -1,132 +1,81 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { Menu, X } from "lucide-svelte";
-    import { fade, fly } from "svelte/transition";
-    import { backOut } from "svelte/easing";
+    import { Menu, X, Phone } from "lucide-svelte";
 
     let isScrolled = false;
     let isMenuOpen = false;
-    let navElement: HTMLElement;
-    let menuElement: HTMLElement;
 
-    const toggleMenu = () => {
-        isMenuOpen = !isMenuOpen;
-        if (typeof window !== "undefined") {
-            document.body.style.overflow = isMenuOpen ? "hidden" : "";
-        }
-    };
+    const navLinks = [
+        { label: "Services", href: "#services" },
+        { label: "Process", href: "#process" },
+        { label: "Work", href: "#work" },
+        { label: "About", href: "#about" },
+        { label: "Contact", href: "#contact" },
+    ];
+
+    function scrollTo(href: string) {
+        isMenuOpen = false;
+        document.body.style.overflow = "";
+        const el = document.querySelector(href);
+        if (el) el.scrollIntoView({ behavior: "smooth" });
+    }
 
     onMount(() => {
-        const handleScroll = () => {
-            isScrolled = window.scrollY > 50;
-        };
-
-        window.addEventListener("scroll", handleScroll, { passive: true });
-
-        return () => {
-            window.removeEventListener("scroll", handleScroll);
-        };
+        const handleScroll = () => { isScrolled = window.scrollY > 50; };
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
     });
 </script>
 
-<nav
-    bind:this={navElement}
-    class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out px-6 py-4 lg:px-12 nav-entrance {isScrolled
-        ? 'ind-glass py-4'
-        : 'bg-transparent py-6'}"
->
-    <div class="max-w-7xl mx-auto flex items-center justify-between">
+<nav class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 {isScrolled ? 'bg-ind-bg/95 backdrop-blur-md border-b border-ind-border/30' : 'bg-transparent'}">
+    <div class="max-w-7xl mx-auto px-6 lg:px-12 h-16 flex items-center justify-between">
         <!-- Logo -->
-        <a href="/" class="flex items-center group">
-            <img
-                src="/gna-logo-light.png"
-                alt="GNA Inc — Breakthrough Performance"
-                class="h-9 w-auto object-contain transition-opacity duration-300 group-hover:opacity-80"
-            />
+        <a href="/" class="flex items-center gap-3 group">
+            <div class="w-8 h-8 bg-ind-accent flex items-center justify-center">
+                <span class="text-black font-black text-sm">H</span>
+            </div>
+            <div>
+                <div class="text-white font-black text-sm uppercase tracking-tight leading-none">Hoehne</div>
+                <div class="ind-metadata text-ind-steel" style="font-size:0.5rem">Property Maintenance & Remodeling</div>
+            </div>
         </a>
 
-        <!-- Desktop Links -->
+        <!-- Desktop Nav -->
         <div class="hidden md:flex items-center gap-8">
-            {#each [["Services", "services"], ["Process", "process"], ["About", "about"], ["Contact", "contact"]] as [label, anchor]}
-                <a
-                    href="#{anchor}"
-                    class="text-sm font-semibold text-ind-fg/80 hover:text-white uppercase tracking-wider transition-colors relative group"
-                >
-                    {label}
-                    <span
-                        class="absolute -bottom-1 left-0 w-0 h-0.5 bg-ind-accent transition-all duration-300 group-hover:w-full"
-                    ></span>
-                </a>
+            {#each navLinks as link}
+                <button on:click={() => scrollTo(link.href)}
+                    class="ind-metadata text-ind-steel hover:text-white transition-colors duration-200 cursor-pointer bg-transparent border-0">
+                    {link.label}
+                </button>
             {/each}
+        </div>
 
-            <a href="#contact" class="ind-button px-6 py-2.5 text-sm"> Start Your Exit Plan </a>
+        <!-- CTA -->
+        <div class="hidden md:flex items-center gap-4">
+            <a href="tel:+16104126424" class="flex items-center gap-2 text-ind-accent font-bold text-sm hover:text-white transition-colors">
+                <Phone size={14} />(610) 412-6424
+            </a>
+            <button on:click={() => scrollTo("#contact")} class="ind-button px-4 py-2 text-xs font-bold uppercase tracking-wider">
+                Free Estimate
+            </button>
         </div>
 
         <!-- Mobile Toggle -->
-        <button
-            class="md:hidden text-white z-50 relative"
-            on:click={toggleMenu}
-        >
-            {#if isMenuOpen}
-                <X size={24} />
-            {:else}
-                <Menu size={24} />
-            {/if}
+        <button on:click={() => { isMenuOpen = !isMenuOpen; document.body.style.overflow = isMenuOpen ? 'hidden' : ''; }} class="md:hidden text-white p-2">
+            {#if isMenuOpen}<X size={20} />{:else}<Menu size={20} />{/if}
         </button>
     </div>
-</nav>
 
-<!-- Mobile Menu Overlay -->
-{#if isMenuOpen}
-    <div
-        transition:fade={{ duration: 300 }}
-        class="fixed inset-0 bg-ind-bg z-40 flex flex-col items-center justify-center touch-none overscroll-none"
-    >
-        <div
-            class="flex flex-col items-center gap-10 text-3xl md:text-4xl font-black uppercase tracking-widest w-full px-6"
-        >
-            {#each [["Services", "services"], ["Process", "process"], ["About", "about"], ["Contact", "contact"]] as [link, anchor], i}
-                <a
-                    href="#{anchor}"
-                    transition:fly={{
-                        y: 20,
-                        duration: 500,
-                        delay: 100 + i * 100,
-                        easing: backOut,
-                    }}
-                    class="hover:text-ind-accent transition-colors py-4 block w-full text-center"
-                    on:click={toggleMenu}
-                >
-                    {link}
-                </a>
+    {#if isMenuOpen}
+        <div class="md:hidden bg-ind-bg border-t border-ind-border/30 px-6 py-6 space-y-4">
+            {#each navLinks as link}
+                <button on:click={() => scrollTo(link.href)} class="block w-full text-left text-white font-bold uppercase tracking-wide text-sm py-3 border-b border-ind-border/20 bg-transparent border-l-0 border-r-0 border-t-0">
+                    {link.label}
+                </button>
             {/each}
-            <div
-                transition:fly={{
-                    y: 20,
-                    duration: 500,
-                    delay: 500,
-                    easing: backOut,
-                }}
-                class="w-full"
-            >
-                <a
-                    href="#contact"
-                    class="ind-button px-8 py-4 mt-8 w-full block text-center"
-                    on:click={toggleMenu}
-                >
-                    Start Your Exit Plan
-                </a>
-            </div>
+            <a href="tel:+16104126424" class="flex items-center gap-2 text-ind-accent font-bold text-sm pt-2">
+                <Phone size={14} />(610) 412-6424
+            </a>
         </div>
-    </div>
-{/if}
-
-<style>
-    @keyframes nav-slide-down {
-        from { transform: translateY(-100%); opacity: 0; }
-        to   { transform: translateY(0);    opacity: 1; }
-    }
-    :global(.nav-entrance) {
-        animation: nav-slide-down 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
-    }
-</style>
+    {/if}
+</nav>
