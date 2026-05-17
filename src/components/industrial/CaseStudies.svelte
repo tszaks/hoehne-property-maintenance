@@ -10,22 +10,32 @@
 
     const projects = [
         {
-            type: "BATHROOM REMODEL",
-            title: "Master Bath Renovation",
-            description: "Full gut and rebuild — new tile, walk-in shower, vanity, and plumbing. Completed in under two weeks.",
+            type: "KITCHEN REMODEL",
+            title: "Full Kitchen Renovation",
+            description: "Complete gut and rebuild — new cabinetry, quartz countertops, subway tile backsplash, LVP flooring, and full appliance suite.",
             location: "Pottstown, PA",
+            img: "/work/project-3.jpg",
         },
         {
-            type: "NURSERY INSTALLATION",
-            title: "Custom Wallpaper Mural",
-            description: "A custom nursery mural installed and aligned perfectly. Owner surprised his wife when she got home.",
+            type: "BATHROOM REMODEL",
+            title: "Master Bathroom Vanity",
+            description: "Custom double-sink vanity, quartz countertops, new lighting, mirrors, and full tile work. Clean, modern, built to last.",
+            location: "Montgomery County, PA",
+            img: "/work/project-4.jpg",
+        },
+        {
+            type: "INTERIOR WORK",
+            title: "Attic Conversion & Flooring",
+            description: "Full attic conversion with LVP flooring installation and fresh paint throughout.",
+            location: "Pottstown, PA",
+            img: "/work/project-2.jpg",
+        },
+        {
+            type: "CUSTOM FINISH",
+            title: "Nursery Mural Installation",
+            description: "Custom wallpaper mural for a nursery — installed perfectly, aligned to the room. Owner surprised his wife when she got home.",
             location: "North Coventry, PA",
-        },
-        {
-            type: "EXTERIOR WORK",
-            title: "Deck Build & Stain",
-            description: "New 400 sq ft deck with pressure-treated framing, composite decking, and full exterior stain.",
-            location: "Boyertown, PA",
+            img: "/work/project-1.jpg",
         },
     ];
 
@@ -54,21 +64,32 @@
             </a>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {#each projects as project}
-                <div class="project-card ind-steel-plate p-8 group hover:border-ind-accent/30 transition-colors duration-300">
-                    <div class="text-xs font-bold text-ind-accent tracking-widest uppercase mb-4 opacity-70">{project.type}</div>
-                    <h4 class="text-2xl font-bold text-white uppercase tracking-tight mb-4">{project.title}</h4>
-                    <p class="text-ind-steel text-sm leading-relaxed mb-6">{project.description}</p>
-                    <div class="flex items-center gap-2 text-ind-steel text-xs">
-                        <span class="w-4 h-[1px] bg-ind-border"></span>
-                        {project.location}
+                <div class="project-card group relative overflow-hidden ind-steel-plate hover:border-ind-accent/30 transition-colors duration-300 cursor-pointer">
+                    <!-- Image with overlay -->
+                    <div
+                        class="aspect-[4/3] bg-cover bg-center relative"
+                        style="background-image: url('{project.img}');"
+                    >
+                        <!-- Dark gradient overlay -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10 group-hover:from-black/80 transition-all duration-300"></div>
+
+                        <!-- Text content -->
+                        <div class="absolute inset-0 flex flex-col justify-end p-5">
+                            <div class="text-xs font-bold text-ind-accent tracking-widest uppercase mb-2 opacity-80">{project.type}</div>
+                            <h4 class="text-lg font-black text-white uppercase tracking-tight mb-2 leading-tight">{project.title}</h4>
+                            <p class="text-ind-steel text-xs leading-relaxed mb-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">{project.description}</p>
+                            <div class="flex items-center gap-2 text-ind-steel text-xs">
+                                <span class="w-4 h-[1px] bg-ind-border"></span>
+                                {project.location}
+                            </div>
+                        </div>
                     </div>
+
                     <!-- Rivets -->
                     <div class="ind-rivet top-3 left-3"></div>
                     <div class="ind-rivet top-3 right-3"></div>
-                    <div class="ind-rivet bottom-3 left-3"></div>
-                    <div class="ind-rivet bottom-3 right-3"></div>
                 </div>
             {/each}
         </div>

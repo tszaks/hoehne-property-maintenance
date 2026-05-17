@@ -282,3 +282,12 @@
     linear-gradient(90deg, rgba(111, 158, 206, 0.03) 1px, transparent 1px);
   background-size: 40px 40px;
 }
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+  .industrial-theme { font-size: 16px; }
+  input, select, textarea { font-size: 16px !important; } /* Prevent zoom on iOS */
+  .ind-hero-title { font-size: 3.5rem !important; line-height: 0.9 !important; }
+}
+/* Touch targets */
+a, button { min-height: 44px; min-width: 44px; }

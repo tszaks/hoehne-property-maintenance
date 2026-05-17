@@ -15,6 +15,7 @@ import ScrollProgress from '../components/industrial/ScrollProgress.svelte';
 import MouseTrail from '../components/industrial/MouseTrail.svelte';
 import SectionIndicator from '../components/industrial/SectionIndicator.svelte';
 import Preloader from '../components/industrial/Preloader.svelte';
+import FloatingPhone from '../components/industrial/FloatingPhone.svelte';
 ---
 
 <IndustrialLayout 
@@ -39,4 +40,5 @@ import Preloader from '../components/industrial/Preloader.svelte';
 		<Contact client:visible />
 		<Footer client:visible />
 	</main>
+	<FloatingPhone client:load />
 </IndustrialLayout>
