@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import gsap from "gsap";
-    import { Phone, ArrowRight } from "lucide-svelte";
+    import { Phone, ArrowRight } from "phosphor-svelte";
 
     let containerElement: HTMLElement;
 
