@@ -4,31 +4,125 @@ import '../styles/industrial.css';
 interface Props {
 	title?: string;
 	description?: string;
+	canonical?: string;
 }
 
 const { 
-	title = "GNA Works | Greg Neil",
-	description = "Greg Neil helps restoration and construction owners build stronger, less owner-dependent businesses with a real succession path, more freedom, and better long-term options."
+	title = "Hoehne Property Maintenance & Remodeling | Pottstown, PA",
+	description = "Veteran-owned property maintenance and remodeling in Pottstown, PA. 20 years of experience. Handyman services, home renovations, lawn care, painting, and more. Call (610) 412-6424.",
+	canonical = "https://www.hoehnepropertymaintenance.com"
 } = Astro.props;
+
+const schema = {
+	"@context": "https://schema.org",
+	"@type": "HomeAndConstructionBusiness",
+	"name": "Hoehne Property Maintenance & Remodeling",
+	"alternateName": "Hoehne Property Maintenance and Remodeling LLC",
+	"description": "Veteran-owned property maintenance and remodeling company serving Pottstown, PA and surrounding areas. 20 years of experience in handyman services, home renovations, painting, lawn care, and snow removal.",
+	"url": "https://www.hoehnepropertymaintenance.com",
+	"telephone": "+16104126424",
+	"address": {
+		"@type": "PostalAddress",
+		"addressLocality": "Pottstown",
+		"addressRegion": "PA",
+		"postalCode": "19464",
+		"addressCountry": "US"
+	},
+	"geo": {
+		"@type": "GeoCoordinates",
+		"latitude": 40.2454,
+		"longitude": -75.6496
+	},
+	"areaServed": [
+		{"@type": "City", "name": "Pottstown"},
+		{"@type": "City", "name": "Boyertown"},
+		{"@type": "City", "name": "Phoenixville"},
+		{"@type": "City", "name": "Limerick"},
+		{"@type": "City", "name": "Collegeville"},
+		{"@type": "County", "name": "Montgomery County, PA"},
+		{"@type": "County", "name": "Chester County, PA"}
+	],
+	"serviceType": [
+		"Property Maintenance",
+		"Home Remodeling",
+		"Handyman Services",
+		"Painting",
+		"Lawn Care",
+		"Snow Removal",
+		"Kitchen Remodeling",
+		"Bathroom Remodeling",
+		"Deck Building",
+		"Pressure Washing"
+	],
+	"founder": {
+		"@type": "Person",
+		"name": "Aaron Hoehne",
+		"description": "US Military Veteran with 20 years of hands-on construction and property maintenance experience."
+	},
+	"foundingDate": "2004",
+	"numberOfEmployees": {"@type": "QuantitativeValue", "value": 5},
+	"priceRange": "$$",
+	"paymentAccepted": "Cash, Check, Credit Card",
+	"openingHours": "Mo-Fr 07:00-18:00, Sa 08:00-16:00",
+	"hasOfferCatalog": {
+		"@type": "OfferCatalog",
+		"name": "Property Maintenance & Remodeling Services",
+		"itemListElement": [
+			{"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Home Remodeling"}},
+			{"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Handyman Services"}},
+			{"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Interior & Exterior Painting"}},
+			{"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Lawn Care & Landscaping"}},
+			{"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Snow Removal"}},
+			{"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Pressure Washing"}},
+			{"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Deck Building & Repair"}},
+			{"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Kitchen & Bathroom Remodeling"}}
+		]
+	},
+	"keywords": "property maintenance Pottstown PA, home remodeling Pottstown, handyman Pottstown PA, veteran owned contractor Montgomery County PA, painting contractor Pottstown, lawn care Pottstown, snow removal Pottstown PA, general contractor Chester County PA"
+};
 ---
 
 <!doctype html>
 <html lang="en" class="dark">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/gna-favicon.svg?v=1" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" type="image/png" href="/favicon.png" />
 		<meta name="generator" content={Astro.generator} />
 		
 		<title>{title}</title>
 		<meta name="description" content={description} />
-		
-		<!-- Theme Color -->
+		<link rel="canonical" href={canonical} />
+
+		<!-- Open Graph -->
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content={canonical} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:image" content="/og-image.png" />
+		<meta property="og:locale" content="en_US" />
+
+		<!-- Twitter -->
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content="/og-image.png" />
+
+		<!-- Geo / Local SEO -->
+		<meta name="geo.region" content="US-PA" />
+		<meta name="geo.placename" content="Pottstown, Pennsylvania" />
+		<meta name="geo.position" content="40.2454;-75.6496" />
+		<meta name="ICBM" content="40.2454, -75.6496" />
+
+		<!-- Theme -->
 		<meta name="theme-color" content="#0a0a0a" />
+		<meta name="robots" content="index, follow" />
 
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+		<!-- Structured Data -->
+		<script type="application/ld+json" set:html={JSON.stringify(schema)} />
 
-		<script is:inline defer src="https://umami-production-fa9c.up.railway.app/script.js" data-website-id="e593c469-a145-4619-ac33-ea8dd1f685be"></script>
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 	</head>
 	<body class="industrial-theme selection:bg-ind-accent selection:text-black bg-ind-bg text-ind-fg">
 		<div class="industrial-noise"></div>
