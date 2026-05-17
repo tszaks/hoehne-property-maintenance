@@ -42,7 +42,7 @@
         </h1>
 
         <p class="hero-fade text-ind-steel text-base sm:text-lg max-w-md leading-relaxed mb-10">
-            Property maintenance & remodeling — from a leaky faucet to a full kitchen. One call handles it all.
+            Serving Spring City, Pottstown, Royersford and the OJR school district
         </p>
 
         <div class="hero-fade flex flex-col sm:flex-row gap-4 w-full sm:w-auto justify-center">

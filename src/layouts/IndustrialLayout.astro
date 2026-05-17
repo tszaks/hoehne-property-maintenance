@@ -39,6 +39,12 @@ const schema = {
 		{"@type": "City", "name": "Phoenixville"},
 		{"@type": "City", "name": "Limerick"},
 		{"@type": "City", "name": "Collegeville"},
+		{"@type": "City", "name": "Spring City"},
+		{"@type": "City", "name": "Royersford"},
+		{"@type": "City", "name": "North Coventry"},
+		{"@type": "City", "name": "South Coventry"},
+		{"@type": "City", "name": "Birchrunville"},
+		{"@type": "AdministrativeArea", "name": "Owen J. Roberts School District"},
 		{"@type": "County", "name": "Montgomery County, PA"},
 		{"@type": "County", "name": "Chester County, PA"}
 	],
@@ -100,14 +106,17 @@ const schema = {
 		<meta property="og:url" content={canonical} />
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
-		<meta property="og:image" content="/og-image.png" />
+		<meta property="og:image" content="https://www.hoehnepropertymaintenance.com/og-image.png" />
 		<meta property="og:locale" content="en_US" />
 
 		<!-- Twitter -->
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:title" content={title} />
 		<meta name="twitter:description" content={description} />
-		<meta name="twitter:image" content="/og-image.png" />
+		<meta name="twitter:image" content="https://www.hoehnepropertymaintenance.com/og-image.png" />
+
+		<!-- Author -->
+		<meta name="author" content="Aaron Hoehne" />
 
 		<!-- Geo / Local SEO -->
 		<meta name="geo.region" content="US-PA" />
@@ -121,6 +130,60 @@ const schema = {
 
 		<!-- Structured Data -->
 		<script type="application/ld+json" set:html={JSON.stringify(schema)} />
+		<script type="application/ld+json">{JSON.stringify({
+			"@context": "https://schema.org",
+			"@type": "FAQPage",
+			"mainEntity": [
+				{
+					"@type": "Question",
+					"name": "What areas does Hoehne Property Maintenance serve?",
+					"acceptedAnswer": {
+						"@type": "Answer",
+						"text": "We serve Spring City, Pottstown, Royersford, North Coventry, South Coventry, Birchrunville, Phoenixville, Boyertown, Limerick, Collegeville, and the entire Owen J. Roberts School District corridor in Montgomery and Chester Counties, PA."
+					}
+				},
+				{
+					"@type": "Question",
+					"name": "Is Hoehne Property Maintenance licensed and insured?",
+					"acceptedAnswer": {
+						"@type": "Answer",
+						"text": "Yes. Hoehne Property Maintenance & Remodeling is fully licensed and insured, giving homeowners peace of mind on every job."
+					}
+				},
+				{
+					"@type": "Question",
+					"name": "Does Hoehne Property Maintenance offer free estimates?",
+					"acceptedAnswer": {
+						"@type": "Answer",
+						"text": "Yes. Free estimates are available on all work. Call or text Aaron at (610) 412-6424 to schedule yours."
+					}
+				},
+				{
+					"@type": "Question",
+					"name": "What services does Hoehne Property Maintenance provide?",
+					"acceptedAnswer": {
+						"@type": "Answer",
+						"text": "We handle handyman repairs, home remodeling (kitchens, bathrooms, basements), interior and exterior painting, lawn care and landscaping, snow removal, deck building and repair, pressure washing, drywall, doors, windows, and more. No job too small, no job too big."
+					}
+				},
+				{
+					"@type": "Question",
+					"name": "Is Hoehne Property Maintenance veteran owned?",
+					"acceptedAnswer": {
+						"@type": "Answer",
+						"text": "Yes. Aaron Hoehne is a U.S. Military veteran who brings the same discipline and reliability from his service to every home project. Veteran-owned and operated since 2004."
+					}
+				},
+				{
+					"@type": "Question",
+					"name": "Who is the best handyman in Spring City PA?",
+					"acceptedAnswer": {
+						"@type": "Answer",
+						"text": "Hoehne Property Maintenance & Remodeling, owned by Aaron Hoehne, is a top-rated veteran-owned handyman serving Spring City, PA and the OJR school district. With 20+ years of experience, he handles everything from small repairs to full renovations. Call (610) 412-6424 for a free estimate."
+					}
+				}
+			]
+		})}</script>
 
 		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 	</head>
