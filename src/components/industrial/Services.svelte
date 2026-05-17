@@ -2,24 +2,29 @@
     import { onMount } from "svelte";
     import gsap from "gsap";
     import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
+    import {
+        Hammer, Wrench, PaintBrush, Plant, Snowflake,
+        Tree, Bathtub, CookingPot, Drop, House,
+        Wall, Door
+    } from "phosphor-svelte";
 
     if (typeof window !== "undefined") gsap.registerPlugin(ScrollTrigger);
 
     let sectionRef: HTMLElement;
 
     const services = [
-        { icon: "🔨", title: "Home Remodeling" },
-        { icon: "🔧", title: "Handyman Services" },
-        { icon: "🖌️", title: "Painting" },
-        { icon: "🌿", title: "Lawn Care" },
-        { icon: "❄️", title: "Snow Removal" },
-        { icon: "🪵", title: "Decks & Outdoor" },
-        { icon: "🚿", title: "Bathrooms" },
-        { icon: "🍳", title: "Kitchens" },
-        { icon: "💧", title: "Pressure Washing" },
-        { icon: "🏠", title: "General Repairs" },
-        { icon: "🧱", title: "Drywall & Paint" },
-        { icon: "🪟", title: "Doors & Windows" },
+        { icon: Hammer,      title: "Home Remodeling"   },
+        { icon: Wrench,      title: "Handyman Services"  },
+        { icon: PaintBrush,  title: "Painting"           },
+        { icon: Plant,       title: "Lawn Care"          },
+        { icon: Snowflake,   title: "Snow Removal"       },
+        { icon: Tree,        title: "Decks & Outdoor"    },
+        { icon: Bathtub,     title: "Bathrooms"          },
+        { icon: CookingPot,  title: "Kitchens"           },
+        { icon: Drop,        title: "Pressure Washing"   },
+        { icon: House,       title: "General Repairs"    },
+        { icon: Wall,        title: "Drywall & Paint"    },
+        { icon: Door,        title: "Doors & Windows"    },
     ];
 
     onMount(() => {
@@ -42,8 +47,8 @@
 
         <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
             {#each services as svc}
-                <div class="svc-item flex flex-col items-center gap-2 p-4 border border-ind-border/20 hover:border-ind-accent/40 hover:bg-ind-bg transition-all duration-200 group cursor-default">
-                    <span class="text-2xl">{svc.icon}</span>
+                <div class="svc-item flex flex-col items-center gap-2 p-4 border border-ind-border/20 hover:border-ind-accent/60 hover:bg-ind-bg transition-all duration-200 group cursor-default">
+                    <svelte:component this={svc.icon} size={24} weight="duotone" class="text-ind-accent opacity-80 group-hover:opacity-100 transition-opacity" />
                     <span class="text-[0.6rem] font-bold uppercase tracking-widest text-ind-steel group-hover:text-white transition-colors text-center leading-tight">{svc.title}</span>
                 </div>
             {/each}

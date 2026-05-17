@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { Phone } from 'lucide-svelte';
+    import { Phone } from "phosphor-svelte";
   let visible = false;
   onMount(() => {
     setTimeout(() => visible = true, 2000);
