@@ -22,16 +22,16 @@ Handyman and repairs, drywall and painting, flooring, baseboard/crown molding/sh
 
 ROUGH ESTIMATE RANGES (use ONLY after adequate scope is confirmed):
 - Small handyman / general repairs: $175-$450
-- Ceiling fan or light fixture: $180-$450 each
+- Ceiling fan or light fixture: $225-$750 each
 - Drywall repair / paint touch-up: $350-$950
 - Full room painting: $600-$1,800
 - Pressure washing: $350-$900
 - Lawn cleanup / mulching: $450-$1,500
 - Deck repair: $700-$2,500+
-- Bathroom update / remodel: $3,500-$12,000+
-- Kitchen refresh / remodel: $6,500-$28,000+
-- Basement finishing: $12,000-$45,000+
-- Snow removal: $75-$250+ per visit
+- Bathroom update / remodel: $3,500-$15,000+
+- Kitchen refresh / remodel: $10,000-$65,000+
+- Basement finishing: $25,000-$75,000+
+- Snow removal: $90-$275 per visit
 
 ${formatMaterialsSummary()}
 

@@ -3,16 +3,16 @@
 
   const services = [
     { id: 'small-handyman', label: 'Small Handyman / General Repairs', min: 175, max: 450, plus: false },
-    { id: 'ceiling-fan',    label: 'Ceiling Fan / Light Fixture Install', min: 180, max: 450, plus: false },
+    { id: 'ceiling-fan',    label: 'Ceiling Fan / Light Fixture Install', min: 225, max: 750, plus: false },
     { id: 'drywall-paint',  label: 'Drywall Repair / Paint Touch-up', min: 350, max: 950, plus: false },
     { id: 'room-painting',  label: 'Full Room Painting', min: 600, max: 1800, plus: false },
     { id: 'pressure-wash',  label: 'Pressure Washing', min: 350, max: 900, plus: false },
     { id: 'lawn-cleanup',   label: 'Lawn Cleanup / Mulching', min: 450, max: 1500, plus: false },
-    { id: 'snow-removal',   label: 'Snow Removal (per visit)', min: 75, max: 250, plus: false },
+    { id: 'snow-removal',   label: 'Snow Removal (per visit)', min: 90, max: 275, plus: false },
     { id: 'deck-repair',    label: 'Deck Repair / Work', min: 700, max: 2500, plus: true },
-    { id: 'bathroom',       label: 'Bathroom Update / Remodel', min: 3500, max: 12000, plus: true },
-    { id: 'kitchen',        label: 'Kitchen Refresh / Remodel', min: 6500, max: 28000, plus: true },
-    { id: 'basement',       label: 'Basement Finishing', min: 12000, max: 45000, plus: true },
+    { id: 'bathroom',       label: 'Bathroom Update / Remodel', min: 3500, max: 15000, plus: true },
+    { id: 'kitchen',        label: 'Kitchen Refresh / Remodel', min: 10000, max: 65000, plus: true },
+    { id: 'basement',       label: 'Basement Finishing', min: 25000, max: 75000, plus: true },
   ];
 
   const scopeOptions = [
