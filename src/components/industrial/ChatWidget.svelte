@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { tick } from 'svelte';
+  import { tick, onMount } from 'svelte';
   import { ChatCircle, X, PaperPlaneTilt, Phone } from 'phosphor-svelte';
 
   type Msg = { role: 'user' | 'assistant'; content: string };
@@ -8,8 +8,33 @@
   let input = $state('');
   let loading = $state(false);
   let apiError = $state('');
+  let nearBottom = $state(false);
   let messagesEl: HTMLElement | undefined = $state(undefined);
   let inputEl: HTMLInputElement | undefined = $state(undefined);
+
+  // Hide the closed toggle when contact or footer is in view so it does not
+  // compete with the in-section CTAs. Keep showing it while the panel is open.
+  let toggleVisible = $derived(open || !nearBottom);
+
+  onMount(() => {
+    const targets: Element[] = [];
+    const contact = document.getElementById('contact');
+    const footer = document.querySelector('footer');
+    if (contact) targets.push(contact);
+    if (footer) targets.push(footer);
+
+    let visibleCount = 0;
+    const io = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        visibleCount += entry.isIntersecting ? 1 : -1;
+      }
+      if (visibleCount < 0) visibleCount = 0;
+      nearBottom = visibleCount > 0;
+    }, { threshold: 0.01 });
+
+    for (const t of targets) io.observe(t);
+    return () => io.disconnect();
+  });
 
   const GREETING =
     'Hi! I can help with rough project ranges for the Pottstown area. I ask one question at a time, then give ranges only — never exact quotes. What are you working on?';
@@ -244,19 +269,21 @@
   </div>
 {/if}
 
-<!-- Toggle button — bottom-left on both mobile and desktop so it never collides with FloatingPhone (bottom-right) -->
-<button
-  onclick={toggle}
-  class="chat-toggle fixed z-50 flex items-center gap-2 px-4 py-3 bg-ind-accent text-black font-black text-xs uppercase tracking-wider hover:bg-ind-accent/90 transition-colors shadow-lg shadow-ind-accent/20 whitespace-nowrap"
-  aria-label="Open project estimator chat"
->
-  {#if open}
-    <X size={16} />
-  {:else}
-    <ChatCircle size={18} weight="fill" />
-    <span class="hidden sm:inline">Ask About Your Project</span>
-  {/if}
-</button>
+<!-- Toggle button — bottom-left on both mobile and desktop so it never collides with FloatingPhone (bottom-right). Hidden when the contact section or footer is in view so it does not duplicate the in-section CTAs. -->
+{#if toggleVisible}
+  <button
+    onclick={toggle}
+    class="chat-toggle fixed z-50 flex items-center gap-2 px-4 py-3 bg-ind-accent text-black font-black text-xs uppercase tracking-wider hover:bg-ind-accent/90 transition-colors shadow-lg shadow-ind-accent/20 whitespace-nowrap"
+    aria-label="Open project estimator chat"
+  >
+    {#if open}
+      <X size={16} />
+    {:else}
+      <ChatCircle size={18} weight="fill" />
+      <span class="hidden sm:inline">Ask About Your Project</span>
+    {/if}
+  </button>
+{/if}
 
 <style>
   /* Mobile: bottom sheet feel — full width minus gutters, anchored bottom-left */

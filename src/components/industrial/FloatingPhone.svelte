@@ -1,13 +1,40 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-    import { Phone } from "phosphor-svelte";
-  let visible = false;
+  import { Phone } from "phosphor-svelte";
+
+  let scrolled = false;
+  let nearBottom = false;
+
   onMount(() => {
-    setTimeout(() => visible = true, 2000);
-    const handleScroll = () => { visible = window.scrollY > 300; };
+    const reveal = setTimeout(() => { scrolled = window.scrollY > 300; }, 2000);
+    const handleScroll = () => { scrolled = window.scrollY > 300; };
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    const targets: Element[] = [];
+    const contact = document.getElementById('contact');
+    const footer = document.querySelector('footer');
+    if (contact) targets.push(contact);
+    if (footer) targets.push(footer);
+
+    let visibleCount = 0;
+    const io = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        visibleCount += entry.isIntersecting ? 1 : -1;
+      }
+      if (visibleCount < 0) visibleCount = 0;
+      nearBottom = visibleCount > 0;
+    }, { threshold: 0.01 });
+
+    for (const t of targets) io.observe(t);
+
+    return () => {
+      clearTimeout(reveal);
+      window.removeEventListener('scroll', handleScroll);
+      io.disconnect();
+    };
   });
+
+  $: visible = scrolled && !nearBottom;
 </script>
 
 {#if visible}
