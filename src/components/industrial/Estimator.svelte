@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Phone, ArrowRight } from 'phosphor-svelte';
+  import { Phone } from 'phosphor-svelte';
 
   const services = [
     { id: 'small-handyman', label: 'Small Handyman / General Repairs', min: 175, max: 450, plus: false },
@@ -16,36 +16,48 @@
   ];
 
   const scopeOptions = [
-    { id: 'small',  label: 'Small',   sub: 'Minimal scope',   mult: 0.85 },
-    { id: 'medium', label: 'Average', sub: 'Typical job',     mult: 1.0  },
-    { id: 'large',  label: 'Large',   sub: 'Extensive work',  mult: 1.4  },
+    { label: 'Quick touch-up / tiny', sub: 'Minimal work, quick job',        mult: 0.65 },
+    { label: 'Small',                  sub: 'Below-average scope',            mult: 0.85 },
+    { label: 'Standard',               sub: 'Typical job',                    mult: 1.0  },
+    { label: 'Large',                  sub: 'More than average',              mult: 1.3  },
+    { label: 'Extensive / complex',    sub: 'Heavy scope or unknowns',        mult: 1.65 },
+  ];
+
+  const conditionOptions = [
+    { label: 'Clean / ready',           sub: 'Minimal prep needed',            mult: 0.9  },
+    { label: 'Minor prep',              sub: 'Some cleanup or light patching', mult: 1.0  },
+    { label: 'Moderate prep',           sub: 'Notable repair or prep work',    mult: 1.18 },
+    { label: 'Heavy repair / unknowns', sub: 'Significant prep or surprises',  mult: 1.4  },
   ];
 
   const urgencyOptions = [
-    { id: 'flexible', label: 'Flexible',        sub: 'No rush',       mult: 1.0,  note: '' },
-    { id: 'month',    label: 'Within a month',  sub: 'Schedule soon', mult: 1.1,  note: 'Scheduling priority may add ~10%.' },
-    { id: 'asap',     label: 'Rush / ASAP',     sub: 'Same week',     mult: 1.25, note: 'Rush requests typically add 15–25%.' },
+    { label: 'Flexible',       sub: 'No rush, fit into schedule',  mult: 1.0,  note: '' },
+    { label: 'Within a month', sub: 'Schedule within 4 weeks',     mult: 1.08, note: 'Scheduling priority may add ~8%.' },
+    { label: 'Soon / 2 weeks', sub: 'Need it in about 2 weeks',    mult: 1.15, note: 'Near-term scheduling typically adds ~15%.' },
+    { label: 'Rush / ASAP',    sub: 'Same week or emergency',      mult: 1.28, note: 'Rush requests typically add 20-30%.' },
   ];
 
   let selectedId = $state('');
-  let selectedScope = $state('medium');
-  let selectedUrgency = $state('flexible');
+  let scopeIndex = $state(2);
+  let conditionIndex = $state(1);
+  let urgencyIndex = $state(0);
 
   const selected = $derived(services.find(s => s.id === selectedId));
 
   const estimate = $derived.by(() => {
     if (!selected) return null;
-    const sMult = scopeOptions.find(s => s.id === selectedScope)?.mult ?? 1.0;
-    const uMult = urgencyOptions.find(u => u.id === selectedUrgency)?.mult ?? 1.0;
+    const sMult = scopeOptions[scopeIndex].mult;
+    const cMult = conditionOptions[conditionIndex].mult;
+    const uMult = urgencyOptions[urgencyIndex].mult;
     const round25 = (n: number) => Math.round(n / 25) * 25;
     return {
-      min: round25(selected.min * sMult * uMult),
-      max: round25(selected.max * sMult * uMult),
+      min: round25(selected.min * sMult * cMult * uMult),
+      max: round25(selected.max * sMult * cMult * uMult),
       plus: selected.plus,
     };
   });
 
-  const urgencyNote = $derived(urgencyOptions.find(u => u.id === selectedUrgency)?.note ?? '');
+  const urgencyNote = $derived(urgencyOptions[urgencyIndex].note);
 
   function fmt(n: number): string {
     return '$' + n.toLocaleString('en-US');
@@ -65,7 +77,7 @@
         Get a Rough Idea Before You Call
       </h3>
       <p class="text-ind-steel text-sm mt-4 max-w-xl leading-relaxed">
-        Pick your project, scope, and timeline to see a rough starting range — not a quote. Aaron gives exact pricing after seeing the job or photos. The chat assistant below can also estimate, but will ask project questions first so the range is not random.
+        Pick your project, scope, and timeline to see a rough starting range — not a quote. We give exact pricing after seeing the job or photos. The chat assistant below can also estimate, but will ask project questions first so the range is not random.
       </p>
     </div>
 
@@ -95,43 +107,81 @@
           </div>
         </div>
 
-        <!-- Scope -->
+        <!-- Scope slider -->
         <div>
-          <label class="ind-metadata text-ind-steel/70 text-xs block mb-3">02 / JOB SIZE / SCOPE</label>
-          <div class="grid grid-cols-3 gap-3">
-            {#each scopeOptions as opt}
-              <button
-                onclick={() => selectedScope = opt.id}
-                class="ind-steel-plate p-4 text-left transition-all duration-200 cursor-pointer
-                  {selectedScope === opt.id
-                    ? 'border-ind-accent bg-ind-accent/5'
-                    : 'border-ind-border/40 hover:border-ind-border'}"
-              >
-                <div class="font-black text-sm uppercase tracking-tight
-                  {selectedScope === opt.id ? 'text-white' : 'text-ind-steel'}">{opt.label}</div>
-                <div class="text-xs mt-1 {selectedScope === opt.id ? 'text-ind-steel' : 'text-ind-steel/40'}">{opt.sub}</div>
-              </button>
+          <label for="scope-slider" class="ind-metadata text-ind-steel/70 text-xs block mb-4">02 / PROJECT SIZE / SCOPE</label>
+          <input
+            id="scope-slider"
+            type="range"
+            min="0"
+            max="4"
+            step="1"
+            bind:value={scopeIndex}
+            style="--pct: {(scopeIndex / 4 * 100).toFixed(1)}%"
+            class="est-slider"
+            aria-label="Project size and scope"
+            aria-valuetext={scopeOptions[scopeIndex].label}
+          />
+          <div class="flex justify-between mt-1.5 px-0.5">
+            {#each scopeOptions as opt, i}
+              <div class="w-0.5 h-1.5 transition-colors {i === scopeIndex ? 'bg-ind-accent' : 'bg-ind-border'}"></div>
             {/each}
+          </div>
+          <div class="mt-3 flex items-baseline gap-2 flex-wrap">
+            <span class="font-black text-sm uppercase tracking-tight text-white">{scopeOptions[scopeIndex].label}</span>
+            <span class="text-xs text-ind-steel/60">&mdash; {scopeOptions[scopeIndex].sub}</span>
           </div>
         </div>
 
-        <!-- Urgency -->
+        <!-- Condition slider -->
         <div>
-          <label class="ind-metadata text-ind-steel/70 text-xs block mb-3">03 / TIMELINE</label>
-          <div class="grid grid-cols-3 gap-3">
-            {#each urgencyOptions as opt}
-              <button
-                onclick={() => selectedUrgency = opt.id}
-                class="ind-steel-plate p-4 text-left transition-all duration-200 cursor-pointer
-                  {selectedUrgency === opt.id
-                    ? 'border-ind-accent bg-ind-accent/5'
-                    : 'border-ind-border/40 hover:border-ind-border'}"
-              >
-                <div class="font-black text-sm uppercase tracking-tight
-                  {selectedUrgency === opt.id ? 'text-white' : 'text-ind-steel'}">{opt.label}</div>
-                <div class="text-xs mt-1 {selectedUrgency === opt.id ? 'text-ind-steel' : 'text-ind-steel/40'}">{opt.sub}</div>
-              </button>
+          <label for="condition-slider" class="ind-metadata text-ind-steel/70 text-xs block mb-4">03 / CONDITION / PREP NEEDED</label>
+          <input
+            id="condition-slider"
+            type="range"
+            min="0"
+            max="3"
+            step="1"
+            bind:value={conditionIndex}
+            style="--pct: {(conditionIndex / 3 * 100).toFixed(1)}%"
+            class="est-slider"
+            aria-label="Condition and prep needed"
+            aria-valuetext={conditionOptions[conditionIndex].label}
+          />
+          <div class="flex justify-between mt-1.5 px-0.5">
+            {#each conditionOptions as opt, i}
+              <div class="w-0.5 h-1.5 transition-colors {i === conditionIndex ? 'bg-ind-accent' : 'bg-ind-border'}"></div>
             {/each}
+          </div>
+          <div class="mt-3 flex items-baseline gap-2 flex-wrap">
+            <span class="font-black text-sm uppercase tracking-tight text-white">{conditionOptions[conditionIndex].label}</span>
+            <span class="text-xs text-ind-steel/60">&mdash; {conditionOptions[conditionIndex].sub}</span>
+          </div>
+        </div>
+
+        <!-- Timeline slider -->
+        <div>
+          <label for="timeline-slider" class="ind-metadata text-ind-steel/70 text-xs block mb-4">04 / TIMELINE</label>
+          <input
+            id="timeline-slider"
+            type="range"
+            min="0"
+            max="3"
+            step="1"
+            bind:value={urgencyIndex}
+            style="--pct: {(urgencyIndex / 3 * 100).toFixed(1)}%"
+            class="est-slider"
+            aria-label="Timeline"
+            aria-valuetext={urgencyOptions[urgencyIndex].label}
+          />
+          <div class="flex justify-between mt-1.5 px-0.5">
+            {#each urgencyOptions as opt, i}
+              <div class="w-0.5 h-1.5 transition-colors {i === urgencyIndex ? 'bg-ind-accent' : 'bg-ind-border'}"></div>
+            {/each}
+          </div>
+          <div class="mt-3 flex items-baseline gap-2 flex-wrap">
+            <span class="font-black text-sm uppercase tracking-tight text-white">{urgencyOptions[urgencyIndex].label}</span>
+            <span class="text-xs text-ind-steel/60">&mdash; {urgencyOptions[urgencyIndex].sub}</span>
           </div>
         </div>
 
@@ -155,14 +205,14 @@
           {/if}
 
           <p class="text-ind-steel/50 text-xs mb-8 leading-relaxed">
-            Rough range only, not a quote. More accurate after photos or an on-site visit. Scope and materials can shift numbers significantly — Aaron provides the final price.
+            Rough range only, not a quote. More accurate after photos or an on-site visit. Scope and materials can shift numbers significantly — we provide the final price.
           </p>
 
           <a
             href="tel:+16104126424"
             class="ind-button flex items-center justify-center gap-3 px-6 py-4 text-sm font-black uppercase tracking-wider w-full"
           >
-            <Phone size={15} /> Call / Text Aaron
+            <Phone size={15} /> Call / Text Us
           </a>
 
           <div class="ind-rivet top-3 left-3"></div>
@@ -187,10 +237,78 @@
     <div class="mt-12 pt-8 border-t border-ind-border/20 text-center">
       <p class="text-ind-steel/40 text-xs ind-metadata">
         ROUGH RANGES ONLY &mdash; NOT QUOTES. MORE ACCURATE AFTER PHOTOS OR ON-SITE VISIT.
-        CALL OR TEXT AARON FOR EXACT PRICING:
+        CALL OR TEXT US FOR EXACT PRICING:
         <a href="tel:+16104126424" class="text-ind-accent/60 hover:text-ind-accent transition-colors">(610) 412-6424</a>
       </p>
     </div>
 
   </div>
 </section>
+
+<style>
+  .est-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    outline: none;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    display: block;
+    background: transparent;
+  }
+
+  .est-slider::-webkit-slider-runnable-track {
+    height: 6px;
+    background: linear-gradient(
+      to right,
+      #C2510F 0%,
+      #C2510F var(--pct, 0%),
+      #262626 var(--pct, 0%),
+      #262626 100%
+    );
+  }
+
+  .est-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 26px;
+    height: 26px;
+    background: #C2510F;
+    cursor: pointer;
+    margin-top: -10px;
+    border: 2px solid #0a0a0a;
+  }
+
+  .est-slider::-moz-range-track {
+    height: 6px;
+    background: #262626;
+    border: none;
+  }
+
+  .est-slider::-moz-range-progress {
+    height: 6px;
+    background: #C2510F;
+  }
+
+  .est-slider::-moz-range-thumb {
+    -moz-appearance: none;
+    width: 26px;
+    height: 26px;
+    border-radius: 0;
+    background: #C2510F;
+    border: 2px solid #0a0a0a;
+    cursor: pointer;
+  }
+
+  .est-slider:focus-visible::-webkit-slider-thumb {
+    outline: 2px solid #C2510F;
+    outline-offset: 3px;
+  }
+
+  .est-slider:focus-visible::-moz-range-thumb {
+    outline: 2px solid #C2510F;
+    outline-offset: 3px;
+  }
+</style>
