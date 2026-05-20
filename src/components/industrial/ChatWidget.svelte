@@ -57,7 +57,40 @@
 
   function chipsForReply(reply: string): string[] {
     const r = reply.toLowerCase();
-    if (/paint|coat|primer/.test(r))
+
+    // Stage / question intent — checked BEFORE service category so a paint
+    // question about prep/condition doesn't get mislabeled with scope chips.
+
+    // Condition / prep state
+    if (
+      /good condition|in good shape|drywall (repair|patch)|patch(ing|es)?\b|hairline|cracks?\b|holes?\b|prep work|need.*(repair|patch|prim|prep)|condition.*before|before painting/.test(
+        r,
+      )
+    )
+      return ['Good condition', 'Small patches', 'Needs primer', 'Needs repair'];
+
+    // Interior vs exterior
+    if (
+      /interior or exterior|exterior or interior|inside or outside|outside or inside|interior.*(exterior|outside)|exterior.*(interior|inside)/.test(
+        r,
+      )
+    )
+      return ['Interior', 'Exterior', 'Both'];
+
+    // Walls / ceiling / scope
+    if (/walls? only|walls? and ceiling|full room|how many rooms|just (the )?walls|ceiling too|\bscope\b/.test(r))
+      return ['Walls only', 'Walls and ceiling', 'Full room', 'Multiple rooms'];
+
+    // Location / service area
+    if (/where.*(located|are you)|what (town|area|zip|city)|service area|located in|location|nearby|zip code/.test(r))
+      return ['Pottstown', 'Spring City', 'OJR area', 'Nearby'];
+
+    // Timeline / urgency
+    if (/timeline|how soon|when.*(start|need|done|finish|like)|urgency|deadline|\basap\b|this month|next (week|month)|time frame|timeframe/.test(r))
+      return ['Flexible', 'This month', 'Two weeks', 'ASAP'];
+
+    // Service-specific defaults (fallback when no stage intent matched)
+    if (/paint|coat/.test(r))
       return ['Walls only', 'Walls and ceiling', 'Full room', 'Multiple rooms'];
     if (/bathroom/.test(r))
       return ['Full remodel', 'Fixtures only', 'Tile work', 'Vanity and toilet'];
@@ -163,7 +196,6 @@
       <div>
         <div class="text-white font-black text-sm uppercase tracking-tight">Project Estimator</div>
         <div class="ind-metadata text-ind-steel/50 text-xs">Hoehne Property Maintenance</div>
-        <div class="text-ind-steel/35 text-xs mt-0.5">One question at a time, ranges only</div>
       </div>
       <button
         onclick={toggle}
