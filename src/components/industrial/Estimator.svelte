@@ -1,262 +1,257 @@
 <script lang="ts">
-  import { Phone } from 'phosphor-svelte';
+  import { ArrowRight, Phone } from 'phosphor-svelte';
+  import {
+    accessOptions,
+    conditionOptions,
+    estimateProject,
+    finishOptions,
+    fmtCurrency,
+    projectProfiles,
+    urgencyOptions,
+    type ProjectEstimate,
+    type ServiceId,
+  } from '../../data/estimate-engine';
 
-  const services = [
-    { id: 'small-handyman', label: 'Small Handyman / General Repairs', min: 175, max: 450, plus: false },
-    { id: 'ceiling-fan',    label: 'Ceiling Fan / Light Fixture Install', min: 225, max: 750, plus: false },
-    { id: 'drywall-paint',  label: 'Drywall Repair / Paint Touch-up', min: 350, max: 950, plus: false },
-    { id: 'room-painting',  label: 'Full Room Painting', min: 600, max: 1800, plus: false },
-    { id: 'pressure-wash',  label: 'Pressure Washing', min: 350, max: 900, plus: false },
-    { id: 'lawn-cleanup',   label: 'Lawn Cleanup / Mulching', min: 450, max: 1500, plus: false },
-    { id: 'snow-removal',   label: 'Snow Removal (per visit)', min: 90, max: 275, plus: false },
-    { id: 'deck-repair',    label: 'Deck Repair / Work', min: 700, max: 2500, plus: true },
-    { id: 'bathroom',       label: 'Bathroom Update / Remodel', min: 3500, max: 15000, plus: true },
-    { id: 'kitchen',        label: 'Kitchen Refresh / Remodel', min: 10000, max: 65000, plus: true },
-    { id: 'basement',       label: 'Basement Finishing', min: 25000, max: 75000, plus: true },
-  ];
+  let selectedId = $state<ServiceId>('bathroom');
+  let quantity = $state(55);
+  let conditionId = $state('normal');
+  let finishId = $state('standard');
+  let accessId = $state('normal');
+  let urgencyId = $state('flexible');
 
-  const scopeOptions = [
-    { label: 'Quick touch-up / tiny', sub: 'Minimal work, quick job',        mult: 0.65 },
-    { label: 'Small',                  sub: 'Below-average scope',            mult: 0.85 },
-    { label: 'Standard',               sub: 'Typical job',                    mult: 1.0  },
-    { label: 'Large',                  sub: 'More than average',              mult: 1.3  },
-    { label: 'Extensive / complex',    sub: 'Heavy scope or unknowns',        mult: 1.65 },
-  ];
+  const selected = $derived(projectProfiles.find((service) => service.id === selectedId) ?? projectProfiles[0]);
 
-  const conditionOptions = [
-    { label: 'Clean / ready',           sub: 'Minimal prep needed',            mult: 0.9  },
-    { label: 'Minor prep',              sub: 'Some cleanup or light patching', mult: 1.0  },
-    { label: 'Moderate prep',           sub: 'Notable repair or prep work',    mult: 1.18 },
-    { label: 'Heavy repair / unknowns', sub: 'Significant prep or surprises',  mult: 1.4  },
-  ];
-
-  const urgencyOptions = [
-    { label: 'Flexible',       sub: 'No rush, fit into schedule',  mult: 1.0,  note: '' },
-    { label: 'Within a month', sub: 'Schedule within 4 weeks',     mult: 1.08, note: 'Scheduling priority may add ~8%.' },
-    { label: 'Soon / 2 weeks', sub: 'Need it in about 2 weeks',    mult: 1.15, note: 'Near-term scheduling typically adds ~15%.' },
-    { label: 'Rush / ASAP',    sub: 'Same week or emergency',      mult: 1.28, note: 'Rush requests typically add 20-30%.' },
-  ];
-
-  let selectedId = $state('');
-  let scopeValue = $state(2);
-  let conditionValue = $state(1);
-  let urgencyValue = $state(0);
-
-  const selected = $derived(services.find(s => s.id === selectedId));
-
-  function nearestIndex(value: number, length: number): number {
-    return Math.min(length - 1, Math.max(0, Math.round(value)));
-  }
-
-  function interpolateMult(value: number, options: { mult: number }[]): number {
-    const lo = Math.max(0, Math.min(options.length - 1, Math.floor(value)));
-    const hi = Math.min(options.length - 1, lo + 1);
-    const t = Math.max(0, Math.min(1, value - lo));
-    return options[lo].mult * (1 - t) + options[hi].mult * t;
-  }
-
-  const scopeIndex = $derived(nearestIndex(scopeValue, scopeOptions.length));
-  const conditionIndex = $derived(nearestIndex(conditionValue, conditionOptions.length));
-  const urgencyIndex = $derived(nearestIndex(urgencyValue, urgencyOptions.length));
-
-  const estimate = $derived.by(() => {
-    if (!selected) return null;
-    const sMult = interpolateMult(scopeValue, scopeOptions);
-    const cMult = interpolateMult(conditionValue, conditionOptions);
-    const uMult = interpolateMult(urgencyValue, urgencyOptions);
-    const round25 = (n: number) => Math.round(n / 25) * 25;
-    return {
-      min: round25(selected.min * sMult * cMult * uMult),
-      max: round25(selected.max * sMult * cMult * uMult),
-      plus: selected.plus,
-    };
+  $effect(() => {
+    if (quantity < selected.minQuantity || quantity > selected.maxQuantity) {
+      quantity = selected.defaultQuantity;
+    }
   });
 
-  const urgencyNote = $derived(urgencyOptions[urgencyIndex].note);
+  const estimate: ProjectEstimate = $derived(
+    estimateProject({
+      serviceId: selected.id,
+      quantity,
+      conditionId,
+      finishId,
+      accessId,
+      urgencyId,
+    }),
+  );
 
-  function fmt(n: number): string {
-    return '$' + n.toLocaleString('en-US');
+  function chooseService(id: ServiceId) {
+    selectedId = id;
+    const next = projectProfiles.find((service) => service.id === id);
+    if (next) quantity = next.defaultQuantity;
+  }
+
+  function chooseOption(kind: 'condition' | 'finish' | 'access' | 'urgency', id: string) {
+    if (kind === 'condition') conditionId = id;
+    if (kind === 'finish') finishId = id;
+    if (kind === 'access') accessId = id;
+    if (kind === 'urgency') urgencyId = id;
+  }
+
+  function categoryLabel(category: string): string {
+    if (category === 'business') return 'Overhead';
+    if (category === 'risk') return 'Contingency';
+    return category.charAt(0).toUpperCase() + category.slice(1);
   }
 </script>
 
-<section id="estimate" class="py-24 lg:py-32 bg-ind-surface relative z-10">
-  <div class="max-w-6xl mx-auto px-6 lg:px-12">
-
-    <!-- Header -->
-    <div class="mb-16">
-      <div class="ind-metadata mb-4">SEC. 05 // ESTIMATE // ROUGH RANGES</div>
-      <h2 class="text-ind-accent font-bold tracking-widest text-sm uppercase mb-4 flex items-center gap-4">
-        <span class="w-12 h-[1px] bg-ind-accent"></span> Ballpark Estimator
-      </h2>
-      <h3 class="text-4xl md:text-5xl font-black text-white tracking-tighter uppercase max-w-2xl">
-        Get a Rough Idea Before You Call
-      </h3>
-      <p class="text-ind-steel text-sm mt-4 max-w-xl leading-relaxed">
-        Pick your project, scope, and timeline to see a rough starting range — not a quote. We give exact pricing after seeing the job or photos. The chat assistant below can also estimate, but will ask project questions first so the range is not random.
+<section id="estimate" class="py-24 lg:py-28 bg-ind-surface relative z-10">
+  <div class="max-w-7xl mx-auto px-6 lg:px-12">
+    <div class="mb-12">
+      <div class="ind-metadata mb-4">PROJECT ESTIMATOR // PHOTO-AWARE AI // LOCAL RANGES</div>
+      <h1 class="text-4xl md:text-6xl font-black text-white tracking-tighter uppercase max-w-4xl">
+        Build a Smarter Rough Range Before We Visit
+      </h1>
+      <p class="text-ind-steel text-sm mt-5 max-w-2xl leading-relaxed">
+        This is still not a quote. It is a trade-aware planning tool that factors labor, materials, access, finish level, scheduling, overhead, profit, and contingency. The chat can use project photos to tighten the next questions.
       </p>
     </div>
 
-    <div class="grid lg:grid-cols-[1fr_380px] gap-10 lg:gap-16 items-start">
-
-      <!-- Form -->
-      <div class="space-y-10">
-
-        <!-- Service select -->
+    <div class="grid xl:grid-cols-[1fr_420px] gap-8 lg:gap-12 items-start">
+      <div class="space-y-8">
         <div>
-          <label class="ind-metadata text-ind-steel/70 text-xs block mb-3">01 / WHAT DO YOU NEED DONE?</label>
-          <div class="relative">
-            <select
-              bind:value={selectedId}
-              class="w-full bg-ind-bg border border-ind-border/50 text-white text-sm px-5 py-4 focus:outline-none focus:border-ind-accent transition-colors appearance-none cursor-pointer"
-            >
-              <option value="">Select a service...</option>
-              {#each services as svc}
-                <option value={svc.id}>{svc.label}</option>
+          <label class="ind-metadata text-ind-steel/70 text-xs block mb-3">01 / PROJECT TYPE</label>
+          <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-2">
+            {#each projectProfiles as service}
+              <button
+                type="button"
+                onclick={() => chooseService(service.id)}
+                class="text-left border px-4 py-3 transition-colors bg-ind-bg {selected.id === service.id ? 'border-ind-accent text-white' : 'border-ind-border/40 text-ind-steel hover:border-ind-accent/60'}"
+              >
+                <span class="block text-xs font-black uppercase tracking-wide">{service.shortLabel}</span>
+                <span class="block text-[0.68rem] text-ind-steel/60 mt-1 leading-snug">{service.label}</span>
+              </button>
+            {/each}
+          </div>
+        </div>
+
+        <div class="grid lg:grid-cols-[1fr_170px] gap-5 items-end">
+          <div>
+            <label for="quantity-slider" class="ind-metadata text-ind-steel/70 text-xs block mb-4">02 / {selected.quantityLabel}</label>
+            <input
+              id="quantity-slider"
+              type="range"
+              min={selected.minQuantity}
+              max={selected.maxQuantity}
+              step={selected.step}
+              bind:value={quantity}
+              style="--pct: {(((quantity - selected.minQuantity) / (selected.maxQuantity - selected.minQuantity)) * 100).toFixed(2)}%"
+              class="est-slider"
+              aria-label={selected.quantityLabel}
+            />
+            <div class="mt-3 text-xs text-ind-steel/60 leading-relaxed">{selected.quantityHelp}</div>
+          </div>
+          <label class="block">
+            <span class="ind-metadata text-ind-steel/70 text-xs block mb-3">QUANTITY</span>
+            <input
+              type="number"
+              min={selected.minQuantity}
+              max={selected.maxQuantity}
+              step={selected.step}
+              bind:value={quantity}
+              class="w-full bg-ind-bg border border-ind-border/50 text-white text-sm px-4 py-3 focus:outline-none focus:border-ind-accent"
+            />
+            <span class="block text-[0.68rem] text-ind-steel/50 mt-2">{selected.quantityUnit}</span>
+          </label>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6">
+          <div>
+            <div class="ind-metadata text-ind-steel/70 text-xs block mb-3">03 / CONDITION</div>
+            <div class="space-y-2">
+              {#each conditionOptions as option}
+                <button
+                  type="button"
+                  onclick={() => chooseOption('condition', option.id)}
+                  class="w-full text-left border px-4 py-3 transition-colors bg-ind-bg {conditionId === option.id ? 'border-ind-accent text-white' : 'border-ind-border/40 text-ind-steel hover:border-ind-accent/60'}"
+                >
+                  <span class="block text-xs font-black uppercase tracking-wide">{option.label}</span>
+                  <span class="block text-[0.68rem] text-ind-steel/60 mt-1 leading-snug">{option.sub}</span>
+                </button>
               {/each}
-            </select>
-            <div class="pointer-events-none absolute inset-y-0 right-4 flex items-center text-ind-steel">
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-                <path d="M6 8L1 3h10L6 8z"/>
-              </svg>
+            </div>
+          </div>
+
+          <div>
+            <div class="ind-metadata text-ind-steel/70 text-xs block mb-3">04 / FINISH LEVEL</div>
+            <div class="space-y-2">
+              {#each finishOptions as option}
+                <button
+                  type="button"
+                  onclick={() => chooseOption('finish', option.id)}
+                  class="w-full text-left border px-4 py-3 transition-colors bg-ind-bg {finishId === option.id ? 'border-ind-accent text-white' : 'border-ind-border/40 text-ind-steel hover:border-ind-accent/60'}"
+                >
+                  <span class="block text-xs font-black uppercase tracking-wide">{option.label}</span>
+                  <span class="block text-[0.68rem] text-ind-steel/60 mt-1 leading-snug">{option.sub}</span>
+                </button>
+              {/each}
+            </div>
+          </div>
+
+          <div>
+            <div class="ind-metadata text-ind-steel/70 text-xs block mb-3">05 / ACCESS</div>
+            <div class="space-y-2">
+              {#each accessOptions as option}
+                <button
+                  type="button"
+                  onclick={() => chooseOption('access', option.id)}
+                  class="w-full text-left border px-4 py-3 transition-colors bg-ind-bg {accessId === option.id ? 'border-ind-accent text-white' : 'border-ind-border/40 text-ind-steel hover:border-ind-accent/60'}"
+                >
+                  <span class="block text-xs font-black uppercase tracking-wide">{option.label}</span>
+                  <span class="block text-[0.68rem] text-ind-steel/60 mt-1 leading-snug">{option.sub}</span>
+                </button>
+              {/each}
+            </div>
+          </div>
+
+          <div>
+            <div class="ind-metadata text-ind-steel/70 text-xs block mb-3">06 / TIMELINE</div>
+            <div class="space-y-2">
+              {#each urgencyOptions as option}
+                <button
+                  type="button"
+                  onclick={() => chooseOption('urgency', option.id)}
+                  class="w-full text-left border px-4 py-3 transition-colors bg-ind-bg {urgencyId === option.id ? 'border-ind-accent text-white' : 'border-ind-border/40 text-ind-steel hover:border-ind-accent/60'}"
+                >
+                  <span class="block text-xs font-black uppercase tracking-wide">{option.label}</span>
+                  <span class="block text-[0.68rem] text-ind-steel/60 mt-1 leading-snug">{option.sub}</span>
+                </button>
+              {/each}
             </div>
           </div>
         </div>
-
-        <!-- Scope slider -->
-        <div>
-          <label for="scope-slider" class="ind-metadata text-ind-steel/70 text-xs block mb-4">02 / PROJECT SIZE / SCOPE</label>
-          <input
-            id="scope-slider"
-            type="range"
-            min="0"
-            max="4"
-            step="0.01"
-            bind:value={scopeValue}
-            style="--pct: {(scopeValue / 4 * 100).toFixed(2)}%"
-            class="est-slider"
-            aria-label="Project size and scope"
-            aria-valuetext={scopeOptions[scopeIndex].label}
-          />
-          <div class="flex justify-between mt-1.5 px-0.5">
-            {#each scopeOptions as opt, i}
-              <div class="w-0.5 h-1.5 transition-colors {i === scopeIndex ? 'bg-ind-accent' : 'bg-ind-border'}"></div>
-            {/each}
-          </div>
-          <div class="mt-3 flex items-baseline gap-2 flex-wrap">
-            <span class="font-black text-sm uppercase tracking-tight text-white">{scopeOptions[scopeIndex].label}</span>
-            <span class="text-xs text-ind-steel/60">&mdash; {scopeOptions[scopeIndex].sub}</span>
-          </div>
-        </div>
-
-        <!-- Condition slider -->
-        <div>
-          <label for="condition-slider" class="ind-metadata text-ind-steel/70 text-xs block mb-4">03 / CONDITION / PREP NEEDED</label>
-          <input
-            id="condition-slider"
-            type="range"
-            min="0"
-            max="3"
-            step="0.01"
-            bind:value={conditionValue}
-            style="--pct: {(conditionValue / 3 * 100).toFixed(2)}%"
-            class="est-slider"
-            aria-label="Condition and prep needed"
-            aria-valuetext={conditionOptions[conditionIndex].label}
-          />
-          <div class="flex justify-between mt-1.5 px-0.5">
-            {#each conditionOptions as opt, i}
-              <div class="w-0.5 h-1.5 transition-colors {i === conditionIndex ? 'bg-ind-accent' : 'bg-ind-border'}"></div>
-            {/each}
-          </div>
-          <div class="mt-3 flex items-baseline gap-2 flex-wrap">
-            <span class="font-black text-sm uppercase tracking-tight text-white">{conditionOptions[conditionIndex].label}</span>
-            <span class="text-xs text-ind-steel/60">&mdash; {conditionOptions[conditionIndex].sub}</span>
-          </div>
-        </div>
-
-        <!-- Timeline slider -->
-        <div>
-          <label for="timeline-slider" class="ind-metadata text-ind-steel/70 text-xs block mb-4">04 / TIMELINE</label>
-          <input
-            id="timeline-slider"
-            type="range"
-            min="0"
-            max="3"
-            step="0.01"
-            bind:value={urgencyValue}
-            style="--pct: {(urgencyValue / 3 * 100).toFixed(2)}%"
-            class="est-slider"
-            aria-label="Timeline"
-            aria-valuetext={urgencyOptions[urgencyIndex].label}
-          />
-          <div class="flex justify-between mt-1.5 px-0.5">
-            {#each urgencyOptions as opt, i}
-              <div class="w-0.5 h-1.5 transition-colors {i === urgencyIndex ? 'bg-ind-accent' : 'bg-ind-border'}"></div>
-            {/each}
-          </div>
-          <div class="mt-3 flex items-baseline gap-2 flex-wrap">
-            <span class="font-black text-sm uppercase tracking-tight text-white">{urgencyOptions[urgencyIndex].label}</span>
-            <span class="text-xs text-ind-steel/60">&mdash; {urgencyOptions[urgencyIndex].sub}</span>
-          </div>
-        </div>
-
       </div>
 
-      <!-- Result card -->
-      <div class="ind-steel-plate p-8 lg:sticky lg:top-8">
-        {#if estimate}
-          <div class="ind-metadata text-ind-steel/50 text-xs mb-4">ESTIMATED RANGE</div>
-
-          <div class="text-5xl font-black text-ind-accent tracking-tighter mb-1 leading-none">
-            {fmt(estimate.min)}
+      <aside class="ind-steel-plate p-6 lg:p-8 xl:sticky xl:top-20">
+        <div class="flex items-center justify-between gap-4 mb-5">
+          <div>
+            <div class="ind-metadata text-ind-steel/50 text-xs mb-1">ROUGH PLANNING RANGE</div>
+            <div class="text-white text-sm font-black uppercase tracking-wide">{estimate.profile.label}</div>
           </div>
-          <div class="text-ind-steel/60 text-sm font-bold mb-1">to</div>
-          <div class="text-5xl font-black text-ind-accent tracking-tighter leading-none mb-6">
-            {fmt(estimate.max)}{estimate.plus ? '+' : ''}
+          <div class="text-right">
+            <div class="text-ind-accent font-black text-lg leading-none">{estimate.confidenceLabel}</div>
+            <div class="text-[0.65rem] text-ind-steel/50 uppercase tracking-widest">{estimate.confidence}% confidence</div>
           </div>
+        </div>
 
-          {#if urgencyNote}
-            <p class="text-ind-steel/70 text-xs mb-4 border-l-2 border-ind-accent/40 pl-3">{urgencyNote}</p>
-          {/if}
+        <div class="border-y border-ind-border/30 py-6 mb-6">
+          <div class="text-5xl font-black text-ind-accent tracking-tighter leading-none">{fmtCurrency(estimate.low)}</div>
+          <div class="text-ind-steel/60 text-sm font-bold my-1">to</div>
+          <div class="text-5xl font-black text-ind-accent tracking-tighter leading-none">{fmtCurrency(estimate.high)}</div>
+        </div>
 
-          <p class="text-ind-steel/50 text-xs mb-8 leading-relaxed">
-            Rough range only, not a quote. More accurate after photos or an on-site visit. Scope and materials can shift numbers significantly — we provide the final price.
-          </p>
+        <div class="space-y-3 mb-6">
+          {#each estimate.lineItems as item}
+            <div class="grid grid-cols-[1fr_auto] gap-3 border-b border-ind-border/20 pb-2">
+              <div>
+                <div class="text-white text-xs font-bold leading-snug">{item.label}</div>
+                <div class="text-[0.62rem] text-ind-steel/45 uppercase tracking-widest mt-1">{categoryLabel(item.category)}</div>
+              </div>
+              <div class="text-ind-steel text-xs font-bold whitespace-nowrap">
+                {fmtCurrency(item.low)}-{fmtCurrency(item.high)}
+              </div>
+            </div>
+          {/each}
+        </div>
 
-          <a
-            href="tel:+16104126424"
-            class="ind-button flex items-center justify-center gap-3 px-6 py-4 text-sm font-black uppercase tracking-wider w-full"
-          >
-            <Phone size={15} /> Call / Text Us
+        <div class="mb-6">
+          <div class="ind-metadata text-ind-steel/50 text-xs mb-3">ASK NEXT IF ANY APPLY</div>
+          <div class="flex flex-wrap gap-2">
+            {#each estimate.escalationTriggers.slice(0, 6) as trigger}
+              <span class="text-[0.68rem] border border-ind-border/40 text-ind-steel/70 px-2 py-1 uppercase tracking-wide">{trigger}</span>
+            {/each}
+          </div>
+        </div>
+
+        <p class="text-ind-steel/55 text-xs leading-relaxed mb-6">
+          The range improves after photos or an on-site visit. Hidden damage, code issues, specialty trades, and finish selections can move the final price.
+        </p>
+
+        <div class="grid grid-cols-2 gap-3">
+          <a href="tel:+16104126424" class="ind-button flex items-center justify-center gap-2 py-3 text-xs font-black uppercase tracking-wider">
+            <Phone size={14} /> Call
           </a>
+          <a href="#photo-chat" class="border border-ind-accent text-ind-accent hover:bg-ind-accent hover:text-black flex items-center justify-center gap-2 py-3 text-xs font-black uppercase tracking-wider transition-colors">
+            Photos <ArrowRight size={14} />
+          </a>
+        </div>
+      </aside>
+    </div>
 
-          <div class="ind-rivet top-3 left-3"></div>
-          <div class="ind-rivet top-3 right-3"></div>
-
-        {:else}
-          <div class="text-center py-4">
-            <div class="ind-metadata text-ind-steel/30 text-xs mb-6">SELECT A SERVICE TO SEE RANGES</div>
-            <div class="text-7xl font-black text-ind-border/40 tracking-tighter mb-6 leading-none">
-              $?
-            </div>
-            <p class="text-ind-steel/40 text-xs leading-relaxed">
-              Pick a service above to see a rough starting range before you call.
-            </p>
-          </div>
-        {/if}
+    <div id="photo-chat" class="mt-14 pt-8 border-t border-ind-border/20">
+      <div class="max-w-2xl">
+        <div class="ind-metadata text-ind-steel/50 text-xs mb-3">PHOTO-AWARE AI</div>
+        <h2 class="text-2xl md:text-3xl font-black text-white uppercase tracking-tight mb-3">
+          Want The Bot To Look At Photos?
+        </h2>
+        <p class="text-ind-steel text-sm leading-relaxed">
+          Open the chat button in the lower-left, attach a photo, and describe the project. The bot can use visible condition, materials, access, damage, and scope clues to ask better questions. It cannot confirm hidden damage, code issues, or exact quantities from one photo.
+        </p>
       </div>
-
     </div>
-
-    <!-- Disclaimer -->
-    <div class="mt-12 pt-8 border-t border-ind-border/20 text-center">
-      <p class="text-ind-steel/40 text-xs ind-metadata">
-        ROUGH RANGES ONLY &mdash; NOT QUOTES. MORE ACCURATE AFTER PHOTOS OR ON-SITE VISIT.
-        CALL OR TEXT US FOR EXACT PRICING:
-        <a href="tel:+16104126424" class="text-ind-accent/60 hover:text-ind-accent transition-colors">(610) 412-6424</a>
-      </p>
-    </div>
-
   </div>
 </section>
 
@@ -315,15 +310,5 @@
     background: #C2510F;
     border: 2px solid #0a0a0a;
     cursor: pointer;
-  }
-
-  .est-slider:focus-visible::-webkit-slider-thumb {
-    outline: 2px solid #C2510F;
-    outline-offset: 3px;
-  }
-
-  .est-slider:focus-visible::-moz-range-thumb {
-    outline: 2px solid #C2510F;
-    outline-offset: 3px;
   }
 </style>
