@@ -248,7 +248,7 @@
           {#if currentStep === 0}
             <div class="space-y-8">
               <div>
-                <label class="ind-metadata text-ind-steel/70 text-xs block mb-3">PROJECT TYPE</label>
+                <div class="ind-metadata text-ind-steel/70 text-xs block mb-3">PROJECT TYPE</div>
                 <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-2">
                   {#each projectProfiles as service}
                     <button
