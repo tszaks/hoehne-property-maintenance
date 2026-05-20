@@ -3,21 +3,27 @@ import IndustrialLayout from '../layouts/IndustrialLayout.astro';
 import Navbar from '../components/industrial/Navbar.svelte';
 import Hero from '../components/industrial/Hero.svelte';
 import Services from '../components/industrial/Services.svelte';
+import CaseStudies from '../components/industrial/CaseStudies.svelte';
+import Estimator from '../components/industrial/Estimator.svelte';
 import Contact from '../components/industrial/Contact.svelte';
 import Footer from '../components/industrial/Footer.svelte';
 import FloatingPhone from '../components/industrial/FloatingPhone.svelte';
+import ChatWidget from '../components/industrial/ChatWidget.svelte';
 ---
 
-<IndustrialLayout 
+<IndustrialLayout
 	title="Hoehne Property Maintenance & Remodeling | Pottstown, PA"
 	description="Veteran-owned property maintenance and remodeling in Pottstown, PA. 20 years of experience. Handyman services, home renovations, painting, lawn care, snow removal. Call (610) 412-6424."
 >
 	<main class="relative bg-ind-bg selection:bg-ind-accent selection:text-black">
 		<Navbar client:load />
 		<Hero client:load />
-	<Services client:load />
-	<Contact client:load />
-	<Footer client:load />
+		<Services client:load />
+		<CaseStudies client:load />
+		<Estimator client:load />
+		<Contact client:load />
+		<Footer client:load />
 	</main>
 	<FloatingPhone client:load />
+	<ChatWidget client:load />
 </IndustrialLayout>
