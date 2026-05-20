@@ -61,12 +61,12 @@
 <section id="estimate" class="py-24 lg:py-28 bg-ind-surface relative z-10">
   <div class="max-w-7xl mx-auto px-6 lg:px-12">
     <div class="mb-12">
-      <div class="ind-metadata mb-4">PROJECT ESTIMATOR // PHOTO-AWARE AI // LOCAL RANGES</div>
+      <div class="ind-metadata mb-4">PROJECT ESTIMATOR // PHOTO REVIEW // LOCAL RANGES</div>
       <h1 class="text-4xl md:text-6xl font-black text-white tracking-tighter uppercase max-w-4xl">
         Build a Smarter Rough Range Before We Visit
       </h1>
       <p class="text-ind-steel text-sm mt-5 max-w-2xl leading-relaxed">
-        This is still not a quote. It is a trade-aware planning tool that factors labor, materials, access, finish level, scheduling, overhead, profit, and contingency. The chat can use project photos to tighten the next questions.
+        This is still not a quote. It is a trade-aware planning tool that factors labor, materials, access, finish level, scheduling, overhead, profit, and contingency. Photos can help tighten the next questions.
       </p>
     </div>
 
@@ -243,12 +243,12 @@
 
     <div id="photo-chat" class="mt-14 pt-8 border-t border-ind-border/20">
       <div class="max-w-2xl">
-        <div class="ind-metadata text-ind-steel/50 text-xs mb-3">PHOTO-AWARE AI</div>
+        <div class="ind-metadata text-ind-steel/50 text-xs mb-3">PHOTO REVIEW</div>
         <h2 class="text-2xl md:text-3xl font-black text-white uppercase tracking-tight mb-3">
-          Want The Bot To Look At Photos?
+          Want us to look at photos?
         </h2>
         <p class="text-ind-steel text-sm leading-relaxed">
-          Open the chat button in the lower-left, attach a photo, and describe the project. The bot can use visible condition, materials, access, damage, and scope clues to ask better questions. It cannot confirm hidden damage, code issues, or exact quantities from one photo.
+          Open the chat button in the lower-left, attach a photo, and describe the project. Photos help narrow the next question by showing visible condition, materials, access, damage, and scope clues. Hidden damage, code issues, and exact quantities still need an on-site look.
         </p>
       </div>
     </div>
