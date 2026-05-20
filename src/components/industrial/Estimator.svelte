@@ -38,17 +38,32 @@
   ];
 
   let selectedId = $state('');
-  let scopeIndex = $state(2);
-  let conditionIndex = $state(1);
-  let urgencyIndex = $state(0);
+  let scopeValue = $state(2);
+  let conditionValue = $state(1);
+  let urgencyValue = $state(0);
 
   const selected = $derived(services.find(s => s.id === selectedId));
 
+  function nearestIndex(value: number, length: number): number {
+    return Math.min(length - 1, Math.max(0, Math.round(value)));
+  }
+
+  function interpolateMult(value: number, options: { mult: number }[]): number {
+    const lo = Math.max(0, Math.min(options.length - 1, Math.floor(value)));
+    const hi = Math.min(options.length - 1, lo + 1);
+    const t = Math.max(0, Math.min(1, value - lo));
+    return options[lo].mult * (1 - t) + options[hi].mult * t;
+  }
+
+  const scopeIndex = $derived(nearestIndex(scopeValue, scopeOptions.length));
+  const conditionIndex = $derived(nearestIndex(conditionValue, conditionOptions.length));
+  const urgencyIndex = $derived(nearestIndex(urgencyValue, urgencyOptions.length));
+
   const estimate = $derived.by(() => {
     if (!selected) return null;
-    const sMult = scopeOptions[scopeIndex].mult;
-    const cMult = conditionOptions[conditionIndex].mult;
-    const uMult = urgencyOptions[urgencyIndex].mult;
+    const sMult = interpolateMult(scopeValue, scopeOptions);
+    const cMult = interpolateMult(conditionValue, conditionOptions);
+    const uMult = interpolateMult(urgencyValue, urgencyOptions);
     const round25 = (n: number) => Math.round(n / 25) * 25;
     return {
       min: round25(selected.min * sMult * cMult * uMult),
@@ -115,9 +130,9 @@
             type="range"
             min="0"
             max="4"
-            step="1"
-            bind:value={scopeIndex}
-            style="--pct: {(scopeIndex / 4 * 100).toFixed(1)}%"
+            step="0.01"
+            bind:value={scopeValue}
+            style="--pct: {(scopeValue / 4 * 100).toFixed(2)}%"
             class="est-slider"
             aria-label="Project size and scope"
             aria-valuetext={scopeOptions[scopeIndex].label}
@@ -141,9 +156,9 @@
             type="range"
             min="0"
             max="3"
-            step="1"
-            bind:value={conditionIndex}
-            style="--pct: {(conditionIndex / 3 * 100).toFixed(1)}%"
+            step="0.01"
+            bind:value={conditionValue}
+            style="--pct: {(conditionValue / 3 * 100).toFixed(2)}%"
             class="est-slider"
             aria-label="Condition and prep needed"
             aria-valuetext={conditionOptions[conditionIndex].label}
@@ -167,9 +182,9 @@
             type="range"
             min="0"
             max="3"
-            step="1"
-            bind:value={urgencyIndex}
-            style="--pct: {(urgencyIndex / 3 * 100).toFixed(1)}%"
+            step="0.01"
+            bind:value={urgencyValue}
+            style="--pct: {(urgencyValue / 3 * 100).toFixed(2)}%"
             class="est-slider"
             aria-label="Timeline"
             aria-valuetext={urgencyOptions[urgencyIndex].label}
