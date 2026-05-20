@@ -244,10 +244,10 @@
   </div>
 {/if}
 
-<!-- Toggle button — bottom-left on mobile so it doesn't collide with FloatingPhone (bottom-right) -->
+<!-- Toggle button — bottom-left on both mobile and desktop so it never collides with FloatingPhone (bottom-right) -->
 <button
   onclick={toggle}
-  class="chat-toggle fixed z-50 flex items-center gap-2 px-4 py-3 bg-ind-accent text-black font-black text-xs uppercase tracking-wider hover:bg-ind-accent/90 transition-colors shadow-lg shadow-ind-accent/20"
+  class="chat-toggle fixed z-50 flex items-center gap-2 px-4 py-3 bg-ind-accent text-black font-black text-xs uppercase tracking-wider hover:bg-ind-accent/90 transition-colors shadow-lg shadow-ind-accent/20 whitespace-nowrap"
   aria-label="Open project estimator chat"
 >
   {#if open}
@@ -273,11 +273,11 @@
     left: 16px;
   }
 
-  /* Desktop (≥640px): right-aligned fixed-width panel, toggle moves to right */
+  /* Desktop (≥640px): fixed-width panel anchored bottom-left to keep clear of the FloatingPhone CTA on the right */
   @media (min-width: 640px) {
     .chat-panel {
-      left: auto;
-      right: 24px;
+      left: 24px;
+      right: auto;
       bottom: 88px;
       width: 380px;
       height: 500px;
@@ -285,8 +285,8 @@
     }
 
     .chat-toggle {
-      left: auto;
-      right: 24px;
+      left: 24px;
+      right: auto;
       bottom: calc(24px + env(safe-area-inset-bottom, 0px));
     }
   }
