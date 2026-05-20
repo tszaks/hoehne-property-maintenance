@@ -24,7 +24,7 @@
 </script>
 
 <nav class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 {isScrolled ? 'bg-ind-bg/95 backdrop-blur-md border-b border-ind-border/30' : 'bg-transparent'}">
-    <div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
+    <div class="max-w-7xl mx-auto px-6 lg:px-12 h-16 flex items-center justify-between">
 
         <!-- Logo -->
         <a href="/" class="flex items-center gap-3">
@@ -33,20 +33,20 @@
             </div>
             <div>
                 <div class="text-white font-black text-sm uppercase tracking-tight leading-none">Hoehne</div>
-                <div class="ind-metadata text-ind-steel" style="font-size:0.5rem">Property Maintenance & Remodeling</div>
+                <div class="ind-metadata text-ind-steel" style="font-size:0.6rem">Property Maintenance & Remodeling</div>
             </div>
         </a>
 
         <!-- Desktop -->
-        <div class="hidden md:flex items-center gap-8">
+        <div class="hidden md:flex items-center gap-6 border-l border-ind-border/40 pl-8 ml-6">
             {#each navLinks as link}
                 <a href={link.href}
-                    class="ind-metadata text-ind-steel hover:text-white transition-colors">
+                    class="ind-metadata text-ind-steel hover:text-white transition-colors text-[0.72rem]">
                     {link.label}
                 </a>
             {/each}
             <a href="tel:+16104126424"
-                class="ind-button flex items-center gap-2 px-5 py-2 text-xs font-black uppercase tracking-wider">
+                class="ind-button flex items-center gap-2 px-4 py-2 text-[0.72rem] font-black uppercase tracking-wider">
                 <Phone size={14} weight="bold" />(610) 412-6424
             </a>
         </div>

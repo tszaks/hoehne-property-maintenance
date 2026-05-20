@@ -1,6 +1,7 @@
 <script lang="ts">
   import { tick, onMount } from 'svelte';
   import { ChatCircle, X, PaperPlaneTilt, UploadSimple } from 'phosphor-svelte';
+  import { prepareProjectPhoto } from '../../lib/photo-upload';
 
   type Msg = { role: 'user' | 'assistant'; content: string; imageUrl?: string; imageName?: string };
 
@@ -123,32 +124,16 @@
     })()
   );
 
-  function fileToDataUrl(file: File): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(String(reader.result));
-      reader.onerror = () => reject(new Error('Unable to read image.'));
-      reader.readAsDataURL(file);
-    });
-  }
-
   async function handleFileChange() {
     apiError = '';
     const file = fileEl?.files?.[0];
     if (!file) return;
-    if (!file.type.startsWith('image/')) {
-      apiError = 'Please attach a photo file.';
-      return;
-    }
-    if (file.size > 4_500_000) {
-      apiError = 'Please attach a photo under 4.5 MB.';
-      return;
-    }
     try {
-      photoDataUrl = await fileToDataUrl(file);
-      photoName = file.name;
-    } catch {
-      apiError = 'Unable to read that photo. Please try another image.';
+      const prepared = await prepareProjectPhoto(file);
+      photoDataUrl = prepared.dataUrl;
+      photoName = prepared.name;
+    } catch (error) {
+      apiError = error instanceof Error ? error.message : 'Unable to read that photo. Please try another image.';
     }
   }
 
