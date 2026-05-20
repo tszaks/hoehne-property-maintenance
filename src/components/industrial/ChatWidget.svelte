@@ -1,6 +1,6 @@
 <script lang="ts">
   import { tick, onMount } from 'svelte';
-  import { ChatCircle, X, PaperPlaneTilt, Phone, UploadSimple } from 'phosphor-svelte';
+  import { ChatCircle, X, PaperPlaneTilt, UploadSimple } from 'phosphor-svelte';
 
   type Msg = { role: 'user' | 'assistant'; content: string; imageUrl?: string; imageName?: string };
 
@@ -312,21 +312,13 @@
       {/if}
     </div>
 
-    <!-- Call CTA strip -->
-    <a
-      href="tel:+16104126424"
-      class="flex items-center justify-center gap-2 py-2 bg-ind-bg border-t border-ind-border/40 text-ind-accent/70 hover:text-ind-accent text-xs font-bold uppercase tracking-wider transition-colors ind-metadata shrink-0"
-    >
-      <Phone size={12} /> (610) 412-6424 - Call / Text for Exact Pricing
-    </a>
-
     {#if photoDataUrl}
       <div class="border-t border-ind-border/50 bg-ind-bg px-3 py-2 shrink-0">
         <div class="flex items-center gap-3">
           <img src={photoDataUrl} alt={photoName || 'Selected project'} class="h-12 w-12 object-cover border border-ind-border/60" />
           <div class="min-w-0 flex-1">
             <div class="text-white text-xs font-bold truncate">{photoName || 'Project photo attached'}</div>
-            <div class="text-[0.65rem] text-ind-steel/50 uppercase tracking-widest">Vision review ready</div>
+            <div class="text-[0.65rem] text-ind-steel/50 uppercase tracking-widest">Photo ready</div>
           </div>
           <button type="button" onclick={clearPhoto} class="text-ind-steel hover:text-white p-1" aria-label="Remove photo">
             <X size={14} />

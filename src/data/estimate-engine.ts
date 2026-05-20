@@ -21,6 +21,15 @@ export interface EstimateOption {
   risk: number;
 }
 
+export interface EstimateFactorOption {
+  id: string;
+  label: string;
+  sub: string;
+  lowMultiplier: number;
+  highMultiplier: number;
+  risk: number;
+}
+
 export interface CostLineDefinition {
   label: string;
   category: LineCategory;
@@ -56,9 +65,13 @@ export interface ProjectProfile {
 export interface EstimateInput {
   serviceId: ServiceId;
   quantity?: number;
+  scopeId?: string;
   conditionId?: string;
   finishId?: string;
+  homeAgeId?: string;
+  homeTypeId?: string;
   accessId?: string;
+  tradeId?: string;
   urgencyId?: string;
 }
 
@@ -89,6 +102,13 @@ export const conditionOptions: EstimateOption[] = [
   { id: 'unknown', label: 'Heavy / unknown', sub: 'Hidden damage or unclear scope', multiplier: 1.38, risk: 0.18 },
 ];
 
+export const scopeOptions: EstimateFactorOption[] = [
+  { id: 'simple', label: 'Small update', sub: 'Repair, touch-up, or swap-out only', lowMultiplier: 0.58, highMultiplier: 0.78, risk: 0.01 },
+  { id: 'standard', label: 'Standard project', sub: 'Keep the same layout and replace what is there', lowMultiplier: 0.92, highMultiplier: 1.04, risk: 0.03 },
+  { id: 'full', label: 'Full redo', sub: 'Most finishes come out and get replaced', lowMultiplier: 1.12, highMultiplier: 1.28, risk: 0.07 },
+  { id: 'custom', label: 'Custom / layout change', sub: 'Move things, open walls, or use custom details', lowMultiplier: 1.38, highMultiplier: 1.72, risk: 0.14 },
+];
+
 export const finishOptions: EstimateOption[] = [
   { id: 'basic', label: 'Basic', sub: 'Budget-friendly, standard materials', multiplier: 0.9, risk: 0.02 },
   { id: 'standard', label: 'Standard', sub: 'Most common homeowner choice', multiplier: 1, risk: 0.04 },
@@ -96,11 +116,32 @@ export const finishOptions: EstimateOption[] = [
   { id: 'premium', label: 'Premium / custom', sub: 'Custom details or premium materials', multiplier: 1.55, risk: 0.12 },
 ];
 
+export const homeAgeOptions: EstimateFactorOption[] = [
+  { id: 'newer', label: 'Newer home', sub: 'Built after 2000', lowMultiplier: 0.96, highMultiplier: 0.98, risk: 0.01 },
+  { id: 'standard', label: 'Typical home', sub: 'Built 1970-2000', lowMultiplier: 1, highMultiplier: 1.04, risk: 0.03 },
+  { id: 'older', label: 'Older home', sub: 'Built before 1970', lowMultiplier: 1.08, highMultiplier: 1.18, risk: 0.07 },
+  { id: 'unknown', label: 'Not sure', sub: 'Age or hidden conditions are unclear', lowMultiplier: 1.08, highMultiplier: 1.24, risk: 0.1 },
+];
+
+export const homeTypeOptions: EstimateFactorOption[] = [
+  { id: 'single', label: 'Single-family home', sub: 'Normal parking and access', lowMultiplier: 0.98, highMultiplier: 1, risk: 0.02 },
+  { id: 'townhome', label: 'Townhome / rowhome', sub: 'Shared walls, tighter parking, or stairs', lowMultiplier: 1.04, highMultiplier: 1.1, risk: 0.04 },
+  { id: 'condo', label: 'Condo / HOA', sub: 'Building rules, parking, or elevator limits', lowMultiplier: 1.08, highMultiplier: 1.18, risk: 0.06 },
+  { id: 'tight', label: 'Tight or tricky', sub: 'Hard parking, narrow stairs, or limited work space', lowMultiplier: 1.1, highMultiplier: 1.24, risk: 0.08 },
+];
+
 export const accessOptions: EstimateOption[] = [
   { id: 'easy', label: 'Easy access', sub: 'Open work area, simple staging', multiplier: 0.96, risk: 0.02 },
   { id: 'normal', label: 'Normal access', sub: 'Typical occupied home', multiplier: 1, risk: 0.04 },
   { id: 'tight', label: 'Tight access', sub: 'Stairs, small rooms, furniture, or limited staging', multiplier: 1.12, risk: 0.07 },
   { id: 'difficult', label: 'Difficult access', sub: 'High work, crawlspace, exterior constraints, or heavy protection', multiplier: 1.26, risk: 0.12 },
+];
+
+export const tradeOptions: EstimateFactorOption[] = [
+  { id: 'none', label: 'Nothing moving', sub: 'Same layout and no wall changes', lowMultiplier: 0.96, highMultiplier: 0.99, risk: 0.01 },
+  { id: 'minor', label: 'Small swaps', sub: 'Fixtures, trim, paint, or surface updates', lowMultiplier: 1, highMultiplier: 1.08, risk: 0.03 },
+  { id: 'moving', label: 'Move plumbing or electric', sub: 'Sink, toilet, outlets, lights, or appliances move', lowMultiplier: 1.16, highMultiplier: 1.38, risk: 0.09 },
+  { id: 'permit', label: 'Walls or permits', sub: 'Wall changes, structural work, or permit-level work', lowMultiplier: 1.35, highMultiplier: 1.7, risk: 0.15 },
 ];
 
 export const urgencyOptions: EstimateOption[] = [
@@ -393,11 +434,17 @@ export function fmtRange(low: number, high: number): string {
 
 export function estimateProject(input: EstimateInput): ProjectEstimate {
   const profile = getProjectProfile(input.serviceId);
+  const scope = findFactorOption(scopeOptions, input.scopeId, 'standard');
   const condition = findOption(conditionOptions, input.conditionId, 'normal');
   const finish = findOption(finishOptions, input.finishId, 'standard');
+  const homeAge = findFactorOption(homeAgeOptions, input.homeAgeId, 'standard');
+  const homeType = findFactorOption(homeTypeOptions, input.homeTypeId, 'single');
   const access = findOption(accessOptions, input.accessId, 'normal');
+  const trade = findFactorOption(tradeOptions, input.tradeId, 'none');
   const urgency = findOption(urgencyOptions, input.urgencyId, 'flexible');
   const quantity = clamp(input.quantity ?? profile.defaultQuantity, profile.minQuantity, profile.maxQuantity);
+  const projectLowMultiplier = scope.lowMultiplier * homeAge.lowMultiplier * homeType.lowMultiplier * trade.lowMultiplier;
+  const projectHighMultiplier = scope.highMultiplier * homeAge.highMultiplier * homeType.highMultiplier * trade.highMultiplier;
 
   const directItems = profile.lines.map((line) => {
     const quantityFactor = line.unit === 'quantity' ? quantity * (line.quantityScale ?? 1) : 1;
@@ -408,8 +455,8 @@ export function estimateProject(input: EstimateInput): ProjectEstimate {
     return {
       label: line.label,
       category: line.category,
-      low: line.low * quantityFactor * multiplier,
-      high: line.high * quantityFactor * multiplier,
+      low: line.low * quantityFactor * multiplier * projectLowMultiplier,
+      high: line.high * quantityFactor * multiplier * projectHighMultiplier,
     };
   });
 
@@ -417,8 +464,8 @@ export function estimateProject(input: EstimateInput): ProjectEstimate {
   const directHigh = sum(directItems.map((line) => line.high));
   const overheadLow = directLow * 0.16;
   const overheadHigh = directHigh * 0.24;
-  const riskRateLow = Math.min(0.22, profile.baseRisk + condition.risk * 0.45 + access.risk * 0.35);
-  const riskRateHigh = Math.min(0.32, profile.baseRisk + condition.risk + access.risk + finish.risk * 0.45);
+  const riskRateLow = Math.min(0.24, profile.baseRisk + condition.risk * 0.35 + access.risk * 0.25 + scope.risk * 0.35 + trade.risk * 0.25);
+  const riskRateHigh = Math.min(0.38, profile.baseRisk + condition.risk + access.risk + finish.risk * 0.35 + scope.risk + homeAge.risk + homeType.risk * 0.6 + trade.risk);
   const contingencyLow = directLow * riskRateLow;
   const contingencyHigh = directHigh * riskRateHigh;
 
@@ -432,18 +479,25 @@ export function estimateProject(input: EstimateInput): ProjectEstimate {
   const subtotalHigh = directHigh + overheadHigh + contingencyHigh;
   const urgencyLow = subtotalLow * urgency.multiplier;
   const urgencyHigh = subtotalHigh * urgency.multiplier;
-  const low = roundToUseful(Math.max(profile.minimum.low, urgencyLow));
-  const high = roundToUseful(Math.max(profile.minimum.high, urgencyHigh));
-  const confidence = confidenceFor(profile, quantity, condition.id, finish.id, access.id, urgency.id);
+  const rawLow = roundToUseful(Math.max(profile.minimum.low, urgencyLow));
+  const rawHigh = roundToUseful(Math.max(profile.minimum.high, urgencyHigh));
+  const high = roundToUseful(Math.max(profile.minimum.high, Math.min(rawHigh, rawLow * maxRangeRatioFor(profile, scope.id, condition.id, finish.id, homeAge.id, homeType.id, access.id, trade.id, urgency.id))));
+  const low = Math.min(rawLow, high);
+  const highScale = rawHigh > 0 && high < rawHigh ? high / rawHigh : 1;
+  const confidence = confidenceFor(profile, quantity, scope.id, condition.id, finish.id, homeAge.id, homeType.id, access.id, trade.id, urgency.id);
 
   return {
     profile,
     input: {
       serviceId: profile.id,
       quantity,
+      scopeId: scope.id,
       conditionId: condition.id,
       finishId: finish.id,
+      homeAgeId: homeAge.id,
+      homeTypeId: homeType.id,
       accessId: access.id,
+      tradeId: trade.id,
       urgencyId: urgency.id,
     },
     low,
@@ -453,13 +507,17 @@ export function estimateProject(input: EstimateInput): ProjectEstimate {
     lineItems: lineItems.map((line) => ({
       ...line,
       low: roundToUseful(line.low),
-      high: roundToUseful(line.high),
+      high: roundToUseful(line.high * highScale),
     })),
     assumptions: [
       ...profile.assumptions,
+      `${scope.label}`,
       `${condition.label} condition`,
-      `${finish.label} finish level`,
+      `${finish.label} quality level`,
+      `${homeAge.label}`,
+      `${homeType.label}`,
       `${access.label}`,
+      `${trade.label}`,
       `${urgency.label} timeline`,
     ],
     escalationTriggers: profile.escalationTriggers,
@@ -488,6 +546,10 @@ function findOption(options: EstimateOption[], id: string | undefined, fallbackI
   return options.find((option) => option.id === id) ?? options.find((option) => option.id === fallbackId) ?? options[0];
 }
 
+function findFactorOption(options: EstimateFactorOption[], id: string | undefined, fallbackId: string): EstimateFactorOption {
+  return options.find((option) => option.id === id) ?? options.find((option) => option.id === fallbackId) ?? options[0];
+}
+
 function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, Number.isFinite(value) ? value : min));
 }
@@ -510,19 +572,61 @@ function roundToUseful(value: number): number {
 function confidenceFor(
   profile: ProjectProfile,
   quantity: number,
+  scopeId: string,
   conditionId: string,
   finishId: string,
+  homeAgeId: string,
+  homeTypeId: string,
   accessId: string,
+  tradeId: string,
   urgencyId: string,
 ): number {
   let score = profile.confidenceBase;
   const quantityRatio = quantity / profile.defaultQuantity;
   if (quantityRatio < 0.5 || quantityRatio > 2) score -= 6;
+  if (scopeId === 'simple') score += 4;
+  if (scopeId === 'full') score -= 4;
+  if (scopeId === 'custom') score -= 10;
   if (conditionId === 'repair') score -= 5;
   if (conditionId === 'unknown') score -= 12;
   if (finishId === 'premium') score -= 5;
+  if (homeAgeId === 'older') score -= 5;
+  if (homeAgeId === 'unknown') score -= 8;
+  if (homeTypeId === 'condo') score -= 4;
+  if (homeTypeId === 'tight') score -= 6;
   if (accessId === 'tight') score -= 4;
   if (accessId === 'difficult') score -= 9;
+  if (tradeId === 'moving') score -= 7;
+  if (tradeId === 'permit') score -= 12;
   if (urgencyId === 'rush') score -= 5;
   return Math.min(92, Math.max(42, Math.round(score)));
+}
+
+function maxRangeRatioFor(
+  profile: ProjectProfile,
+  scopeId: string,
+  conditionId: string,
+  finishId: string,
+  homeAgeId: string,
+  homeTypeId: string,
+  accessId: string,
+  tradeId: string,
+  urgencyId: string,
+): number {
+  let ratio = profile.confidenceBase >= 82 ? 1.55 : profile.confidenceBase >= 70 ? 1.85 : 2.05;
+  if (scopeId === 'simple') ratio -= 0.2;
+  if (scopeId === 'full') ratio += 0.15;
+  if (scopeId === 'custom') ratio += 0.45;
+  if (conditionId === 'repair') ratio += 0.15;
+  if (conditionId === 'unknown') ratio += 0.35;
+  if (finishId === 'premium') ratio += 0.15;
+  if (homeAgeId === 'older') ratio += 0.2;
+  if (homeAgeId === 'unknown') ratio += 0.3;
+  if (homeTypeId === 'condo' || homeTypeId === 'tight') ratio += 0.15;
+  if (accessId === 'tight') ratio += 0.15;
+  if (accessId === 'difficult') ratio += 0.3;
+  if (tradeId === 'moving') ratio += 0.3;
+  if (tradeId === 'permit') ratio += 0.55;
+  if (urgencyId === 'rush') ratio += 0.1;
+  return Math.min(3.15, Math.max(1.35, ratio));
 }

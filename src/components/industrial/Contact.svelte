@@ -28,7 +28,7 @@
                 Ready To Get It Done?
             </h2>
             <p class="text-ind-steel text-sm sm:text-base max-w-md mx-auto leading-relaxed">
-                Call or text us with photos, a quick description, or the address. We can usually tell you the next step faster that way.
+                Send photos, a quick description, and the address. We will review the details and give you a clear next step.
             </p>
         </div>
 
