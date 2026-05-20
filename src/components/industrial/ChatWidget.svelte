@@ -286,7 +286,7 @@
         </div>
       {/if}
 
-      <!-- Quick-reply chips: initial set before any user message, contextual after bot replies -->
+      <!-- Quick-reply chips: initial set before any user message, contextual after replies -->
       {#if showInitialChips}
         <div class="flex flex-wrap gap-2 pt-1">
           {#each INITIAL_CHIPS as chip}
