@@ -4,7 +4,6 @@ import Navbar from '../components/industrial/Navbar.svelte';
 import Hero from '../components/industrial/Hero.svelte';
 import Services from '../components/industrial/Services.svelte';
 import CaseStudies from '../components/industrial/CaseStudies.svelte';
-import Estimator from '../components/industrial/Estimator.svelte';
 import Contact from '../components/industrial/Contact.svelte';
 import Footer from '../components/industrial/Footer.svelte';
 import FloatingPhone from '../components/industrial/FloatingPhone.svelte';
@@ -17,13 +16,28 @@ import ChatWidget from '../components/industrial/ChatWidget.svelte';
 >
 	<main class="relative bg-ind-bg selection:bg-ind-accent selection:text-black">
 		<Navbar client:load />
-		<Hero client:load />
-		<Services client:load />
-		<CaseStudies client:load />
-		<Estimator client:load />
-		<Contact client:load />
-		<Footer client:load />
-	</main>
+			<Hero client:load />
+			<Services client:load />
+			<CaseStudies client:load />
+			<section class="py-20 bg-ind-surface relative z-10">
+				<div class="max-w-5xl mx-auto px-6 lg:px-12 grid lg:grid-cols-[1fr_auto] gap-8 items-center">
+					<div>
+						<div class="ind-metadata text-ind-steel mb-3 opacity-60">SMART PROJECT RANGE</div>
+						<h2 class="text-3xl sm:text-4xl font-black text-white uppercase tracking-tighter mb-3">
+							Get A Photo-Aware Estimate
+						</h2>
+						<p class="text-ind-steel text-sm sm:text-base max-w-xl leading-relaxed">
+							Use the dedicated estimator to factor project size, condition, finish level, access, timeline, labor, materials, overhead, and visible photo clues.
+						</p>
+					</div>
+					<a href="/estimate" class="ind-button inline-flex items-center justify-center px-8 py-4 text-sm font-black uppercase tracking-widest">
+						Start Estimate
+					</a>
+				</div>
+			</section>
+			<Contact client:load />
+			<Footer client:load />
+		</main>
 	<FloatingPhone client:load />
 	<ChatWidget client:load />
 </IndustrialLayout>

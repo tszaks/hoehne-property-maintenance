@@ -6,14 +6,14 @@
     let isMenuOpen = false;
 
     const navLinks = [
-        { label: "Services", href: "#services" },
-        { label: "Contact",  href: "#contact"  },
+        { label: "Services", href: "/#services" },
+        { label: "Estimate", href: "/estimate" },
+        { label: "Contact",  href: "/#contact"  },
     ];
 
-    function scrollTo(href: string) {
+    function closeMenu() {
         isMenuOpen = false;
         document.body.style.overflow = "";
-        document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
     }
 
     onMount(() => {
@@ -40,10 +40,10 @@
         <!-- Desktop -->
         <div class="hidden md:flex items-center gap-8">
             {#each navLinks as link}
-                <button on:click={() => scrollTo(link.href)}
-                    class="ind-metadata text-ind-steel hover:text-white transition-colors cursor-pointer bg-transparent border-0">
+                <a href={link.href}
+                    class="ind-metadata text-ind-steel hover:text-white transition-colors">
                     {link.label}
-                </button>
+                </a>
             {/each}
             <a href="tel:+16104126424"
                 class="ind-button flex items-center gap-2 px-5 py-2 text-xs font-black uppercase tracking-wider">
@@ -52,7 +52,7 @@
         </div>
 
         <!-- Mobile toggle -->
-        <button on:click={() => { isMenuOpen = !isMenuOpen; document.body.style.overflow = isMenuOpen ? 'hidden' : ''; }}
+        <button onclick={() => { isMenuOpen = !isMenuOpen; document.body.style.overflow = isMenuOpen ? 'hidden' : ''; }}
             class="md:hidden text-white p-2">
             {#if isMenuOpen}<X size={22} weight="bold" />{:else}<List size={22} weight="bold" />{/if}
         </button>
@@ -62,10 +62,10 @@
     {#if isMenuOpen}
         <div class="md:hidden bg-ind-bg border-t border-ind-border/30 px-6 py-6 space-y-1">
             {#each navLinks as link}
-                <button on:click={() => scrollTo(link.href)}
+                <a href={link.href} onclick={closeMenu}
                     class="block w-full text-left text-white font-black uppercase tracking-wide text-lg py-4 border-b border-ind-border/20 bg-transparent">
                     {link.label}
-                </button>
+                </a>
             {/each}
             <div class="pt-6">
                 <a href="tel:+16104126424"

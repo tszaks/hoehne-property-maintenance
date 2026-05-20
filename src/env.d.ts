@@ -1,7 +1,6 @@
 /// <reference types="astro/client" />
 
 interface ImportMetaEnv {
-    readonly ANTHROPIC_API_KEY?: string;
     readonly BREVO_API_KEY?: string;
     readonly CALENDLY_EVENT_TYPE_URI?: string;
     readonly CALENDLY_PAT?: string;
@@ -14,6 +13,8 @@ interface ImportMetaEnv {
     readonly GRANT_INBOX_TOKEN?: string;
     readonly GRANT_SUMMARY_REPLY_TO?: string;
     readonly GRANT_SUMMARY_TO_EMAILS?: string;
+    readonly OPENAI_API_KEY?: string;
+    readonly OPENAI_MODEL?: string;
     readonly RESEND_API_KEY?: string;
     readonly RESEND_FROM_EMAIL?: string;
 }

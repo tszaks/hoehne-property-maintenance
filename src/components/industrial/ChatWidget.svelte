@@ -1,8 +1,8 @@
 <script lang="ts">
   import { tick, onMount } from 'svelte';
-  import { ChatCircle, X, PaperPlaneTilt, Phone } from 'phosphor-svelte';
+  import { ChatCircle, X, PaperPlaneTilt, Phone, UploadSimple } from 'phosphor-svelte';
 
-  type Msg = { role: 'user' | 'assistant'; content: string };
+  type Msg = { role: 'user' | 'assistant'; content: string; imageUrl?: string; imageName?: string };
 
   let open = $state(false);
   let input = $state('');
@@ -11,6 +11,9 @@
   let nearBottom = $state(false);
   let messagesEl: HTMLElement | undefined = $state(undefined);
   let inputEl: HTMLInputElement | undefined = $state(undefined);
+  let fileEl: HTMLInputElement | undefined = $state(undefined);
+  let photoDataUrl = $state('');
+  let photoName = $state('');
 
   // Hide the closed toggle when contact or footer is in view so it does not
   // compete with the in-section CTAs. Keep showing it while the panel is open.
@@ -37,11 +40,11 @@
   });
 
   const GREETING =
-    'Hi! I can help with rough project ranges for the Pottstown area. I ask one question at a time, then give ranges only — never exact quotes. What are you working on?';
+    'Hi! I can help with rough project ranges for the Pottstown area. You can also attach a project photo. What are you working on?';
 
   let uiMsgs = $state<Msg[]>([{ role: 'assistant', content: GREETING }]);
 
-  // Separate track for API — excludes the greeting so Claude does not see it as a prior turn
+  // Separate track for API, excludes the greeting so the model does not see it as a prior turn
   let apiMsgs = $state<Msg[]>([]);
 
   const INITIAL_CHIPS = [
@@ -58,7 +61,7 @@
   function chipsForReply(reply: string): string[] {
     const r = reply.toLowerCase();
 
-    // Stage / question intent — checked BEFORE service category so a paint
+    // Stage / question intent, checked before service category so a paint
     // question about prep/condition doesn't get mislabeled with scope chips.
 
     // Condition / prep state
@@ -120,13 +123,50 @@
     })()
   );
 
+  function fileToDataUrl(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result));
+      reader.onerror = () => reject(new Error('Unable to read image.'));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function handleFileChange() {
+    apiError = '';
+    const file = fileEl?.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      apiError = 'Please attach a photo file.';
+      return;
+    }
+    if (file.size > 4_500_000) {
+      apiError = 'Please attach a photo under 4.5 MB.';
+      return;
+    }
+    try {
+      photoDataUrl = await fileToDataUrl(file);
+      photoName = file.name;
+    } catch {
+      apiError = 'Unable to read that photo. Please try another image.';
+    }
+  }
+
+  function clearPhoto() {
+    photoDataUrl = '';
+    photoName = '';
+    if (fileEl) fileEl.value = '';
+  }
+
   async function send() {
     const text = input.trim();
-    if (!text || loading) return;
+    if ((!text && !photoDataUrl) || loading) return;
 
     input = '';
     apiError = '';
-    const userMsg: Msg = { role: 'user', content: text };
+    const content = text || 'Please review this project photo and tell me the most important scope detail you need next.';
+    const userMsg: Msg = { role: 'user', content, imageUrl: photoDataUrl || undefined, imageName: photoName || undefined };
+    clearPhoto();
     uiMsgs = [...uiMsgs, userMsg];
     apiMsgs = [...apiMsgs, userMsg];
 
@@ -138,7 +178,7 @@
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: apiMsgs.slice(-10) }),
+        body: JSON.stringify({ messages: apiMsgs.slice(-8) }),
       });
 
       const data = await res.json();
@@ -186,7 +226,7 @@
   }
 </script>
 
-<!-- Chat panel — mobile: bottom sheet anchored to viewport edges; desktop: right-aligned panel -->
+<!-- Chat panel: mobile bottom sheet anchored to viewport edges, desktop right-aligned panel -->
 {#if open}
   <div
     class="chat-panel fixed z-50 flex flex-col bg-ind-surface border border-ind-border/60 shadow-2xl overflow-hidden"
@@ -220,6 +260,9 @@
                 ? 'bg-ind-accent text-black font-medium'
                 : 'bg-ind-bg border border-ind-border/50 text-ind-steel'}"
           >
+            {#if msg.imageUrl}
+              <img src={msg.imageUrl} alt={msg.imageName || 'Attached project'} class="mb-2 max-h-40 w-full object-cover border border-black/20" />
+            {/if}
             {msg.content}
           </div>
         </div>
@@ -274,11 +317,44 @@
       href="tel:+16104126424"
       class="flex items-center justify-center gap-2 py-2 bg-ind-bg border-t border-ind-border/40 text-ind-accent/70 hover:text-ind-accent text-xs font-bold uppercase tracking-wider transition-colors ind-metadata shrink-0"
     >
-      <Phone size={12} /> (610) 412-6424 &mdash; Call / Text for Exact Pricing
+      <Phone size={12} /> (610) 412-6424 - Call / Text for Exact Pricing
     </a>
+
+    {#if photoDataUrl}
+      <div class="border-t border-ind-border/50 bg-ind-bg px-3 py-2 shrink-0">
+        <div class="flex items-center gap-3">
+          <img src={photoDataUrl} alt={photoName || 'Selected project'} class="h-12 w-12 object-cover border border-ind-border/60" />
+          <div class="min-w-0 flex-1">
+            <div class="text-white text-xs font-bold truncate">{photoName || 'Project photo attached'}</div>
+            <div class="text-[0.65rem] text-ind-steel/50 uppercase tracking-widest">Vision review ready</div>
+          </div>
+          <button type="button" onclick={clearPhoto} class="text-ind-steel hover:text-white p-1" aria-label="Remove photo">
+            <X size={14} />
+          </button>
+        </div>
+      </div>
+    {/if}
 
     <!-- Input -->
     <div class="flex items-center border-t border-ind-border/50 bg-ind-bg shrink-0">
+      <input
+        bind:this={fileEl}
+        onchange={handleFileChange}
+        type="file"
+        accept="image/*"
+        class="sr-only"
+        aria-label="Attach project photo"
+      />
+      <button
+        type="button"
+        onclick={() => fileEl?.click()}
+        disabled={loading}
+        class="px-3 text-ind-steel hover:text-ind-accent disabled:opacity-30 transition-colors"
+        style="min-height: 44px;"
+        aria-label="Attach project photo"
+      >
+        <UploadSimple size={18} />
+      </button>
       <input
         bind:this={inputEl}
         bind:value={input}
@@ -290,7 +366,7 @@
       />
       <button
         onclick={send}
-        disabled={loading || !input.trim()}
+        disabled={loading || (!input.trim() && !photoDataUrl)}
         class="px-4 text-ind-accent hover:text-white disabled:opacity-30 transition-colors"
         style="min-height: 44px;"
         aria-label="Send message"
@@ -301,7 +377,7 @@
   </div>
 {/if}
 
-<!-- Toggle button — bottom-left on both mobile and desktop so it never collides with FloatingPhone (bottom-right). Hidden when the contact section or footer is in view so it does not duplicate the in-section CTAs. -->
+<!-- Toggle button in the bottom-left keeps clear of FloatingPhone. Hidden near contact/footer to avoid duplicate CTAs. -->
 {#if toggleVisible}
   <button
     onclick={toggle}
@@ -318,7 +394,7 @@
 {/if}
 
 <style>
-  /* Mobile: bottom sheet feel — full width minus gutters, anchored bottom-left */
+  /* Mobile: bottom sheet feel, full width minus gutters, anchored bottom-left */
   .chat-panel {
     left: 12px;
     right: 12px;

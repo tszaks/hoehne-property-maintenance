@@ -1,0 +1,24 @@
+---
+import IndustrialLayout from '../layouts/IndustrialLayout.astro';
+import Navbar from '../components/industrial/Navbar.svelte';
+import Estimator from '../components/industrial/Estimator.svelte';
+import Contact from '../components/industrial/Contact.svelte';
+import Footer from '../components/industrial/Footer.svelte';
+import FloatingPhone from '../components/industrial/FloatingPhone.svelte';
+import ChatWidget from '../components/industrial/ChatWidget.svelte';
+---
+
+<IndustrialLayout
+	title="Project Estimator | Hoehne Property Maintenance & Remodeling"
+	description="Photo-aware rough project estimator for Hoehne Property Maintenance & Remodeling in Pottstown, PA."
+	canonical="https://www.hoehnepropertymaintenance.com/estimate"
+>
+	<main class="relative bg-ind-bg selection:bg-ind-accent selection:text-black pt-16">
+		<Navbar client:load />
+		<Estimator client:load />
+		<Contact client:load />
+		<Footer client:load />
+	</main>
+	<FloatingPhone client:load />
+	<ChatWidget client:load />
+</IndustrialLayout>
