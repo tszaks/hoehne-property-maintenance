@@ -118,9 +118,5 @@
                 {/if}
             </div>
         {/if}
-
-        <p class="text-center text-ind-steel/40 text-xs mt-10 ind-metadata">
-            Licensed & Insured · Veteran Owned · Pottstown, PA 19464
-        </p>
     </div>
 </section>
