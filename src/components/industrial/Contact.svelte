@@ -9,16 +9,31 @@
     let sectionRef: HTMLElement;
     let submitted = false;
     let submitting = false;
+    let errorMsg = "";
     let form = { name: "", phone: "", message: "" };
 
     async function handleSubmit(e: Event) {
         e.preventDefault();
+        if (submitting) return;
         submitting = true;
-        const subject = encodeURIComponent(`Estimate Request — ${form.name}`);
-        const body = encodeURIComponent(`Name: ${form.name}\nPhone: ${form.phone}\n\n${form.message}`);
-        window.location.href = `mailto:aaron@hoehnepropertymaintenance.com?subject=${subject}&body=${body}`;
-        submitting = false;
-        submitted = true;
+        errorMsg = "";
+        try {
+            const res = await fetch("/api/contact", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(form),
+            });
+            const data = await res.json().catch(() => ({}));
+            if (res.ok && data.ok) {
+                submitted = true;
+            } else {
+                errorMsg = data?.error || "We could not send your message. Please call or text us at (610) 412-6424.";
+            }
+        } catch {
+            errorMsg = "We could not send your message. Please call or text us at (610) 412-6424.";
+        } finally {
+            submitting = false;
+        }
     }
 
     onMount(() => {
@@ -43,7 +58,7 @@
         {#if submitted}
             <div class="text-center py-12 border border-ind-border/30">
                 <div class="text-ind-accent text-5xl font-black mb-3">✓</div>
-                <p class="text-white font-bold uppercase text-sm">Aaron will be in touch shortly.</p>
+                <p class="text-white font-bold uppercase text-sm">Thanks. We will be in touch shortly.</p>
             </div>
         {:else}
             <form on:submit={handleSubmit} class="space-y-4">
@@ -55,6 +70,10 @@
 
                 <textarea bind:value={form.message} required rows={4} placeholder="What do you need done?"
                     class="w-full bg-ind-surface border border-ind-border/30 text-white text-sm px-5 py-4 focus:outline-none focus:border-ind-accent transition-colors resize-none placeholder:text-ind-steel/50"></textarea>
+
+                {#if errorMsg}
+                    <p class="text-ind-accent text-xs text-center" role="alert">{errorMsg}</p>
+                {/if}
 
                 <button type="submit" disabled={submitting}
                     class="ind-button w-full flex items-center justify-center gap-3 py-4 text-sm font-black uppercase tracking-widest disabled:opacity-50">
