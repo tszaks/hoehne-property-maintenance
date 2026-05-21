@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ArrowRight, Phone, UploadSimple, X } from 'phosphor-svelte';
+  import { ArrowRight, CheckCircle, Phone, UploadSimple, X } from 'phosphor-svelte';
   import {
     accessOptions,
     conditionOptions,
@@ -35,6 +35,14 @@
   let photoError = $state('');
   let photoLoading = $state(false);
   let currentStep = $state(0);
+  let customerName = $state('');
+  let customerEmail = $state('');
+  let customerPhone = $state('');
+  let projectNotes = $state('');
+  let submitLoading = $state(false);
+  let submitError = $state('');
+  let submitSent = $state(false);
+  let sentEmail = $state('');
 
   const steps = [
     {
@@ -205,6 +213,92 @@
       photoError = 'Unable to review that photo right now.';
     } finally {
       photoLoading = false;
+    }
+  }
+
+  function validEmail(value: string) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  }
+
+  function buildEstimateRequestMessage() {
+    return [
+      'Estimate request from the project estimator.',
+      '',
+      'Planning range:',
+      `${estimate.profile.label}: ${fmtCurrency(estimate.low)}-${fmtCurrency(estimate.high)}`,
+      '',
+      'Estimator answers:',
+      `Project type: ${selected.label}`,
+      `Amount: ${quantity} ${selected.quantityUnit}`,
+      `Job level: ${optionLabel(scopeOptions, scopeId)}`,
+      `Condition: ${optionLabel(conditionOptions, conditionId)}`,
+      `Quality level: ${optionLabel(finishOptions, finishId)}`,
+      `Home age: ${optionLabel(homeAgeOptions, homeAgeId)}`,
+      `Home type: ${optionLabel(homeTypeOptions, homeTypeId)}`,
+      `Access: ${optionLabel(accessOptions, accessId)}`,
+      `Moving plumbing, electric, walls, or layout: ${optionLabel(tradeOptions, tradeId)}`,
+      `Timeline: ${optionLabel(urgencyOptions, urgencyId)}`,
+      `Address or town: ${location.trim()}`,
+      '',
+      'What this includes:',
+      ...estimate.lineItems.map((item) => `${item.label}: ${fmtCurrency(item.low)}-${fmtCurrency(item.high)}`),
+      '',
+      `Photo attached: ${photoDataUrl ? photoName || 'Yes' : 'No'}`,
+      photoReview ? `Photo check:\n${photoReview}` : '',
+      projectNotes.trim() ? `\nAdditional notes:\n${projectNotes.trim()}` : '',
+    ]
+      .filter(Boolean)
+      .join('\n');
+  }
+
+  async function submitEstimateRequest(event: SubmitEvent) {
+    event.preventDefault();
+    submitError = '';
+
+    const name = customerName.trim();
+    const email = customerEmail.trim();
+    const phone = customerPhone.trim();
+    const address = location.trim();
+
+    if (!name || !email || !phone || !address) {
+      submitError = 'Please add your name, email, phone, and address or town.';
+      return;
+    }
+
+    if (!validEmail(email)) {
+      submitError = 'Please enter a valid email address.';
+      return;
+    }
+
+    submitLoading = true;
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name,
+          email,
+          phone,
+          message: buildEstimateRequestMessage(),
+          photoDataUrl: photoDataUrl || undefined,
+          photoName: photoName || undefined,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.error) {
+        submitError = data.error || 'Unable to send the request right now. Please call or text us.';
+      } else {
+        submitSent = true;
+        sentEmail = email;
+        setTimeout(() => {
+          document.getElementById('estimate-request')?.scrollIntoView({ block: 'start', behavior: 'smooth' });
+        }, 0);
+      }
+    } catch {
+      submitError = 'Unable to send the request right now. Please call or text us.';
+    } finally {
+      submitLoading = false;
     }
   }
 </script>
@@ -519,6 +613,106 @@
                 <div class="mt-4 border border-ind-accent/30 bg-ind-surface px-4 py-3 text-ind-steel text-sm leading-relaxed whitespace-pre-line">{photoReview}</div>
               {/if}
             </div>
+
+            <div id="estimate-request" class="scroll-mt-24 mt-5 border border-ind-accent/35 bg-ind-bg p-5">
+              {#if submitSent}
+                <div class="flex flex-col gap-4 sm:flex-row sm:items-start">
+                  <div class="h-10 w-10 shrink-0 bg-ind-accent text-black flex items-center justify-center">
+                    <CheckCircle size={22} weight="bold" />
+                  </div>
+                  <div>
+                    <h3 class="text-lg font-black text-white uppercase tracking-tight">Request Sent</h3>
+                    <p class="text-ind-steel/70 text-sm leading-relaxed mt-2">
+                      Aaron has your estimate request. We will review the details and follow up at {sentEmail}.
+                    </p>
+                    <a href="tel:+16104126424" class="ind-button inline-flex items-center gap-2 px-5 py-3 mt-5 text-xs font-black uppercase tracking-wider">
+                      <Phone size={14} /> Call Now
+                    </a>
+                  </div>
+                </div>
+              {:else}
+                <div class="grid lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] gap-6">
+                  <div>
+                    <div class="ind-metadata text-ind-steel/50 text-xs mb-3">SEND ESTIMATE REQUEST</div>
+                    <h3 class="text-xl font-black text-white uppercase tracking-tight">Send This To Aaron</h3>
+                    <p class="text-ind-steel/65 text-sm leading-relaxed mt-3">
+                      Aaron will review your answers and photos, then call or text with the next step.
+                    </p>
+                  </div>
+
+                  <form onsubmit={submitEstimateRequest} class="space-y-3">
+                    <div class="grid sm:grid-cols-2 gap-3">
+                      <label class="block">
+                        <span class="ind-metadata text-ind-steel/60 text-[0.65rem] block mb-2">NAME</span>
+                        <input
+                          type="text"
+                          autocomplete="name"
+                          bind:value={customerName}
+                          required
+                          class="w-full bg-ind-surface border border-ind-border/55 text-white text-sm px-4 py-3 focus:outline-none focus:border-ind-accent placeholder:text-ind-steel/30"
+                        />
+                      </label>
+                      <label class="block">
+                        <span class="ind-metadata text-ind-steel/60 text-[0.65rem] block mb-2">PHONE</span>
+                        <input
+                          type="tel"
+                          autocomplete="tel"
+                          bind:value={customerPhone}
+                          required
+                          class="w-full bg-ind-surface border border-ind-border/55 text-white text-sm px-4 py-3 focus:outline-none focus:border-ind-accent placeholder:text-ind-steel/30"
+                        />
+                      </label>
+                    </div>
+
+                    <div class="grid sm:grid-cols-2 gap-3">
+                      <label class="block">
+                        <span class="ind-metadata text-ind-steel/60 text-[0.65rem] block mb-2">EMAIL</span>
+                        <input
+                          type="email"
+                          autocomplete="email"
+                          bind:value={customerEmail}
+                          required
+                          class="w-full bg-ind-surface border border-ind-border/55 text-white text-sm px-4 py-3 focus:outline-none focus:border-ind-accent placeholder:text-ind-steel/30"
+                        />
+                      </label>
+                      <label class="block">
+                        <span class="ind-metadata text-ind-steel/60 text-[0.65rem] block mb-2">ADDRESS OR TOWN</span>
+                        <input
+                          type="text"
+                          autocomplete="street-address"
+                          bind:value={location}
+                          placeholder="Street, town, or ZIP"
+                          required
+                          class="w-full bg-ind-surface border border-ind-border/55 text-white text-sm px-4 py-3 focus:outline-none focus:border-ind-accent placeholder:text-ind-steel/30"
+                        />
+                      </label>
+                    </div>
+
+                    <label class="block">
+                      <span class="ind-metadata text-ind-steel/60 text-[0.65rem] block mb-2">ANYTHING ELSE?</span>
+                      <textarea
+                        bind:value={projectNotes}
+                        rows="3"
+                        placeholder="Timing, access, materials, or anything Aaron should know."
+                        class="w-full resize-none bg-ind-surface border border-ind-border/55 text-white text-sm px-4 py-3 focus:outline-none focus:border-ind-accent placeholder:text-ind-steel/30"
+                      ></textarea>
+                    </label>
+
+                    {#if submitError}
+                      <div class="border border-red-800/40 bg-red-900/20 text-red-300 text-sm px-4 py-3" aria-live="polite">{submitError}</div>
+                    {/if}
+
+                    <button
+                      type="submit"
+                      disabled={submitLoading}
+                      class="ind-button w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 text-xs font-black uppercase tracking-wider disabled:opacity-50"
+                    >
+                      {submitLoading ? 'Sending...' : 'Send Estimate Request'} <ArrowRight size={14} />
+                    </button>
+                  </form>
+                </div>
+              {/if}
+            </div>
           {/if}
 
           <div class="mt-6 sm:mt-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-t border-ind-border/25 pt-5">
@@ -589,8 +783,8 @@
           <a href="tel:+16104126424" class="ind-button flex items-center justify-center gap-2 py-3 text-xs font-black uppercase tracking-wider">
             <Phone size={14} /> Call
           </a>
-          <a href="#photo-review" onclick={() => goToStep(4)} class="border border-ind-accent text-ind-accent hover:bg-ind-accent hover:text-black flex items-center justify-center gap-2 py-3 text-xs font-black uppercase tracking-wider transition-colors">
-            Photos <ArrowRight size={14} />
+          <a href="#estimate-request" onclick={() => goToStep(4)} class="border border-ind-accent text-ind-accent hover:bg-ind-accent hover:text-black flex items-center justify-center gap-2 py-3 text-xs font-black uppercase tracking-wider transition-colors">
+            Request <ArrowRight size={14} />
           </a>
         </div>
       </aside>
