@@ -60,7 +60,7 @@
     {
       label: 'Photos',
       title: 'Want us to look at photos?',
-      help: 'Add photos if you have them. Large phone photos are resized automatically.',
+      help: 'Add photos if you have them.',
     },
   ];
 
@@ -209,11 +209,11 @@
   }
 </script>
 
-<section id="estimate" class="py-24 lg:py-28 bg-ind-surface relative z-10">
-  <div class="max-w-7xl mx-auto px-6 lg:px-12">
-    <div class="mb-12">
+<section id="estimate" class="pt-6 pb-16 sm:pt-16 sm:pb-20 lg:py-28 bg-ind-surface relative z-10 overflow-x-clip">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
+    <div class="mb-8 lg:mb-12">
       <div class="ind-metadata mb-4">PROJECT ESTIMATE // ADD PHOTOS // LOCAL RANGE</div>
-      <h1 class="text-4xl md:text-6xl font-black text-white tracking-tighter uppercase max-w-4xl">
+      <h1 class="text-3xl sm:text-4xl md:text-6xl font-black text-white tracking-tight sm:tracking-tighter uppercase max-w-4xl leading-[0.95]">
         Get A Rough Project Estimate
       </h1>
       <p class="text-ind-steel text-sm mt-5 max-w-2xl leading-relaxed">
@@ -221,40 +221,49 @@
       </p>
     </div>
 
-    <div class="grid xl:grid-cols-[1fr_420px] gap-8 lg:gap-12 items-start">
-      <div class="ind-steel-plate p-5 sm:p-6 lg:p-8">
-        <div class="flex overflow-x-auto snap-x gap-2 pb-1 -mx-1 px-1 lg:mx-0 lg:px-0 lg:overflow-visible">
+    <div class="grid xl:grid-cols-[minmax(0,1fr)_420px] gap-6 lg:gap-12 items-start">
+      <div class="ind-steel-plate min-w-0 overflow-hidden p-4 sm:p-6 lg:p-8">
+        <div class="grid grid-cols-5 gap-1.5 sm:gap-2">
           {#each steps as step, index}
             <button
               type="button"
               onclick={() => goToStep(index)}
               aria-current={currentStep === index ? 'step' : undefined}
-              class="shrink-0 snap-start w-36 lg:w-auto lg:flex-1 text-left border px-3 py-3 transition-colors bg-ind-bg {currentStep === index ? 'border-ind-accent text-white' : 'border-ind-border/45 text-ind-steel hover:border-ind-accent/60'}"
+              class="scroll-mt-24 min-w-0 text-center sm:text-left border px-1.5 sm:px-3 py-3 transition-colors bg-ind-bg {currentStep === index ? 'border-ind-accent text-white' : 'border-ind-border/45 text-ind-steel hover:border-ind-accent/60'}"
             >
               <span class="block text-[0.62rem] font-black uppercase tracking-widest text-ind-steel/50">{String(index + 1).padStart(2, '0')}</span>
-              <span class="block text-xs font-black uppercase tracking-wide mt-1">{step.label}</span>
-              <span class="block text-[0.62rem] text-ind-steel/55 mt-1 truncate">{stepSummary(index)}</span>
+              <span class="block text-[0.6rem] sm:text-xs font-black uppercase tracking-normal sm:tracking-wide mt-1 truncate">{step.label}</span>
+              <span class="hidden sm:block text-[0.62rem] text-ind-steel/55 mt-1 truncate">{stepSummary(index)}</span>
             </button>
           {/each}
         </div>
 
-        <div class="mt-6 border-t border-ind-border/25 pt-5">
-          <div class="mb-7">
+        <div class="xl:hidden mt-4 border border-ind-border/40 bg-ind-bg px-4 py-3">
+          <div class="ind-metadata text-ind-steel/50 text-[0.65rem] mb-1">ESTIMATE RANGE</div>
+          <div class="flex items-baseline gap-2 text-ind-accent font-black">
+            <span class="text-2xl leading-none">{fmtCurrency(estimate.low)}</span>
+            <span class="text-ind-steel/55 text-xs">to</span>
+            <span class="text-xl leading-none text-ind-accent/75">{fmtCurrency(estimate.high)}</span>
+          </div>
+        </div>
+
+        <div class="mt-5 sm:mt-6 border-t border-ind-border/25 pt-5 min-w-0">
+          <div class="mb-6 sm:mb-7 min-w-0">
             <div class="ind-metadata text-ind-steel/50 text-xs mb-2">STEP {currentStep + 1} / {steps.length}</div>
-            <h2 class="text-2xl md:text-3xl font-black text-white uppercase tracking-tight">{currentStepInfo.title}</h2>
+            <h2 class="text-xl sm:text-2xl md:text-3xl font-black text-white uppercase tracking-tight leading-tight">{currentStepInfo.title}</h2>
             <p class="text-ind-steel/65 text-sm mt-2 max-w-2xl leading-relaxed">{currentStepInfo.help}</p>
           </div>
 
           {#if currentStep === 0}
-            <div class="space-y-8">
+            <div class="space-y-6 sm:space-y-8 min-w-0">
               <div>
                 <div class="ind-metadata text-ind-steel/70 text-xs block mb-3">PROJECT TYPE</div>
-                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-2 min-w-0">
                   {#each projectProfiles as service}
                     <button
                       type="button"
                       onclick={() => chooseService(service.id)}
-                      class="text-left border px-4 py-3 min-h-[64px] transition-colors bg-ind-bg {selected.id === service.id ? 'border-ind-accent text-white' : 'border-ind-border/45 text-ind-steel hover:border-ind-accent/60'}"
+                      class="min-w-0 text-left border px-4 py-3 min-h-[60px] sm:min-h-[64px] transition-colors bg-ind-bg {selected.id === service.id ? 'border-ind-accent text-white' : 'border-ind-border/45 text-ind-steel hover:border-ind-accent/60'}"
                     >
                       <span class="block text-xs font-black uppercase tracking-wide">{service.shortLabel}</span>
                       <span class="block text-[0.68rem] text-ind-steel/60 mt-1 leading-snug">{service.label}</span>
@@ -263,7 +272,7 @@
                 </div>
               </div>
 
-              <div class="grid lg:grid-cols-[1fr_170px] gap-5 items-end">
+              <div class="grid lg:grid-cols-[minmax(0,1fr)_170px] gap-5 items-end min-w-0">
                 <div>
                   <label for="quantity-slider" class="ind-metadata text-ind-steel/70 text-xs block mb-4">{selected.quantityLabel}</label>
                   <input
@@ -299,12 +308,12 @@
             <div class="space-y-7">
               <div>
                 <div class="ind-metadata text-ind-steel/70 text-xs block mb-3">TYPE OF JOB</div>
-                <div class="grid sm:grid-cols-2 gap-2">
+                <div class="grid sm:grid-cols-2 gap-2 min-w-0">
                   {#each scopeOptions as option}
                     <button
                       type="button"
                       onclick={() => chooseOption('scope', option.id)}
-                      class="w-full text-left border px-4 py-3 min-h-[64px] transition-colors bg-ind-bg {scopeId === option.id ? 'border-ind-accent text-white' : 'border-ind-border/45 text-ind-steel hover:border-ind-accent/60'}"
+                      class="w-full min-w-0 text-left border px-4 py-3 min-h-[64px] transition-colors bg-ind-bg {scopeId === option.id ? 'border-ind-accent text-white' : 'border-ind-border/45 text-ind-steel hover:border-ind-accent/60'}"
                     >
                       <span class="block text-xs font-black uppercase tracking-wide">{option.label}</span>
                       <span class="block text-[0.68rem] text-ind-steel/60 mt-1 leading-snug">{option.sub}</span>
@@ -313,7 +322,7 @@
                 </div>
               </div>
 
-              <div class="grid md:grid-cols-2 gap-6">
+              <div class="grid md:grid-cols-2 gap-6 min-w-0">
                 <div>
                   <div class="ind-metadata text-ind-steel/70 text-xs block mb-3">CONDITION</div>
                   <div class="space-y-2">
@@ -321,7 +330,7 @@
                       <button
                         type="button"
                         onclick={() => chooseOption('condition', option.id)}
-                        class="w-full text-left border px-4 py-3 min-h-[64px] transition-colors bg-ind-bg {conditionId === option.id ? 'border-ind-accent text-white' : 'border-ind-border/45 text-ind-steel hover:border-ind-accent/60'}"
+                        class="w-full min-w-0 text-left border px-4 py-3 min-h-[64px] transition-colors bg-ind-bg {conditionId === option.id ? 'border-ind-accent text-white' : 'border-ind-border/45 text-ind-steel hover:border-ind-accent/60'}"
                       >
                         <span class="block text-xs font-black uppercase tracking-wide">{option.label}</span>
                         <span class="block text-[0.68rem] text-ind-steel/60 mt-1 leading-snug">{option.sub}</span>
@@ -337,7 +346,7 @@
                       <button
                         type="button"
                         onclick={() => chooseOption('finish', option.id)}
-                        class="w-full text-left border px-4 py-3 min-h-[64px] transition-colors bg-ind-bg {finishId === option.id ? 'border-ind-accent text-white' : 'border-ind-border/45 text-ind-steel hover:border-ind-accent/60'}"
+                        class="w-full min-w-0 text-left border px-4 py-3 min-h-[64px] transition-colors bg-ind-bg {finishId === option.id ? 'border-ind-accent text-white' : 'border-ind-border/45 text-ind-steel hover:border-ind-accent/60'}"
                       >
                         <span class="block text-xs font-black uppercase tracking-wide">{option.label}</span>
                         <span class="block text-[0.68rem] text-ind-steel/60 mt-1 leading-snug">{option.sub}</span>
@@ -351,7 +360,7 @@
 
           {#if currentStep === 2}
             <div class="space-y-7">
-              <div class="grid md:grid-cols-2 gap-6">
+              <div class="grid md:grid-cols-2 gap-6 min-w-0">
                 <div>
                   <div class="ind-metadata text-ind-steel/70 text-xs block mb-3">HOME AGE</div>
                   <div class="space-y-2">
@@ -359,7 +368,7 @@
                       <button
                         type="button"
                         onclick={() => chooseOption('homeAge', option.id)}
-                        class="w-full text-left border px-4 py-3 min-h-[64px] transition-colors bg-ind-bg {homeAgeId === option.id ? 'border-ind-accent text-white' : 'border-ind-border/45 text-ind-steel hover:border-ind-accent/60'}"
+                        class="w-full min-w-0 text-left border px-4 py-3 min-h-[64px] transition-colors bg-ind-bg {homeAgeId === option.id ? 'border-ind-accent text-white' : 'border-ind-border/45 text-ind-steel hover:border-ind-accent/60'}"
                       >
                         <span class="block text-xs font-black uppercase tracking-wide">{option.label}</span>
                         <span class="block text-[0.68rem] text-ind-steel/60 mt-1 leading-snug">{option.sub}</span>
@@ -375,7 +384,7 @@
                       <button
                         type="button"
                         onclick={() => chooseOption('homeType', option.id)}
-                        class="w-full text-left border px-4 py-3 min-h-[64px] transition-colors bg-ind-bg {homeTypeId === option.id ? 'border-ind-accent text-white' : 'border-ind-border/45 text-ind-steel hover:border-ind-accent/60'}"
+                        class="w-full min-w-0 text-left border px-4 py-3 min-h-[64px] transition-colors bg-ind-bg {homeTypeId === option.id ? 'border-ind-accent text-white' : 'border-ind-border/45 text-ind-steel hover:border-ind-accent/60'}"
                       >
                         <span class="block text-xs font-black uppercase tracking-wide">{option.label}</span>
                         <span class="block text-[0.68rem] text-ind-steel/60 mt-1 leading-snug">{option.sub}</span>
@@ -385,7 +394,7 @@
                 </div>
               </div>
 
-              <label class="block max-w-md">
+              <label class="block max-w-md min-w-0">
                 <span class="ind-metadata text-ind-steel/70 text-xs block mb-3">TOWN OR ZIP</span>
                 <input
                   type="text"
@@ -400,7 +409,7 @@
 
           {#if currentStep === 3}
             <div class="space-y-7">
-              <div class="grid md:grid-cols-2 gap-6">
+              <div class="grid md:grid-cols-2 gap-6 min-w-0">
                 <div>
                   <div class="ind-metadata text-ind-steel/70 text-xs block mb-3">ACCESS</div>
                   <div class="space-y-2">
@@ -408,7 +417,7 @@
                       <button
                         type="button"
                         onclick={() => chooseOption('access', option.id)}
-                        class="w-full text-left border px-4 py-3 min-h-[64px] transition-colors bg-ind-bg {accessId === option.id ? 'border-ind-accent text-white' : 'border-ind-border/45 text-ind-steel hover:border-ind-accent/60'}"
+                        class="w-full min-w-0 text-left border px-4 py-3 min-h-[64px] transition-colors bg-ind-bg {accessId === option.id ? 'border-ind-accent text-white' : 'border-ind-border/45 text-ind-steel hover:border-ind-accent/60'}"
                       >
                         <span class="block text-xs font-black uppercase tracking-wide">{option.label}</span>
                         <span class="block text-[0.68rem] text-ind-steel/60 mt-1 leading-snug">{option.sub}</span>
@@ -424,7 +433,7 @@
                       <button
                         type="button"
                         onclick={() => chooseOption('urgency', option.id)}
-                        class="w-full text-left border px-4 py-3 min-h-[64px] transition-colors bg-ind-bg {urgencyId === option.id ? 'border-ind-accent text-white' : 'border-ind-border/45 text-ind-steel hover:border-ind-accent/60'}"
+                        class="w-full min-w-0 text-left border px-4 py-3 min-h-[64px] transition-colors bg-ind-bg {urgencyId === option.id ? 'border-ind-accent text-white' : 'border-ind-border/45 text-ind-steel hover:border-ind-accent/60'}"
                       >
                         <span class="block text-xs font-black uppercase tracking-wide">{option.label}</span>
                         <span class="block text-[0.68rem] text-ind-steel/60 mt-1 leading-snug">{option.sub}</span>
@@ -436,12 +445,12 @@
 
               <div>
                 <div class="ind-metadata text-ind-steel/70 text-xs block mb-3">MOVING THINGS?</div>
-                <div class="grid sm:grid-cols-2 gap-2">
+                <div class="grid sm:grid-cols-2 gap-2 min-w-0">
                   {#each tradeOptions as option}
                     <button
                       type="button"
                       onclick={() => chooseOption('trade', option.id)}
-                      class="w-full text-left border px-4 py-3 min-h-[64px] transition-colors bg-ind-bg {tradeId === option.id ? 'border-ind-accent text-white' : 'border-ind-border/45 text-ind-steel hover:border-ind-accent/60'}"
+                      class="w-full min-w-0 text-left border px-4 py-3 min-h-[64px] transition-colors bg-ind-bg {tradeId === option.id ? 'border-ind-accent text-white' : 'border-ind-border/45 text-ind-steel hover:border-ind-accent/60'}"
                     >
                       <span class="block text-xs font-black uppercase tracking-wide">{option.label}</span>
                       <span class="block text-[0.68rem] text-ind-steel/60 mt-1 leading-snug">{option.sub}</span>
@@ -453,12 +462,12 @@
           {/if}
 
           {#if currentStep === 4}
-            <div id="photo-review" class="border border-ind-border/40 bg-ind-bg p-5">
+            <div id="photo-review" class="scroll-mt-24 border border-ind-border/40 bg-ind-bg p-5">
               <div class="grid md:grid-cols-[1fr_auto] gap-5 items-start">
                 <div>
                   <h3 class="text-lg font-black text-white uppercase tracking-tight mb-2">Add Photos</h3>
                   <p class="text-ind-steel/65 text-sm leading-relaxed">
-                    Photos help us see the work area, materials, visible damage, and anything that may affect the range. Large phone photos are resized automatically.
+                    Photos help us see the work area, materials, visible damage, and anything that may affect the range.
                   </p>
                 </div>
                 <div class="flex flex-wrap gap-2 md:justify-end">
@@ -512,7 +521,7 @@
             </div>
           {/if}
 
-          <div class="mt-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-t border-ind-border/25 pt-5">
+          <div class="mt-6 sm:mt-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-t border-ind-border/25 pt-5">
             <button
               type="button"
               onclick={prevStep}
@@ -535,7 +544,7 @@
         </div>
       </div>
 
-      <aside class="ind-steel-plate p-6 lg:p-8 xl:sticky xl:top-20">
+      <aside class="ind-steel-plate hidden min-w-0 p-5 sm:p-6 lg:p-8 xl:sticky xl:top-20 xl:block">
         <div class="flex items-center justify-between gap-4 mb-5">
           <div>
             <div class="ind-metadata text-ind-steel/50 text-xs mb-1">ESTIMATE RANGE</div>

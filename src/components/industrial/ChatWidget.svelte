@@ -10,6 +10,8 @@
   let loading = $state(false);
   let apiError = $state('');
   let nearBottom = $state(false);
+  let nearEstimate = $state(false);
+  let isSmallScreen = $state(false);
   let messagesEl: HTMLElement | undefined = $state(undefined);
   let inputEl: HTMLInputElement | undefined = $state(undefined);
   let fileEl: HTMLInputElement | undefined = $state(undefined);
@@ -18,17 +20,22 @@
 
   // Hide the closed toggle when contact or footer is in view so it does not
   // compete with the in-section CTAs. Keep showing it while the panel is open.
-  let toggleVisible = $derived(open || !nearBottom);
+  let toggleVisible = $derived(open || (!nearBottom && !(isSmallScreen && nearEstimate)));
 
   onMount(() => {
-    const targets: Element[] = [];
+    const bottomTargets: Element[] = [];
     const contact = document.getElementById('contact');
     const footer = document.querySelector('footer');
-    if (contact) targets.push(contact);
-    if (footer) targets.push(footer);
+    if (contact) bottomTargets.push(contact);
+    if (footer) bottomTargets.push(footer);
+
+    const mq = window.matchMedia('(max-width: 639px)');
+    const updateScreen = () => { isSmallScreen = mq.matches; };
+    updateScreen();
+    mq.addEventListener('change', updateScreen);
 
     let visibleCount = 0;
-    const io = new IntersectionObserver((entries) => {
+    const bottomIo = new IntersectionObserver((entries) => {
       for (const entry of entries) {
         visibleCount += entry.isIntersecting ? 1 : -1;
       }
@@ -36,8 +43,21 @@
       nearBottom = visibleCount > 0;
     }, { threshold: 0.01 });
 
-    for (const t of targets) io.observe(t);
-    return () => io.disconnect();
+    for (const t of bottomTargets) bottomIo.observe(t);
+
+    const estimate = document.getElementById('estimate');
+    const estimateIo = estimate
+      ? new IntersectionObserver((entries) => {
+          nearEstimate = entries.some((entry) => entry.isIntersecting);
+        }, { threshold: 0.05 })
+      : undefined;
+    if (estimate && estimateIo) estimateIo.observe(estimate);
+
+    return () => {
+      bottomIo.disconnect();
+      estimateIo?.disconnect();
+      mq.removeEventListener('change', updateScreen);
+    };
   });
 
   const GREETING =

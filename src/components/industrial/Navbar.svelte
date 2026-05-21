@@ -27,13 +27,13 @@
     <div class="max-w-7xl mx-auto px-6 lg:px-12 h-16 flex items-center justify-between">
 
         <!-- Logo -->
-        <a href="/" class="flex items-center gap-3">
+        <a href="/" class="flex min-w-0 items-center gap-3">
             <div class="w-8 h-8 bg-ind-accent flex items-center justify-center">
                 <span class="text-white font-black text-sm">H</span>
             </div>
-            <div>
+            <div class="min-w-0">
                 <div class="text-white font-black text-sm uppercase tracking-tight leading-none">Hoehne</div>
-                <div class="ind-metadata text-ind-steel" style="font-size:0.6rem">Property Maintenance & Remodeling</div>
+                <div class="ind-metadata text-ind-steel max-w-[220px] truncate sm:max-w-none" style="font-size:0.55rem">Property Maintenance & Remodeling</div>
             </div>
         </a>
 
@@ -53,14 +53,15 @@
 
         <!-- Mobile toggle -->
         <button onclick={() => { isMenuOpen = !isMenuOpen; document.body.style.overflow = isMenuOpen ? 'hidden' : ''; }}
-            class="md:hidden text-white p-2">
+            class="md:hidden text-white p-2"
+            aria-label={isMenuOpen ? "Close menu" : "Open menu"}>
             {#if isMenuOpen}<X size={22} weight="bold" />{:else}<List size={22} weight="bold" />{/if}
         </button>
     </div>
 
     <!-- Mobile menu -->
     {#if isMenuOpen}
-        <div class="md:hidden bg-ind-bg border-t border-ind-border/30 px-6 py-6 space-y-1">
+        <div class="fixed inset-x-0 top-16 bottom-0 md:hidden bg-ind-bg border-t border-ind-border/30 px-6 py-6 space-y-1 overflow-y-auto">
             {#each navLinks as link}
                 <a href={link.href} onclick={closeMenu}
                     class="block w-full text-left text-white font-black uppercase tracking-wide text-lg py-4 border-b border-ind-border/20 bg-transparent">
