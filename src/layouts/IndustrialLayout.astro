@@ -9,7 +9,7 @@ interface Props {
 
 const { 
 	title = "Hoehne Property Maintenance & Remodeling | Pottstown, PA",
-	description = "Veteran-owned property maintenance and remodeling in Pottstown, PA. 20 years of experience. Handyman services, home renovations, lawn care, painting, and more. Call (610) 412-6424.",
+	description = "Veteran-owned property maintenance and remodeling in Pottstown, PA. 20 years of experience in handyman services, home renovations, lawn care, painting, and more. Call (610) 412-6424.",
 	canonical = "https://www.hoehnepropertymaintenance.com"
 } = Astro.props;
 
@@ -89,7 +89,7 @@ const schema = {
 ---
 
 <!doctype html>
-<html lang="en" class="dark">
+<html lang="en">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -125,7 +125,7 @@ const schema = {
 		<meta name="ICBM" content="40.2454, -75.6496" />
 
 		<!-- Theme -->
-		<meta name="theme-color" content="#0a0a0a" />
+		<meta name="theme-color" content="#F2EBDC" />
 		<meta name="robots" content="index, follow" />
 
 		<!-- Structured Data -->
@@ -185,9 +185,11 @@ const schema = {
 			]
 		})}</script>
 
-		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..900&family=DM+Sans:opsz,wght@9..40,400..700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 	</head>
-	<body class="industrial-theme selection:bg-ind-accent selection:text-black bg-ind-bg text-ind-fg">
+	<body class="industrial-theme selection:bg-ind-accent">
 		<div class="industrial-noise"></div>
 		<slot />
 	</body>

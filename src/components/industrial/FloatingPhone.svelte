@@ -56,11 +56,11 @@
 
 {#if visible}
   <a href="tel:+16104126424"
-    class="floating-phone fixed bottom-6 right-6 z-[9999] flex items-center gap-2 bg-ind-accent text-white font-semibold text-sm px-5 py-3 rounded-full shadow-2xl hover:scale-105 transition-all duration-200"
-    style="box-shadow: 0 12px 30px rgba(0,0,0,0.25);">
-    <Phone size={16} />
-    <span class="hidden sm:inline">(610) 412-6424</span>
-    <span class="sm:hidden">Call Now</span>
+    class="floating-phone fixed bottom-5 right-5 z-[9999] flex items-center gap-2.5 bg-hivis text-white font-semibold text-sm px-5 py-3.5 hover:bg-hivis-deep transition-all duration-200 border border-hivis-deep"
+    style="box-shadow: 0 2px 0 0 var(--ink), 0 10px 28px rgba(20, 16, 10, 0.28);">
+    <Phone size={16} weight="bold" />
+    <span class="hidden sm:inline font-mono tracking-wider">(610) 412-6424</span>
+    <span class="sm:hidden font-mono tracking-wider">Call now</span>
   </a>
 {/if}
 
@@ -68,5 +68,4 @@
   :global(html.chat-widget-open) .floating-phone {
     display: none;
   }
-
 </style>
