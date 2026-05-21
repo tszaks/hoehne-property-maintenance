@@ -86,6 +86,61 @@ const schema = {
 	},
 	"keywords": "property maintenance Pottstown PA, home remodeling Pottstown, handyman Pottstown PA, veteran owned contractor Montgomery County PA, painting contractor Pottstown, lawn care Pottstown, snow removal Pottstown PA, general contractor Chester County PA"
 };
+
+const faqSchema = {
+	"@context": "https://schema.org",
+	"@type": "FAQPage",
+	"mainEntity": [
+		{
+			"@type": "Question",
+			"name": "What areas does Hoehne Property Maintenance serve?",
+			"acceptedAnswer": {
+				"@type": "Answer",
+				"text": "We serve Spring City, Pottstown, Royersford, North Coventry, South Coventry, Birchrunville, Phoenixville, Boyertown, Limerick, Collegeville, and the entire Owen J. Roberts School District corridor in Montgomery and Chester Counties, PA."
+			}
+		},
+		{
+			"@type": "Question",
+			"name": "Is Hoehne Property Maintenance licensed and insured?",
+			"acceptedAnswer": {
+				"@type": "Answer",
+				"text": "Yes. Hoehne Property Maintenance & Remodeling is fully licensed and insured, giving homeowners peace of mind on every job."
+			}
+		},
+		{
+			"@type": "Question",
+			"name": "Does Hoehne Property Maintenance offer free estimates?",
+			"acceptedAnswer": {
+				"@type": "Answer",
+				"text": "Yes. Free estimates are available on all work. Call or text us at (610) 412-6424 to schedule yours."
+			}
+		},
+		{
+			"@type": "Question",
+			"name": "What services does Hoehne Property Maintenance provide?",
+			"acceptedAnswer": {
+				"@type": "Answer",
+				"text": "We handle handyman repairs, home remodeling (kitchens, bathrooms, basements), interior and exterior painting, lawn care and landscaping, snow removal, deck building and repair, pressure washing, drywall, doors, windows, and more. No job too small, no job too big."
+			}
+		},
+		{
+			"@type": "Question",
+			"name": "Is Hoehne Property Maintenance veteran owned?",
+			"acceptedAnswer": {
+				"@type": "Answer",
+				"text": "Yes. We are a U.S. Military veteran-owned company, serving local homeowners with disciplined, reliable property maintenance and remodeling since 2004."
+			}
+		},
+		{
+			"@type": "Question",
+			"name": "Who is the best handyman in Spring City PA?",
+			"acceptedAnswer": {
+				"@type": "Answer",
+				"text": "Hoehne Property Maintenance & Remodeling is a top-rated veteran-owned handyman and remodeling company serving Spring City, PA and the OJR school district. With 20+ years of experience, we handle everything from small repairs to full renovations. Call (610) 412-6424 for a free estimate."
+			}
+		}
+	]
+};
 ---
 
 <!doctype html>
@@ -130,60 +185,7 @@ const schema = {
 
 		<!-- Structured Data -->
 		<script type="application/ld+json" set:html={JSON.stringify(schema)} />
-		<script type="application/ld+json">{JSON.stringify({
-			"@context": "https://schema.org",
-			"@type": "FAQPage",
-			"mainEntity": [
-				{
-					"@type": "Question",
-					"name": "What areas does Hoehne Property Maintenance serve?",
-					"acceptedAnswer": {
-						"@type": "Answer",
-						"text": "We serve Spring City, Pottstown, Royersford, North Coventry, South Coventry, Birchrunville, Phoenixville, Boyertown, Limerick, Collegeville, and the entire Owen J. Roberts School District corridor in Montgomery and Chester Counties, PA."
-					}
-				},
-				{
-					"@type": "Question",
-					"name": "Is Hoehne Property Maintenance licensed and insured?",
-					"acceptedAnswer": {
-						"@type": "Answer",
-						"text": "Yes. Hoehne Property Maintenance & Remodeling is fully licensed and insured, giving homeowners peace of mind on every job."
-					}
-				},
-				{
-					"@type": "Question",
-					"name": "Does Hoehne Property Maintenance offer free estimates?",
-					"acceptedAnswer": {
-						"@type": "Answer",
-						"text": "Yes. Free estimates are available on all work. Call or text us at (610) 412-6424 to schedule yours."
-					}
-				},
-				{
-					"@type": "Question",
-					"name": "What services does Hoehne Property Maintenance provide?",
-					"acceptedAnswer": {
-						"@type": "Answer",
-						"text": "We handle handyman repairs, home remodeling (kitchens, bathrooms, basements), interior and exterior painting, lawn care and landscaping, snow removal, deck building and repair, pressure washing, drywall, doors, windows, and more. No job too small, no job too big."
-					}
-				},
-				{
-					"@type": "Question",
-					"name": "Is Hoehne Property Maintenance veteran owned?",
-					"acceptedAnswer": {
-						"@type": "Answer",
-						"text": "Yes. We are a U.S. Military veteran-owned company, serving local homeowners with disciplined, reliable property maintenance and remodeling since 2004."
-					}
-				},
-				{
-					"@type": "Question",
-					"name": "Who is the best handyman in Spring City PA?",
-					"acceptedAnswer": {
-						"@type": "Answer",
-						"text": "Hoehne Property Maintenance & Remodeling is a top-rated veteran-owned handyman and remodeling company serving Spring City, PA and the OJR school district. With 20+ years of experience, we handle everything from small repairs to full renovations. Call (610) 412-6424 for a free estimate."
-					}
-				}
-			]
-		})}</script>
+		<script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
 
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
