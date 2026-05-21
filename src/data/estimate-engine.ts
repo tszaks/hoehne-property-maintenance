@@ -30,6 +30,16 @@ export interface EstimateFactorOption {
   risk: number;
 }
 
+export interface ProjectDetailOption {
+  id: string;
+  label: string;
+  sub: string;
+  lowMultiplier: number;
+  highMultiplier: number;
+  risk: number;
+  confidenceImpact: number;
+}
+
 export interface CostLineDefinition {
   label: string;
   category: LineCategory;
@@ -59,6 +69,7 @@ export interface ProjectProfile {
   scopeSignals: string[];
   assumptions: string[];
   escalationTriggers: string[];
+  detailOptions?: ProjectDetailOption[];
   lines: CostLineDefinition[];
 }
 
@@ -73,6 +84,7 @@ export interface EstimateInput {
   accessId?: string;
   tradeId?: string;
   urgencyId?: string;
+  detailIds?: string[];
 }
 
 export interface EstimateLineItem {
@@ -93,6 +105,8 @@ export interface ProjectEstimate {
   assumptions: string[];
   escalationTriggers: string[];
   scopeSignals: string[];
+  selectedDetails: ProjectDetailOption[];
+  rangeTighteners: string[];
 }
 
 export const conditionOptions: EstimateOption[] = [
@@ -146,9 +160,9 @@ export const tradeOptions: EstimateFactorOption[] = [
 
 export const urgencyOptions: EstimateOption[] = [
   { id: 'flexible', label: 'Flexible', sub: 'Fit into normal schedule', multiplier: 1, risk: 0.02 },
-  { id: 'month', label: 'Within a month', sub: 'Scheduling priority', multiplier: 1.06, risk: 0.04 },
-  { id: 'two-weeks', label: 'About 2 weeks', sub: 'Near-term request', multiplier: 1.14, risk: 0.06 },
-  { id: 'rush', label: 'Rush / ASAP', sub: 'Same-week or urgent work', multiplier: 1.25, risk: 0.09 },
+  { id: 'month', label: 'Within a month', sub: 'Scheduling priority', multiplier: 1.03, risk: 0.03 },
+  { id: 'two-weeks', label: 'About 2 weeks', sub: 'Near-term request', multiplier: 1.07, risk: 0.05 },
+  { id: 'rush', label: 'Rush / ASAP', sub: 'Same-week or urgent work', multiplier: 1.12, risk: 0.07 },
 ];
 
 export const projectProfiles: ProjectProfile[] = [
@@ -169,6 +183,11 @@ export const projectProfiles: ProjectProfile[] = [
     scopeSignals: ['task list', 'photo or clear description', 'materials needed', 'access', 'location'],
     assumptions: ['Minor repair work only', 'No permit-level electrical, plumbing, or structural work'],
     escalationTriggers: ['Multiple trades', 'water damage', 'hidden rot', 'older-home surprises'],
+    detailOptions: [
+      { id: 'materials-needed', label: 'We bring materials', sub: 'Fasteners, patch material, trim, or small supplies needed', lowMultiplier: 1.04, highMultiplier: 1.14, risk: 0.03, confidenceImpact: -1 },
+      { id: 'multiple-areas', label: 'Several areas', sub: 'More than one room or a punch-list of small items', lowMultiplier: 1.08, highMultiplier: 1.22, risk: 0.04, confidenceImpact: -2 },
+      { id: 'ladder-work', label: 'Ladder work', sub: 'High ceiling, exterior reach, or overhead work', lowMultiplier: 1.1, highMultiplier: 1.24, risk: 0.05, confidenceImpact: -3 },
+    ],
     lines: [
       { label: 'Service call and setup', category: 'labor', unit: 'flat', low: 85, high: 150, accessWeight: 0.4 },
       { label: 'Skilled repair labor', category: 'labor', unit: 'quantity', low: 85, high: 130, conditionWeight: 0.9, accessWeight: 0.5 },
@@ -192,6 +211,11 @@ export const projectProfiles: ProjectProfile[] = [
     scopeSignals: ['fixture count', 'existing box condition', 'ceiling height', 'fixture supplied or not', 'location'],
     assumptions: ['Existing wiring is usable', 'No new circuit, panel, or permit-level electrical work'],
     escalationTriggers: ['no rated fan box', 'new wiring needed', 'high ceiling', 'old wiring'],
+    detailOptions: [
+      { id: 'fan-rated-box', label: 'Fan box needed', sub: 'Ceiling box may need to be replaced or reinforced', lowMultiplier: 1.1, highMultiplier: 1.28, risk: 0.06, confidenceImpact: -4 },
+      { id: 'high-ceiling', label: 'High ceiling', sub: 'Over 10 ft, stairwell, or awkward ladder setup', lowMultiplier: 1.14, highMultiplier: 1.35, risk: 0.07, confidenceImpact: -5 },
+      { id: 'new-switch', label: 'Switch or dimmer work', sub: 'Control, dimmer, or box change needed', lowMultiplier: 1.08, highMultiplier: 1.24, risk: 0.05, confidenceImpact: -3 },
+    ],
     lines: [
       { label: 'Trip, protection, and setup', category: 'labor', unit: 'flat', low: 95, high: 165, accessWeight: 0.4 },
       { label: 'Install and test fixtures', category: 'labor', unit: 'quantity', low: 130, high: 320, conditionWeight: 0.7, accessWeight: 0.8 },
@@ -215,6 +239,11 @@ export const projectProfiles: ProjectProfile[] = [
     scopeSignals: ['damaged area', 'hole or crack type', 'texture match', 'paint match', 'water damage status'],
     assumptions: ['No active leak', 'No mold remediation', 'Paint match may require blending'],
     escalationTriggers: ['water damage', 'mold', 'plaster walls', 'texture matching', 'ceiling work'],
+    detailOptions: [
+      { id: 'ceiling-repair', label: 'Ceiling repair', sub: 'Overhead patching or blending', lowMultiplier: 1.12, highMultiplier: 1.32, risk: 0.05, confidenceImpact: -4 },
+      { id: 'texture-match', label: 'Texture match', sub: 'Orange peel, knockdown, plaster, or visible blend area', lowMultiplier: 1.12, highMultiplier: 1.35, risk: 0.07, confidenceImpact: -5 },
+      { id: 'water-stain', label: 'Water stain', sub: 'Staining or leak history visible', lowMultiplier: 1.1, highMultiplier: 1.4, risk: 0.09, confidenceImpact: -7 },
+    ],
     lines: [
       { label: 'Protection, setup, and cleanup', category: 'labor', unit: 'flat', low: 140, high: 260, accessWeight: 0.3 },
       { label: 'Drywall patch, tape, mud, sand', category: 'labor', unit: 'quantity', low: 9, high: 24, quantityScale: 1, conditionWeight: 1, accessWeight: 0.3 },
@@ -239,6 +268,11 @@ export const projectProfiles: ProjectProfile[] = [
     scopeSignals: ['wall area', 'coats', 'ceiling or trim', 'wall condition', 'paint quality', 'location'],
     assumptions: ['Walls only unless scope says ceiling or trim', 'Two coats of standard interior paint', 'Normal furniture protection'],
     escalationTriggers: ['major patching', 'dark color change', 'trim or ceiling added', 'high ceilings', 'wallpaper removal'],
+    detailOptions: [
+      { id: 'ceiling-included', label: 'Ceiling included', sub: 'Paint ceiling along with walls', lowMultiplier: 1.12, highMultiplier: 1.28, risk: 0.03, confidenceImpact: -2 },
+      { id: 'trim-included', label: 'Trim included', sub: 'Baseboards, doors, windows, or casing', lowMultiplier: 1.18, highMultiplier: 1.42, risk: 0.05, confidenceImpact: -4 },
+      { id: 'heavy-color-change', label: 'Big color change', sub: 'Dark color, bright color, or extra coat likely', lowMultiplier: 1.08, highMultiplier: 1.24, risk: 0.04, confidenceImpact: -3 },
+    ],
     lines: [
       { label: 'Protection, masking, and setup', category: 'labor', unit: 'flat', low: 160, high: 300, accessWeight: 0.4 },
       { label: 'Cut, roll, and second-coat labor', category: 'labor', unit: 'quantity', low: 1.15, high: 2.65, conditionWeight: 0.8, accessWeight: 0.4 },
@@ -263,6 +297,11 @@ export const projectProfiles: ProjectProfile[] = [
     scopeSignals: ['surface type', 'area', 'staining level', 'water access', 'access', 'location'],
     assumptions: ['Residential pressure washing', 'Water source is available on site'],
     escalationTriggers: ['heavy organic staining', 'delicate siding', 'multi-story work', 'no water access'],
+    detailOptions: [
+      { id: 'heavy-staining', label: 'Heavy staining', sub: 'Algae, mildew, rust, oil, or deep grime', lowMultiplier: 1.1, highMultiplier: 1.34, risk: 0.07, confidenceImpact: -5 },
+      { id: 'second-story', label: 'Second story', sub: 'Higher siding, tall reach, or extra ladder care', lowMultiplier: 1.12, highMultiplier: 1.32, risk: 0.06, confidenceImpact: -4 },
+      { id: 'delicate-surface', label: 'Delicate surface', sub: 'Older wood, painted surface, or soft-wash care needed', lowMultiplier: 1.08, highMultiplier: 1.28, risk: 0.06, confidenceImpact: -4 },
+    ],
     lines: [
       { label: 'Mobilization and equipment setup', category: 'equipment', unit: 'flat', low: 135, high: 225, accessWeight: 0.5 },
       { label: 'Wash labor by surface area', category: 'labor', unit: 'quantity', low: 0.18, high: 0.55, conditionWeight: 0.8, accessWeight: 0.6 },
@@ -286,6 +325,11 @@ export const projectProfiles: ProjectProfile[] = [
     scopeSignals: ['mulch volume', 'bed condition', 'edging needed', 'haul-away', 'access', 'location'],
     assumptions: ['Standard residential beds', 'No tree removal or heavy grading'],
     escalationTriggers: ['steep yard', 'haul-away', 'overgrown beds', 'stone removal', 'drainage work'],
+    detailOptions: [
+      { id: 'haul-away', label: 'Haul-away needed', sub: 'Leaves, brush, old mulch, or debris must be removed', lowMultiplier: 1.12, highMultiplier: 1.34, risk: 0.06, confidenceImpact: -4 },
+      { id: 'overgrown', label: 'Overgrown beds', sub: 'Weeding, edging, trimming, or bed reset needed', lowMultiplier: 1.16, highMultiplier: 1.42, risk: 0.07, confidenceImpact: -5 },
+      { id: 'stone-or-grading', label: 'Stone or grading', sub: 'Stone removal, leveling, or drainage concerns', lowMultiplier: 1.18, highMultiplier: 1.5, risk: 0.1, confidenceImpact: -8 },
+    ],
     lines: [
       { label: 'Mobilization and bed prep', category: 'labor', unit: 'flat', low: 180, high: 360, conditionWeight: 0.8, accessWeight: 0.5 },
       { label: 'Mulch material and delivery allowance', category: 'materials', unit: 'quantity', low: 55, high: 115, finishWeight: 0.7 },
@@ -309,6 +353,11 @@ export const projectProfiles: ProjectProfile[] = [
     scopeSignals: ['driveway size', 'sidewalks', 'salt needed', 'snow depth', 'seasonal or per-visit'],
     assumptions: ['Per-visit residential snow removal', 'Normal storm depth'],
     escalationTriggers: ['ice treatment', 'deep snow', 'commercial lot', 'tight parking', 'long walkways'],
+    detailOptions: [
+      { id: 'walkways', label: 'Walkways included', sub: 'Front walk, sidewalk, or long path', lowMultiplier: 1.08, highMultiplier: 1.22, risk: 0.03, confidenceImpact: -2 },
+      { id: 'salt-needed', label: 'Salt needed', sub: 'Ice treatment or traction material', lowMultiplier: 1.08, highMultiplier: 1.28, risk: 0.05, confidenceImpact: -3 },
+      { id: 'deep-snow', label: 'Deep snow', sub: 'Heavy storm, plow pile, or repeated clearing', lowMultiplier: 1.18, highMultiplier: 1.48, risk: 0.08, confidenceImpact: -6 },
+    ],
     lines: [
       { label: 'Trip and dispatch', category: 'labor', unit: 'flat', low: 55, high: 95, accessWeight: 0.3 },
       { label: 'Driveway clearing', category: 'labor', unit: 'quantity', low: 55, high: 145, conditionWeight: 0.6, accessWeight: 0.5 },
@@ -332,6 +381,11 @@ export const projectProfiles: ProjectProfile[] = [
     scopeSignals: ['deck size', 'board vs railing vs framing', 'material', 'height', 'stairs', 'rot level'],
     assumptions: ['Repair scope, not full new deck build', 'No hidden ledger, footing, or structural failure included'],
     escalationTriggers: ['ledger rot', 'sagging frame', 'stairs rebuild', 'high deck', 'composite conversion', 'permit-level rebuild'],
+    detailOptions: [
+      { id: 'railing-work', label: 'Railing work', sub: 'Loose, missing, or replaced railing sections', lowMultiplier: 1.12, highMultiplier: 1.36, risk: 0.06, confidenceImpact: -5 },
+      { id: 'stairs-work', label: 'Stairs involved', sub: 'Stair tread, stringer, landing, or handrail work', lowMultiplier: 1.16, highMultiplier: 1.48, risk: 0.09, confidenceImpact: -7 },
+      { id: 'rot-visible', label: 'Visible rot', sub: 'Soft boards, framing concerns, or water damage', lowMultiplier: 1.18, highMultiplier: 1.6, risk: 0.12, confidenceImpact: -9 },
+    ],
     lines: [
       { label: 'Inspection, setup, and demolition', category: 'labor', unit: 'flat', low: 250, high: 600, conditionWeight: 0.8, accessWeight: 0.8 },
       { label: 'Board, fastener, and rail material allowance', category: 'materials', unit: 'quantity', low: 4.5, high: 16, finishWeight: 1 },
@@ -356,6 +410,12 @@ export const projectProfiles: ProjectProfile[] = [
     scopeSignals: ['bath size', 'refresh vs gut', 'fixture grade', 'tile area', 'plumbing moves', 'condition', 'location'],
     assumptions: ['Existing layout stays mostly intact', 'No structural repair or major plumbing relocation included'],
     escalationTriggers: ['plumbing relocation', 'tile shower', 'rot or water damage', 'old house surprises', 'permits', 'custom glass'],
+    detailOptions: [
+      { id: 'tile-shower', label: 'Tile shower', sub: 'Tile surround, pan, niche, waterproofing, or shower rebuild', lowMultiplier: 1.16, highMultiplier: 1.42, risk: 0.09, confidenceImpact: -7 },
+      { id: 'custom-glass', label: 'Custom glass', sub: 'Glass shower door, panel, or custom enclosure', lowMultiplier: 1.08, highMultiplier: 1.24, risk: 0.05, confidenceImpact: -3 },
+      { id: 'vanity-toilet-floor', label: 'Vanity, toilet, flooring', sub: 'Surface update with main layout staying put', lowMultiplier: 0.92, highMultiplier: 0.98, risk: -0.02, confidenceImpact: 4 },
+      { id: 'water-damage', label: 'Water damage', sub: 'Soft floor, stained wall, leak history, or rot concern', lowMultiplier: 1.18, highMultiplier: 1.6, risk: 0.13, confidenceImpact: -10 },
+    ],
     lines: [
       { label: 'Demo, protection, and disposal', category: 'labor', unit: 'quantity', low: 14, high: 35, conditionWeight: 0.9, accessWeight: 0.7 },
       { label: 'Carpentry, wall prep, and substrate', category: 'labor', unit: 'quantity', low: 32, high: 90, conditionWeight: 1, accessWeight: 0.5 },
@@ -381,6 +441,12 @@ export const projectProfiles: ProjectProfile[] = [
     scopeSignals: ['kitchen size', 'refresh vs full remodel', 'cabinet plan', 'countertops', 'appliances', 'layout changes'],
     assumptions: ['Existing layout mostly stays', 'Appliance upgrades and cabinet choices drive the range'],
     escalationTriggers: ['wall removal', 'layout change', 'custom cabinets', 'stone counters', 'old wiring', 'floor leveling'],
+    detailOptions: [
+      { id: 'cabinet-replace', label: 'Cabinets replaced', sub: 'New stock or semi-custom cabinet layout', lowMultiplier: 1.16, highMultiplier: 1.42, risk: 0.09, confidenceImpact: -6 },
+      { id: 'stone-counters', label: 'Stone counters', sub: 'Quartz, granite, or templated countertop work', lowMultiplier: 1.08, highMultiplier: 1.26, risk: 0.05, confidenceImpact: -4 },
+      { id: 'backsplash', label: 'Tile backsplash', sub: 'New backsplash, outlets, or finish detail work', lowMultiplier: 1.06, highMultiplier: 1.18, risk: 0.03, confidenceImpact: -2 },
+      { id: 'wall-or-layout', label: 'Wall or layout change', sub: 'Walls, appliance locations, plumbing, or electric move', lowMultiplier: 1.22, highMultiplier: 1.65, risk: 0.14, confidenceImpact: -10 },
+    ],
     lines: [
       { label: 'Demo, protection, and disposal', category: 'labor', unit: 'quantity', low: 12, high: 32, conditionWeight: 0.8, accessWeight: 0.7 },
       { label: 'Cabinet, counter, and fixture allowance', category: 'materials', unit: 'quantity', low: 75, high: 310, finishWeight: 1.3 },
@@ -406,6 +472,12 @@ export const projectProfiles: ProjectProfile[] = [
     scopeSignals: ['finished area', 'moisture condition', 'bathroom or wet bar', 'ceiling type', 'electrical needs', 'egress'],
     assumptions: ['Standard finish without new bathroom or kitchenette', 'Moisture issues must be solved first'],
     escalationTriggers: ['bathroom addition', 'egress work', 'waterproofing', 'low ceilings', 'HVAC changes', 'permits'],
+    detailOptions: [
+      { id: 'bathroom-added', label: 'Bathroom added', sub: 'New bathroom, rough plumbing, venting, or pump work', lowMultiplier: 1.18, highMultiplier: 1.52, risk: 0.12, confidenceImpact: -9 },
+      { id: 'egress-needed', label: 'Egress needed', sub: 'Egress window, code path, or permit-level planning', lowMultiplier: 1.12, highMultiplier: 1.42, risk: 0.1, confidenceImpact: -8 },
+      { id: 'moisture-concern', label: 'Moisture concern', sub: 'Waterproofing, damp walls, or floor moisture', lowMultiplier: 1.14, highMultiplier: 1.5, risk: 0.13, confidenceImpact: -10 },
+      { id: 'open-ceiling', label: 'Open ceiling', sub: 'Painted exposed ceiling instead of full drywall ceiling', lowMultiplier: 0.9, highMultiplier: 0.96, risk: -0.02, confidenceImpact: 3 },
+    ],
     lines: [
       { label: 'Framing, insulation, and rough prep', category: 'labor', unit: 'quantity', low: 16, high: 38, conditionWeight: 1, accessWeight: 0.5 },
       { label: 'Drywall, ceiling, paint, and trim labor', category: 'labor', unit: 'quantity', low: 24, high: 58, conditionWeight: 0.8, finishWeight: 0.6 },
@@ -442,9 +514,13 @@ export function estimateProject(input: EstimateInput): ProjectEstimate {
   const access = findOption(accessOptions, input.accessId, 'normal');
   const trade = findFactorOption(tradeOptions, input.tradeId, 'none');
   const urgency = findOption(urgencyOptions, input.urgencyId, 'flexible');
+  const selectedDetails = selectedProjectDetails(profile, input.detailIds);
   const quantity = clamp(input.quantity ?? profile.defaultQuantity, profile.minQuantity, profile.maxQuantity);
-  const projectLowMultiplier = scope.lowMultiplier * homeAge.lowMultiplier * homeType.lowMultiplier * trade.lowMultiplier;
-  const projectHighMultiplier = scope.highMultiplier * homeAge.highMultiplier * homeType.highMultiplier * trade.highMultiplier;
+  const detailLowMultiplier = selectedDetails.reduce((total, option) => total * option.lowMultiplier, 1);
+  const detailHighMultiplier = selectedDetails.reduce((total, option) => total * option.highMultiplier, 1);
+  const detailRisk = sum(selectedDetails.map((option) => option.risk));
+  const projectLowMultiplier = scope.lowMultiplier * homeAge.lowMultiplier * homeType.lowMultiplier * trade.lowMultiplier * detailLowMultiplier;
+  const projectHighMultiplier = scope.highMultiplier * homeAge.highMultiplier * homeType.highMultiplier * trade.highMultiplier * detailHighMultiplier;
 
   const directItems = profile.lines.map((line) => {
     const quantityFactor = line.unit === 'quantity' ? quantity * (line.quantityScale ?? 1) : 1;
@@ -464,8 +540,8 @@ export function estimateProject(input: EstimateInput): ProjectEstimate {
   const directHigh = sum(directItems.map((line) => line.high));
   const overheadLow = directLow * 0.16;
   const overheadHigh = directHigh * 0.24;
-  const riskRateLow = Math.min(0.24, profile.baseRisk + condition.risk * 0.35 + access.risk * 0.25 + scope.risk * 0.35 + trade.risk * 0.25);
-  const riskRateHigh = Math.min(0.38, profile.baseRisk + condition.risk + access.risk + finish.risk * 0.35 + scope.risk + homeAge.risk + homeType.risk * 0.6 + trade.risk);
+  const riskRateLow = Math.max(0.04, Math.min(0.24, profile.baseRisk + condition.risk * 0.35 + access.risk * 0.25 + scope.risk * 0.35 + trade.risk * 0.25 + detailRisk * 0.3));
+  const riskRateHigh = Math.max(0.08, Math.min(0.38, profile.baseRisk + condition.risk + access.risk + finish.risk * 0.35 + scope.risk + homeAge.risk + homeType.risk * 0.6 + trade.risk + detailRisk));
   const contingencyLow = directLow * riskRateLow;
   const contingencyHigh = directHigh * riskRateHigh;
 
@@ -478,13 +554,13 @@ export function estimateProject(input: EstimateInput): ProjectEstimate {
   const subtotalLow = directLow + overheadLow + contingencyLow;
   const subtotalHigh = directHigh + overheadHigh + contingencyHigh;
   const urgencyLow = subtotalLow * urgency.multiplier;
-  const urgencyHigh = subtotalHigh * urgency.multiplier;
+  const urgencyHigh = subtotalHigh * (1 + (urgency.multiplier - 1) * 0.35);
   const rawLow = roundToUseful(Math.max(profile.minimum.low, urgencyLow));
   const rawHigh = roundToUseful(Math.max(profile.minimum.high, urgencyHigh));
   const high = roundToUseful(Math.max(profile.minimum.high, Math.min(rawHigh, rawLow * maxRangeRatioFor(profile, scope.id, condition.id, finish.id, homeAge.id, homeType.id, access.id, trade.id, urgency.id))));
   const low = Math.min(rawLow, high);
   const highScale = rawHigh > 0 && high < rawHigh ? high / rawHigh : 1;
-  const confidence = confidenceFor(profile, quantity, scope.id, condition.id, finish.id, homeAge.id, homeType.id, access.id, trade.id, urgency.id);
+  const confidence = confidenceFor(profile, quantity, scope.id, condition.id, finish.id, homeAge.id, homeType.id, access.id, trade.id, urgency.id, selectedDetails);
 
   return {
     profile,
@@ -499,6 +575,7 @@ export function estimateProject(input: EstimateInput): ProjectEstimate {
       accessId: access.id,
       tradeId: trade.id,
       urgencyId: urgency.id,
+      detailIds: selectedDetails.map((option) => option.id),
     },
     low,
     high,
@@ -522,6 +599,8 @@ export function estimateProject(input: EstimateInput): ProjectEstimate {
     ],
     escalationTriggers: profile.escalationTriggers,
     scopeSignals: profile.scopeSignals,
+    selectedDetails,
+    rangeTighteners: rangeTightenersFor(profile, selectedDetails, condition.id, trade.id),
   };
 }
 
@@ -531,8 +610,9 @@ export function formatEstimatorKnowledge(): string {
     return [
       `${profile.label}: default ${profile.defaultQuantity} ${profile.quantityUnit} planning range ${fmtRange(sample.low, sample.high)} at normal condition, standard finish, normal access, flexible timeline.`,
       `Primary quantity: ${profile.quantityLabel}. Scope signals: ${profile.scopeSignals.join(', ')}.`,
+      profile.detailOptions?.length ? `Project detail toggles: ${profile.detailOptions.map((option) => option.label).join(', ')}.` : '',
       `Escalates for: ${profile.escalationTriggers.join(', ')}.`,
-    ].join('\n');
+    ].filter(Boolean).join('\n');
   });
 
   return [
@@ -548,6 +628,13 @@ function findOption(options: EstimateOption[], id: string | undefined, fallbackI
 
 function findFactorOption(options: EstimateFactorOption[], id: string | undefined, fallbackId: string): EstimateFactorOption {
   return options.find((option) => option.id === id) ?? options.find((option) => option.id === fallbackId) ?? options[0];
+}
+
+function selectedProjectDetails(profile: ProjectProfile, detailIds: string[] | undefined): ProjectDetailOption[] {
+  const allowed = profile.detailOptions ?? [];
+  if (!detailIds?.length || allowed.length === 0) return [];
+  const wanted = new Set(detailIds);
+  return allowed.filter((option) => wanted.has(option.id));
 }
 
 function clamp(value: number, min: number, max: number): number {
@@ -580,6 +667,7 @@ function confidenceFor(
   accessId: string,
   tradeId: string,
   urgencyId: string,
+  selectedDetails: ProjectDetailOption[],
 ): number {
   let score = profile.confidenceBase;
   const quantityRatio = quantity / profile.defaultQuantity;
@@ -599,7 +687,27 @@ function confidenceFor(
   if (tradeId === 'moving') score -= 7;
   if (tradeId === 'permit') score -= 12;
   if (urgencyId === 'rush') score -= 5;
+  if ((profile.detailOptions?.length ?? 0) > 0 && selectedDetails.length === 0) score -= 4;
+  score += sum(selectedDetails.map((option) => option.confidenceImpact));
   return Math.min(92, Math.max(42, Math.round(score)));
+}
+
+function rangeTightenersFor(
+  profile: ProjectProfile,
+  selectedDetails: ProjectDetailOption[],
+  conditionId: string,
+  tradeId: string,
+): string[] {
+  const notes: string[] = [];
+  if ((profile.detailOptions?.length ?? 0) > 0 && selectedDetails.length === 0) {
+    notes.push('Pick any project details that apply.');
+  }
+  if (conditionId === 'unknown') notes.push('Add a photo or describe the visible condition.');
+  if (tradeId === 'moving' || tradeId === 'permit') notes.push('Confirm what is moving and whether walls are being opened.');
+  if (profile.id === 'bathroom' || profile.id === 'kitchen') notes.push('List the main fixtures or finishes you want replaced.');
+  if (profile.id === 'deck-repair') notes.push('Send photos of boards, railing, stairs, and any soft spots.');
+  if (profile.id === 'drywall-paint') notes.push('Send one close photo and one room-wide photo.');
+  return [...new Set(notes)].slice(0, 3);
 }
 
 function maxRangeRatioFor(
@@ -613,7 +721,7 @@ function maxRangeRatioFor(
   tradeId: string,
   urgencyId: string,
 ): number {
-  let ratio = profile.confidenceBase >= 82 ? 1.55 : profile.confidenceBase >= 70 ? 1.85 : 2.05;
+  let ratio = profile.confidenceBase >= 82 ? 1.35 : profile.confidenceBase >= 70 ? 1.55 : 1.75;
   if (scopeId === 'simple') ratio -= 0.2;
   if (scopeId === 'full') ratio += 0.15;
   if (scopeId === 'custom') ratio += 0.45;
@@ -628,5 +736,5 @@ function maxRangeRatioFor(
   if (tradeId === 'moving') ratio += 0.3;
   if (tradeId === 'permit') ratio += 0.55;
   if (urgencyId === 'rush') ratio += 0.1;
-  return Math.min(3.15, Math.max(1.35, ratio));
+  return Math.min(2.4, Math.max(1.3, ratio));
 }
