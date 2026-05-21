@@ -75,6 +75,19 @@
   const selected = $derived(projectProfiles.find((service) => service.id === selectedId) ?? projectProfiles[0]);
   const currentStepInfo = $derived(steps[currentStep] ?? steps[0]);
 
+  type EstimateRequestDetails = {
+    projectLabel: string;
+    rangeLow: string;
+    rangeHigh: string;
+    address: string;
+    notes: string;
+    photoAttached: boolean;
+    photoName: string;
+    photoNotes: string;
+    answers: { label: string; value: string }[];
+    lineItems: { label: string; category: string; low: string; high: string }[];
+  };
+
   $effect(() => {
     if (quantity < selected.minQuantity || quantity > selected.maxQuantity) {
       quantity = selected.defaultQuantity;
@@ -220,32 +233,54 @@
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
   }
 
-  function buildEstimateRequestMessage() {
+  function buildEstimateRequestDetails(address: string): EstimateRequestDetails {
+    return {
+      projectLabel: estimate.profile.label,
+      rangeLow: fmtCurrency(estimate.low),
+      rangeHigh: fmtCurrency(estimate.high),
+      address,
+      notes: projectNotes.trim(),
+      photoAttached: Boolean(photoDataUrl),
+      photoName: photoDataUrl ? photoName || 'Project photo attached' : '',
+      photoNotes: photoReview.trim(),
+      answers: [
+        { label: 'Project type', value: selected.label },
+        { label: 'Amount', value: `${quantity} ${selected.quantityUnit}` },
+        { label: 'Job level', value: optionLabel(scopeOptions, scopeId) },
+        { label: 'Condition', value: optionLabel(conditionOptions, conditionId) },
+        { label: 'Quality level', value: optionLabel(finishOptions, finishId) },
+        { label: 'Home age', value: optionLabel(homeAgeOptions, homeAgeId) },
+        { label: 'Home type', value: optionLabel(homeTypeOptions, homeTypeId) },
+        { label: 'Access', value: optionLabel(accessOptions, accessId) },
+        { label: 'Moving plumbing, electric, walls, or layout', value: optionLabel(tradeOptions, tradeId) },
+        { label: 'Timeline', value: optionLabel(urgencyOptions, urgencyId) },
+        { label: 'Address or town', value: address },
+      ],
+      lineItems: estimate.lineItems.map((item) => ({
+        label: item.label,
+        category: categoryLabel(item.category),
+        low: fmtCurrency(item.low),
+        high: fmtCurrency(item.high),
+      })),
+    };
+  }
+
+  function buildEstimateRequestMessage(details: EstimateRequestDetails) {
     return [
       'Estimate request from the project estimator.',
       '',
       'Planning range:',
-      `${estimate.profile.label}: ${fmtCurrency(estimate.low)}-${fmtCurrency(estimate.high)}`,
+      `${details.projectLabel}: ${details.rangeLow} to ${details.rangeHigh}`,
       '',
-      'Estimator answers:',
-      `Project type: ${selected.label}`,
-      `Amount: ${quantity} ${selected.quantityUnit}`,
-      `Job level: ${optionLabel(scopeOptions, scopeId)}`,
-      `Condition: ${optionLabel(conditionOptions, conditionId)}`,
-      `Quality level: ${optionLabel(finishOptions, finishId)}`,
-      `Home age: ${optionLabel(homeAgeOptions, homeAgeId)}`,
-      `Home type: ${optionLabel(homeTypeOptions, homeTypeId)}`,
-      `Access: ${optionLabel(accessOptions, accessId)}`,
-      `Moving plumbing, electric, walls, or layout: ${optionLabel(tradeOptions, tradeId)}`,
-      `Timeline: ${optionLabel(urgencyOptions, urgencyId)}`,
-      `Address or town: ${location.trim()}`,
+      'Project details:',
+      ...details.answers.map((answer) => `${answer.label}: ${answer.value}`),
       '',
       'What this includes:',
-      ...estimate.lineItems.map((item) => `${item.label}: ${fmtCurrency(item.low)}-${fmtCurrency(item.high)}`),
+      ...details.lineItems.map((item) => `${item.label}: ${item.low} to ${item.high}`),
       '',
-      `Photo attached: ${photoDataUrl ? photoName || 'Yes' : 'No'}`,
-      photoReview ? `Photo check:\n${photoReview}` : '',
-      projectNotes.trim() ? `\nAdditional notes:\n${projectNotes.trim()}` : '',
+      `Photo attached: ${details.photoAttached ? details.photoName || 'Yes' : 'No'}`,
+      details.photoNotes ? `Photo notes:\n${details.photoNotes}` : '',
+      details.notes ? `\nAdditional notes:\n${details.notes}` : '',
     ]
       .filter(Boolean)
       .join('\n');
@@ -271,6 +306,7 @@
     }
 
     submitLoading = true;
+    const estimateRequest = buildEstimateRequestDetails(address);
 
     try {
       const res = await fetch('/api/contact', {
@@ -280,7 +316,8 @@
           name,
           email,
           phone,
-          message: buildEstimateRequestMessage(),
+          message: buildEstimateRequestMessage(estimateRequest),
+          estimateRequest,
           photoDataUrl: photoDataUrl || undefined,
           photoName: photoName || undefined,
         }),
@@ -623,7 +660,7 @@
                   <div>
                     <h3 class="text-lg font-black text-white uppercase tracking-tight">Request Sent</h3>
                     <p class="text-ind-steel/70 text-sm leading-relaxed mt-2">
-                      Aaron has your estimate request. We will review the details and follow up at {sentEmail}.
+                      We have your estimate request. We will review the details and follow up at {sentEmail}.
                     </p>
                     <a href="tel:+16104126424" class="ind-button inline-flex items-center gap-2 px-5 py-3 mt-5 text-xs font-black uppercase tracking-wider">
                       <Phone size={14} /> Call Now
@@ -634,9 +671,9 @@
                 <div class="grid lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] gap-6">
                   <div>
                     <div class="ind-metadata text-ind-steel/50 text-xs mb-3">SEND ESTIMATE REQUEST</div>
-                    <h3 class="text-xl font-black text-white uppercase tracking-tight">Send This To Aaron</h3>
+                    <h3 class="text-xl font-black text-white uppercase tracking-tight">Send This To Us</h3>
                     <p class="text-ind-steel/65 text-sm leading-relaxed mt-3">
-                      Aaron will review your answers and photos, then call or text with the next step.
+                      We will review your answers and photos, then call or text with the next step.
                     </p>
                   </div>
 
@@ -693,7 +730,7 @@
                       <textarea
                         bind:value={projectNotes}
                         rows="3"
-                        placeholder="Timing, access, materials, or anything Aaron should know."
+                        placeholder="Timing, access, materials, or anything we should know."
                         class="w-full resize-none bg-ind-surface border border-ind-border/55 text-white text-sm px-4 py-3 focus:outline-none focus:border-ind-accent placeholder:text-ind-steel/30"
                       ></textarea>
                     </label>
