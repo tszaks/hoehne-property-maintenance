@@ -73,7 +73,7 @@
     <div bind:this={logoRef} class="mb-12">
         <img
             src="/gna-logo-light.png"
-            alt="GNA Inc — Breakthrough Performance"
+            alt="Hoehne Property Maintenance"
             class="w-[220px] md:w-[300px] h-auto object-contain"
         />
     </div>

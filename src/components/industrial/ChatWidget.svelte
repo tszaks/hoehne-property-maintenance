@@ -183,7 +183,7 @@
     <!-- Header -->
     <div class="flex items-center justify-between px-4 py-3 bg-ind-bg border-b border-ind-border/50 shrink-0">
       <div>
-        <div class="text-white font-black text-sm uppercase tracking-tight">Project Estimator</div>
+        <div class="text-white font-semibold text-sm tracking-tight">Project estimator</div>
         <div class="ind-metadata text-ind-steel/50 text-xs">Hoehne Property Maintenance</div>
       </div>
       <button
@@ -311,7 +311,7 @@
 {#if toggleVisible}
   <button
     onclick={toggle}
-    class="chat-toggle fixed z-[10000] flex items-center gap-2 px-4 py-3 bg-ind-accent text-black font-black text-xs uppercase tracking-wider hover:bg-ind-accent/90 transition-colors shadow-lg shadow-ind-accent/20 whitespace-nowrap"
+    class="chat-toggle fixed z-[10000] flex items-center gap-2 px-4 py-3 bg-ind-accent text-white font-semibold text-sm hover:bg-ind-accent/90 transition-colors shadow-lg shadow-ind-accent/20 whitespace-nowrap"
     aria-label="Open project estimator chat"
   >
     <ChatCircle size={18} weight="fill" />

@@ -78,7 +78,7 @@
                         After serving, Aaron put his hands to work building a business rooted in one principle: do the job right, show up when you say you will, and treat every home like it's your own. That standard hasn't changed since day one.
                     </p>
                     <p class="text-ind-steel leading-relaxed">
-                        Whether it's a bathroom remodel, a fresh coat of paint, or your driveway after a snowstorm — Hoehne Property Maintenance & Remodeling is the one call that handles it all.
+                        Whether it's a bathroom remodel, a fresh coat of paint, or your driveway after a snowstorm, Hoehne Property Maintenance & Remodeling is the one call that handles it all.
                     </p>
                 </div>
 

@@ -23,30 +23,30 @@
     });
 </script>
 
-<nav class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 {isScrolled ? 'bg-ind-bg/95 backdrop-blur-md border-b border-ind-border/30' : 'bg-transparent'}">
+<nav class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 {isScrolled ? 'bg-ind-bg/95 backdrop-blur-md border-b border-ind-border/40' : 'bg-transparent'}">
     <div class="max-w-7xl mx-auto px-6 lg:px-12 h-16 flex items-center justify-between">
 
         <!-- Logo -->
         <a href="/" class="flex min-w-0 items-center gap-3">
-            <div class="w-8 h-8 bg-ind-accent flex items-center justify-center">
-                <span class="text-white font-black text-sm">H</span>
+            <div class="w-8 h-8 border border-ind-accent/70 text-ind-accent flex items-center justify-center rounded">
+                <span class="font-bold text-sm">H</span>
             </div>
             <div class="min-w-0">
-                <div class="text-white font-black text-sm uppercase tracking-tight leading-none">Hoehne</div>
-                <div class="ind-metadata text-ind-steel max-w-[220px] truncate sm:max-w-none" style="font-size:0.55rem">Property Maintenance & Remodeling</div>
+                <div class="text-white font-semibold text-sm tracking-tight leading-none">Hoehne</div>
+                <div class="text-ind-steel/70 max-w-[220px] truncate sm:max-w-none mt-0.5" style="font-size:0.65rem; letter-spacing:0.02em;">Property Maintenance & Remodeling</div>
             </div>
         </a>
 
         <!-- Desktop -->
-        <div class="hidden md:flex items-center gap-6 border-l border-ind-border/40 pl-8 ml-6">
+        <div class="hidden md:flex items-center gap-7 pl-8 ml-6">
             {#each navLinks as link}
                 <a href={link.href}
-                    class="ind-metadata text-ind-steel hover:text-white transition-colors text-[0.72rem]">
+                    class="text-ind-steel hover:text-white transition-colors text-sm font-medium">
                     {link.label}
                 </a>
             {/each}
             <a href="tel:+16104126424"
-                class="ind-button flex items-center gap-2 px-4 py-2 text-[0.72rem] font-black uppercase tracking-wider">
+                class="ind-button flex items-center gap-2 px-4 py-2 text-xs font-semibold tracking-wide">
                 <Phone size={14} weight="bold" />(610) 412-6424
             </a>
         </div>
@@ -61,16 +61,16 @@
 
     <!-- Mobile menu -->
     {#if isMenuOpen}
-        <div class="fixed inset-x-0 top-16 bottom-0 md:hidden bg-ind-bg border-t border-ind-border/30 px-6 py-6 space-y-1 overflow-y-auto">
+        <div class="fixed inset-x-0 top-16 bottom-0 md:hidden bg-ind-bg border-t border-ind-border/40 px-6 py-6 space-y-1 overflow-y-auto">
             {#each navLinks as link}
                 <a href={link.href} onclick={closeMenu}
-                    class="block w-full text-left text-white font-black uppercase tracking-wide text-lg py-4 border-b border-ind-border/20 bg-transparent">
+                    class="block w-full text-left text-white font-medium tracking-tight text-lg py-4 border-b border-ind-border/30 bg-transparent">
                     {link.label}
                 </a>
             {/each}
             <div class="pt-6">
                 <a href="tel:+16104126424"
-                    class="ind-button flex items-center justify-center gap-3 w-full py-4 text-sm font-black uppercase tracking-widest">
+                    class="ind-button flex items-center justify-center gap-3 w-full py-4 text-sm font-semibold tracking-wide">
                     <Phone size={16} weight="bold" />(610) 412-6424
                 </a>
             </div>

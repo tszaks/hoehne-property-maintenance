@@ -24,8 +24,8 @@
 
         <div class="text-center mb-8">
             <div class="ind-metadata text-ind-steel mb-3 opacity-60">FREE ESTIMATE</div>
-            <h2 class="text-3xl sm:text-4xl font-black text-white uppercase tracking-tighter mb-3">
-                Ready To Get It Done?
+            <h2 class="text-3xl sm:text-4xl font-bold text-white tracking-tight mb-3">
+                Ready to get it done?
             </h2>
             <p class="text-ind-steel text-sm sm:text-base max-w-md mx-auto leading-relaxed">
                 Send photos, a quick description, and the address. We will review the details and give you a clear next step.
@@ -34,14 +34,14 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
             <a href="tel:+16104126424"
-                class="ind-button group flex items-center justify-center gap-3 py-5 text-sm font-black uppercase tracking-widest">
+                class="ind-button group flex items-center justify-center gap-3 py-5 text-sm font-semibold">
                 <Phone size={18} weight="fill" />
-                Call Now
+                Call now
             </a>
             <a href={smsHref}
-                class="group flex items-center justify-center gap-3 py-5 text-sm font-black uppercase tracking-widest border border-ind-accent text-ind-accent bg-ind-bg hover:bg-ind-accent hover:text-black transition-colors duration-200">
+                class="group flex items-center justify-center gap-3 py-5 text-sm font-semibold border border-ind-border text-white bg-transparent hover:border-ind-accent hover:text-ind-accent transition-colors duration-200 rounded-lg">
                 <ChatCircleText size={18} weight="fill" />
-                Text Us
+                Text us
             </a>
         </div>
 

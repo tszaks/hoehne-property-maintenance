@@ -25,23 +25,23 @@
     <div class="max-w-4xl mx-auto px-6">
 
         <div class="text-center mb-12">
-            <div class="ind-metadata text-ind-steel mb-3 opacity-60">WHAT WE DO</div>
-            <h2 class="text-3xl sm:text-4xl font-black text-white uppercase tracking-tighter">
-                No Job Too Small. No Job Too Big.
+            <div class="ind-metadata text-ind-steel mb-4">What we do</div>
+            <h2 class="text-3xl sm:text-4xl font-bold text-white tracking-tight">
+                No job too small. No job too big.
             </h2>
         </div>
 
         <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
             {#each services as svc}
-                <div class="flex flex-col items-center gap-2 p-4 border border-ind-border/20 hover:border-ind-accent/60 hover:bg-ind-bg transition-all duration-200 group cursor-default">
+                <div class="flex flex-col items-center gap-2 p-4 rounded border border-ind-border/40 hover:border-ind-accent/50 hover:bg-ind-bg/60 transition-colors duration-200 group cursor-default">
                     <svc.icon size={26} weight="duotone" color="var(--accent-ind)" />
-                    <span class="text-[0.6rem] font-bold uppercase tracking-widest text-ind-steel group-hover:text-white transition-colors text-center leading-tight">{svc.title}</span>
+                    <span class="text-xs font-medium text-ind-steel group-hover:text-white transition-colors text-center leading-tight">{svc.title}</span>
                 </div>
             {/each}
         </div>
 
         <div class="text-center mt-10">
-            <p class="text-ind-steel text-sm">Serving Pottstown, Boyertown, Phoenixville, Limerick & all of Montgomery + Chester Counties</p>
+            <p class="text-ind-steel text-sm">Serving Pottstown, Boyertown, Phoenixville, Limerick, and all of Montgomery and Chester Counties.</p>
         </div>
     </div>
 </section>

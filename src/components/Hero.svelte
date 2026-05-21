@@ -259,7 +259,7 @@
             <p
                 class="text-apple-500 text-[10px] md:text-xs font-bold tracking-[0.4em] uppercase"
             >
-                EST. 1993 — GNA INC.
+                EST. 1993 · GNA INC.
             </p>
             <div class="h-[1px] w-12 bg-apple-200 hidden md:block"></div>
             <p

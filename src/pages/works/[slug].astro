@@ -13,7 +13,7 @@ export async function getStaticPaths() {
         title: "Founder's Press",
         tagline: "Foundational Voice & Media.",
         type: "Service",
-        year: "2024 — Present",
+        year: "2024 to Present",
         description: "Social content ghostwriting for founders and executives. A focused service for those looking to establish a consistent digital presence.",
         concept: "Founder's Press works as an extension of your voice, helping you maintain visibility in the digital landscape without the time overhead of manual writing.",
         features: ["Voice Development", "Ghostwriting", "Strategic Presence"],
@@ -27,7 +27,7 @@ export async function getStaticPaths() {
         title: "The Marpe Ecosystem",
         tagline: "Reimagining Digital Health.",
         type: "Full Rebuild",
-        year: "2024 — Present",
+        year: "2024 to Present",
         description: "A complete digital transformation of the Marpe brand, including the flagship marpenutrition.com and startmydetox.com.",
         concept: "We unified the Marpe brand under a single cohesive digital ecosystem. From tailored shopping flows to engaging landing pages, the ecosystem is built for speed and health.",
         features: ["Fast Shopping Experience", "Unified Branding", "Flexible Content", "UX/UI Design"],
@@ -41,7 +41,7 @@ export async function getStaticPaths() {
         title: "Vero",
         tagline: "Your money. Finally simple.",
         type: "Flagship Product",
-        year: "2025 — Present",
+        year: "2025 to Present",
         description: "A financial companion designed to transform natural conversation into wealth-building insights. Built to redefine the personal balance sheet.",
         concept: "Vero isn't just a tracking tool; it's a partner. It understands the nuances of your life through conversation, providing clarity where there was once noise.",
         features: ["Natural Conversation", "Smart Timeframes", "Privacy-First", "Personality"],
@@ -56,9 +56,9 @@ export async function getStaticPaths() {
         title: "Cortex",
         tagline: "The Operating System for Ideas.",
         type: "Productivity",
-        year: "2025 — Present",
+        year: "2025 to Present",
         description: "A thinking tool that helps you collect, connect, and develop your ideas.",
-        concept: "Cortex mimics the way your mind naturally works—associative, fluid, and limitless. It transforms scattered thoughts into a connected web of knowledge.",
+        concept: "Cortex mimics the way your mind naturally works: associative, fluid, and limitless. It transforms scattered thoughts into a connected web of knowledge.",
         features: ["Natural Capture", "Smart Connections", "Contextual Search", "Visual Graph"],
         results: ["Structured Thinking", "Effortless Recall", "Idea Synthesis"],
         inquiryLink: "mailto:tyler@szakacsmedia.com?subject=Inquiry: Cortex"
@@ -71,7 +71,7 @@ export async function getStaticPaths() {
 const { title, tagline, type, year, description, concept, features, results, inquiryLink, externalLink } = Astro.props;
 ---
 
-<Layout title={`${title} — Szakacs Media`}>
+<Layout title={`${title} | Szakacs Media`}>
   <SmoothScroll client:only="svelte" />
   <Cursor client:only="svelte" />
   <div class="noise-overlay"></div>
