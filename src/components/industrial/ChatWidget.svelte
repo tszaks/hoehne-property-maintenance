@@ -20,7 +20,7 @@
 
   // Hide the closed toggle when contact or footer is in view so it does not
   // compete with the in-section CTAs. Keep showing it while the panel is open.
-  let toggleVisible = $derived(open || (!nearBottom && !(isSmallScreen && nearEstimate)));
+  let toggleVisible = $derived(!open && !nearBottom && !(isSmallScreen && nearEstimate));
 
   onMount(() => {
     const bottomTargets: Element[] = [];
@@ -54,6 +54,7 @@
     if (estimate && estimateIo) estimateIo.observe(estimate);
 
     return () => {
+      document.documentElement.classList.remove('chat-widget-open');
       bottomIo.disconnect();
       estimateIo?.disconnect();
       mq.removeEventListener('change', updateScreen);
@@ -75,74 +76,12 @@
     'Kitchen',
     'Deck',
     'Pressure washing',
-    'Lawn / mulch',
+    'Lawn cleanup',
     'Something else',
   ];
 
-  function chipsForReply(reply: string): string[] {
-    const r = reply.toLowerCase();
-
-    // Stage / question intent, checked before service category so a paint
-    // question about prep/condition doesn't get mislabeled with scope chips.
-
-    // Condition / prep state
-    if (
-      /good condition|in good shape|drywall (repair|patch)|patch(ing|es)?\b|hairline|cracks?\b|holes?\b|prep work|need.*(repair|patch|prim|prep)|condition.*before|before painting/.test(
-        r,
-      )
-    )
-      return ['Good condition', 'Small patches', 'Needs primer', 'Needs repair'];
-
-    // Interior vs exterior
-    if (
-      /interior or exterior|exterior or interior|inside or outside|outside or inside|interior.*(exterior|outside)|exterior.*(interior|inside)/.test(
-        r,
-      )
-    )
-      return ['Interior', 'Exterior', 'Both'];
-
-    // Walls / ceiling / scope
-    if (/walls? only|walls? and ceiling|full room|how many rooms|just (the )?walls|ceiling too|\bscope\b/.test(r))
-      return ['Walls only', 'Walls and ceiling', 'Full room', 'Multiple rooms'];
-
-    // Location / service area
-    if (/where.*(located|are you)|what (town|area|zip|city)|service area|located in|location|nearby|zip code/.test(r))
-      return ['Pottstown', 'Spring City', 'OJR area', 'Nearby'];
-
-    // Timeline / urgency
-    if (/timeline|how soon|when.*(start|need|done|finish|like)|urgency|deadline|\basap\b|this month|next (week|month)|time frame|timeframe/.test(r))
-      return ['Flexible', 'This month', 'Two weeks', 'ASAP'];
-
-    // Service-specific defaults (fallback when no stage intent matched)
-    if (/paint|coat/.test(r))
-      return ['Walls only', 'Walls and ceiling', 'Full room', 'Multiple rooms'];
-    if (/bathroom/.test(r))
-      return ['Full remodel', 'Fixtures only', 'Tile work', 'Vanity and toilet'];
-    if (/\bdeck\b/.test(r))
-      return ['Repair existing deck', 'New deck build', 'Composite boards', 'Pressure treated'];
-    if (/drywall/.test(r))
-      return ['Small patch', 'Full wall', 'Multiple rooms', 'Water damage'];
-    if (/lawn|mulch|mow/.test(r))
-      return ['Mowing', 'Mulching', 'Full cleanup', 'Trimming and edging'];
-    if (/kitchen/.test(r))
-      return ['Cabinet refresh', 'Full remodel', 'Countertops only', 'Appliances too'];
-    if (/basement/.test(r))
-      return ['Finish unfinished space', 'Repair existing', 'Add bathroom', 'Full build-out'];
-    return [];
-  }
-
   // Show initial chips until the user has sent at least one message
   let showInitialChips = $derived(apiMsgs.length === 0 && !loading);
-
-  // Contextual chips derived from the last assistant reply
-  let contextualChips: string[] = $derived(
-    (() => {
-      if (apiMsgs.length === 0 || loading) return [];
-      const lastAssistant = [...uiMsgs].reverse().find((m) => m.role === 'assistant');
-      if (!lastAssistant || lastAssistant.content === GREETING) return [];
-      return chipsForReply(lastAssistant.content);
-    })()
-  );
 
   async function handleFileChange() {
     apiError = '';
@@ -209,6 +148,10 @@
       inputEl?.focus();
       return;
     }
+    if (label === 'Add photos') {
+      fileEl?.click();
+      return;
+    }
     input = label;
     await tick();
     send();
@@ -223,6 +166,7 @@
 
   function toggle() {
     open = !open;
+    document.documentElement.classList.toggle('chat-widget-open', open);
     if (open) {
       tick().then(() => {
         if (messagesEl) messagesEl.scrollTop = messagesEl.scrollHeight;
@@ -234,7 +178,7 @@
 <!-- Chat panel: mobile bottom sheet anchored to viewport edges, desktop right-aligned panel -->
 {#if open}
   <div
-    class="chat-panel fixed z-50 flex flex-col bg-ind-surface border border-ind-border/60 shadow-2xl overflow-hidden"
+    class="chat-panel fixed z-[10000] flex flex-col bg-ind-surface border border-ind-border/60 shadow-2xl overflow-hidden"
   >
     <!-- Header -->
     <div class="flex items-center justify-between px-4 py-3 bg-ind-bg border-b border-ind-border/50 shrink-0">
@@ -291,21 +235,10 @@
         </div>
       {/if}
 
-      <!-- Quick-reply chips: initial set before any user message, contextual after replies -->
+      <!-- Quick-start chips only. Follow-up answers stay conversational. -->
       {#if showInitialChips}
         <div class="flex flex-wrap gap-2 pt-1">
           {#each INITIAL_CHIPS as chip}
-            <button
-              onclick={() => sendChip(chip)}
-              class="chip-btn text-xs px-3 py-2 border border-ind-border/60 text-ind-steel hover:border-ind-accent hover:text-ind-accent transition-colors bg-ind-bg"
-            >
-              {chip}
-            </button>
-          {/each}
-        </div>
-      {:else if contextualChips.length > 0}
-        <div class="flex flex-wrap gap-2 pt-1">
-          {#each contextualChips as chip}
             <button
               onclick={() => sendChip(chip)}
               class="chip-btn text-xs px-3 py-2 border border-ind-border/60 text-ind-steel hover:border-ind-accent hover:text-ind-accent transition-colors bg-ind-bg"
@@ -374,19 +307,15 @@
   </div>
 {/if}
 
-<!-- Toggle button in the bottom-left keeps clear of FloatingPhone. Hidden near contact/footer to avoid duplicate CTAs. -->
+<!-- Closed-state toggle. The open panel has its own close control in the header. -->
 {#if toggleVisible}
   <button
     onclick={toggle}
-    class="chat-toggle fixed z-50 flex items-center gap-2 px-4 py-3 bg-ind-accent text-black font-black text-xs uppercase tracking-wider hover:bg-ind-accent/90 transition-colors shadow-lg shadow-ind-accent/20 whitespace-nowrap"
+    class="chat-toggle fixed z-[10000] flex items-center gap-2 px-4 py-3 bg-ind-accent text-black font-black text-xs uppercase tracking-wider hover:bg-ind-accent/90 transition-colors shadow-lg shadow-ind-accent/20 whitespace-nowrap"
     aria-label="Open project estimator chat"
   >
-    {#if open}
-      <X size={16} />
-    {:else}
-      <ChatCircle size={18} weight="fill" />
-      <span class="hidden sm:inline">Ask About Your Project</span>
-    {/if}
+    <ChatCircle size={18} weight="fill" />
+    <span class="hidden sm:inline">Ask About Your Project</span>
   </button>
 {/if}
 
@@ -395,9 +324,9 @@
   .chat-panel {
     left: 12px;
     right: 12px;
-    bottom: 84px;
-    height: min(560px, calc(100dvh - 96px));
-    max-height: calc(100dvh - 96px);
+    bottom: 12px;
+    height: min(620px, calc(100dvh - 24px));
+    max-height: calc(100dvh - 24px);
   }
 
   .chat-toggle {
@@ -410,10 +339,10 @@
     .chat-panel {
       left: 24px;
       right: auto;
-      bottom: 88px;
-      width: 380px;
-      height: 500px;
-      max-height: calc(100dvh - 112px);
+      bottom: 24px;
+      width: min(420px, calc(100vw - 48px));
+      height: min(620px, calc(100dvh - 48px));
+      max-height: calc(100dvh - 48px);
     }
 
     .chat-toggle {
