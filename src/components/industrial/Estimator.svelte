@@ -488,16 +488,17 @@
                   <div class="mt-3 text-xs text-ind-steel/60 leading-relaxed">{selected.quantityHelp}</div>
                 </div>
                 <label class="block">
-                  <span class="ind-metadata text-ind-steel/70 text-xs block mb-3">QUANTITY</span>
+                  <span class="ind-metadata text-ind-steel/70 text-xs block mb-3">{selected.quantityUnit}</span>
                   <input
                     type="number"
                     min={selected.minQuantity}
                     max={selected.maxQuantity}
                     step={selected.step}
                     bind:value={quantity}
+                    aria-label={`${selected.quantityLabel} in ${selected.quantityUnit}`}
                     class="w-full bg-ind-bg border border-ind-border/50 text-ink text-sm px-4 py-3 focus:outline-none focus:border-ind-accent"
                   />
-                  <span class="block text-[0.68rem] text-ind-steel/50 mt-2">{selected.quantityUnit}</span>
+                  <span class="block text-[0.68rem] text-ind-steel/50 mt-2">{selected.quantityLabel}</span>
                 </label>
               </div>
             </div>
