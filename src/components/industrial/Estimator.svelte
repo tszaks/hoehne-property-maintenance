@@ -55,7 +55,7 @@
     {
       label: 'Access',
       title: 'Anything moving or difficult?',
-      help: 'Moved plumbing, electric, walls, tight rooms, and rush timing can change the price.',
+      help: 'Tell us about layout changes, tight spaces, and timing.',
     },
     {
       label: 'Photos',
@@ -188,7 +188,7 @@
           messages: [
             {
               role: 'user',
-              content: `Review this attached project photo against the estimate form below. Keep it simple. Say what the photo shows, the one best question to ask next, and what could change the price range. Do not mention bots, models, or artificial intelligence.\n\n${formSummary}`,
+              content: `Review this attached project photo against the estimate form below. Keep it simple. Say what the photo shows and the one best question to ask next. Keep the answer to two short paragraphs with no extra sections.\n\n${formSummary}`,
               imageUrl: photoDataUrl,
               imageName: photoName,
             },
@@ -467,7 +467,7 @@
                 <div>
                   <h3 class="text-lg font-black text-white uppercase tracking-tight mb-2">Add Photos</h3>
                   <p class="text-ind-steel/65 text-sm leading-relaxed">
-                    Photos help us see the work area, materials, visible damage, and anything that may affect the range.
+                    Photos help us see the work area, materials, and visible damage.
                   </p>
                 </div>
                 <div class="flex flex-wrap gap-2 md:justify-end">
@@ -581,17 +581,8 @@
           </div>
         </details>
 
-        <div class="mb-6">
-          <div class="ind-metadata text-ind-steel/50 text-xs mb-3">COULD CHANGE THE PRICE</div>
-          <div class="flex flex-wrap gap-2">
-            {#each estimate.escalationTriggers.slice(0, 6) as trigger}
-              <span class="text-[0.68rem] border border-ind-border/40 text-ind-steel/70 px-2 py-1 uppercase tracking-wide">{trigger}</span>
-            {/each}
-          </div>
-        </div>
-
         <p class="text-ind-steel/55 text-xs leading-relaxed mb-6">
-          Photos and an on-site visit can improve this range. Hidden damage, permits, specialist work, and material choices can change the final price.
+          Use this as a planning range. We confirm the final price after reviewing photos or seeing the project in person.
         </p>
 
         <div class="grid grid-cols-2 gap-3">
