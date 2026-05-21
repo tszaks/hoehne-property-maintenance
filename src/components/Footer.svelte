@@ -15,7 +15,7 @@
     <div class="space-y-6">
       <span
         class="text-[10px] font-bold tracking-[0.5em] uppercase text-apple-300"
-        >GNA INC. — ESTABLISHED 1993</span
+        >GNA INC. · ESTABLISHED 1993</span
       >
       <p class="text-[9px] font-bold tracking-[0.3em] uppercase text-apple-400">
         ALL RIGHTS RESERVED

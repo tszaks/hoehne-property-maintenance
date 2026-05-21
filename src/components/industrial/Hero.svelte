@@ -20,45 +20,45 @@
 <!-- HERO -->
 <section bind:this={containerElement} class="relative min-h-[100dvh] flex flex-col bg-ind-bg overflow-hidden">
 
-    <!-- Photo grid background — 2x2 on desktop, stacked on mobile -->
-    <div class="absolute inset-0 z-0 grid grid-cols-2 grid-rows-2 opacity-30">
+    <!-- Photo grid background. Brighter real work, less moody texture. -->
+    <div class="absolute inset-0 z-0 grid grid-cols-2 grid-rows-2 opacity-40">
         <div class="bg-cover bg-center" style="background-image:url('/work/project-3.jpg')"></div>
         <div class="bg-cover bg-center" style="background-image:url('/work/project-4.jpg')"></div>
         <div class="bg-cover bg-top"   style="background-image:url('/work/project-2.jpg')"></div>
         <div class="bg-cover bg-top"   style="background-image:url('/work/project-1.jpg')"></div>
     </div>
     <!-- Dark overlay -->
-    <div class="absolute inset-0 z-10 bg-gradient-to-b from-ind-bg/70 via-ind-bg/60 to-ind-bg"></div>
+    <div class="absolute inset-0 z-10 bg-gradient-to-b from-ind-bg/65 via-ind-bg/58 to-ind-bg"></div>
 
     <!-- Content -->
     <div class="relative z-20 flex-1 flex flex-col items-center justify-center text-center px-6 pt-28 pb-16">
 
-        <div class="hero-fade ind-metadata text-ind-accent mb-4 tracking-widest">
-            VETERAN OWNED — POTTSTOWN, PA — 20 YEARS
+        <div class="hero-fade ind-metadata text-ind-steel mb-5">
+            Veteran owned · Pottstown, PA · Licensed and insured
         </div>
 
-        <h1 class="hero-fade text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white tracking-tighter uppercase leading-[0.88] mb-6 max-w-3xl">
-            Your Home.<br /><span class="text-ind-accent">Done Right.</span>
+        <h1 class="hero-fade text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white tracking-tight leading-[0.95] mb-6 max-w-3xl">
+            Your home, <span class="text-ind-accent">done right.</span>
         </h1>
 
-        <p class="hero-fade text-ind-steel text-base sm:text-lg max-w-md leading-relaxed mb-10">
-            Serving Spring City, Pottstown, Royersford and the OJR school district
+        <p class="hero-fade text-ind-steel text-base sm:text-lg max-w-lg leading-relaxed mb-10">
+            Honest remodels and repairs for homeowners in Pottstown, Spring City, Royersford, and across the OJR school district.
         </p>
 
-        <div class="hero-fade flex flex-col sm:flex-row gap-4 w-full sm:w-auto justify-center">
+        <div class="hero-fade flex flex-col sm:flex-row gap-3 w-full sm:w-auto justify-center">
             <a href="tel:+16104126424"
-                class="ind-button flex items-center justify-center gap-3 px-8 py-4 text-sm font-black uppercase tracking-widest">
+                class="ind-button flex items-center justify-center gap-3 px-7 py-4 text-sm font-semibold tracking-wide">
                 <Phone size={16} />(610) 412-6424
             </a>
             <button on:click={scrollToContact}
-                class="flex items-center justify-center gap-3 px-8 py-4 text-sm font-bold uppercase tracking-widest border border-ind-border/50 text-white hover:border-ind-accent hover:text-ind-accent transition-all duration-300">
-                Free Estimate <ArrowRight size={16} />
+                class="ind-button-outline flex items-center justify-center gap-3 px-7 py-4 text-sm font-semibold tracking-wide">
+                Free estimate <ArrowRight size={16} />
             </button>
         </div>
     </div>
 
     <!-- Scroll hint -->
     <div class="relative z-20 flex justify-center pb-8">
-        <div class="w-[1px] h-12 bg-gradient-to-b from-ind-accent to-transparent"></div>
+        <div class="w-[1px] h-10 bg-gradient-to-b from-ind-steel/40 to-transparent"></div>
     </div>
 </section>

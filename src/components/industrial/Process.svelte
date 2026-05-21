@@ -13,7 +13,7 @@
         {
             id: "01",
             title: "Call or Text",
-            description: "Reach out at (610) 412-6424 or fill out the contact form. Tell us what you need — no job is too small to talk about.",
+            description: "Reach out at (610) 412-6424 or fill out the contact form. Tell us what you need. No job is too small to talk about.",
         },
         {
             id: "02",
@@ -23,7 +23,7 @@
         {
             id: "03",
             title: "Work Gets Scheduled",
-            description: "Once you approve, we get on the calendar. We show up when we say we will — that's a Hoehne guarantee.",
+            description: "Once you approve, we get on the calendar. We show up when we say we will. That's a Hoehne guarantee.",
         },
         {
             id: "04",

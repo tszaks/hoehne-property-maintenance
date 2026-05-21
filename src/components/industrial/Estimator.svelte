@@ -343,12 +343,12 @@
 <section id="estimate" class="pt-6 pb-16 sm:pt-16 sm:pb-20 lg:py-28 bg-ind-surface relative z-10 overflow-x-clip">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
     <div class="mb-8 lg:mb-12">
-      <div class="ind-metadata mb-4">PROJECT ESTIMATE // ADD PHOTOS // LOCAL RANGE</div>
-      <h1 class="text-3xl sm:text-4xl md:text-6xl font-black text-white tracking-tight sm:tracking-tighter uppercase max-w-4xl leading-[0.95]">
-        Get A Rough Project Estimate
+      <div class="ind-metadata mb-4">Project estimate · Photos · Local range</div>
+      <h1 class="text-3xl sm:text-4xl md:text-6xl font-bold text-white tracking-tight max-w-4xl leading-[1.02]">
+        Get a rough project estimate
       </h1>
       <p class="text-ind-steel text-sm mt-5 max-w-2xl leading-relaxed">
-        Answer a few walkthrough-style questions. Add photos if you have them. This gives a useful planning range, not a final quote.
+        Answer a few clear questions. Add photos if you have them. This gives a useful planning range, not a final quote.
       </p>
     </div>
 
@@ -381,7 +381,7 @@
         <div class="mt-5 sm:mt-6 border-t border-ind-border/25 pt-5 min-w-0">
           <div class="mb-6 sm:mb-7 min-w-0">
             <div class="ind-metadata text-ind-steel/50 text-xs mb-2">STEP {currentStep + 1} / {steps.length}</div>
-            <h2 class="text-xl sm:text-2xl md:text-3xl font-black text-white uppercase tracking-tight leading-tight">{currentStepInfo.title}</h2>
+            <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-white tracking-tight leading-tight">{currentStepInfo.title}</h2>
             <p class="text-ind-steel/65 text-sm mt-2 max-w-2xl leading-relaxed">{currentStepInfo.help}</p>
           </div>
 
@@ -596,7 +596,7 @@
             <div id="photo-review" class="scroll-mt-24 border border-ind-border/40 bg-ind-bg p-5">
               <div class="grid md:grid-cols-[1fr_auto] gap-5 items-start">
                 <div>
-                  <h3 class="text-lg font-black text-white uppercase tracking-tight mb-2">Add Photos</h3>
+                  <h3 class="text-lg font-bold text-white tracking-tight mb-2">Add photos</h3>
                   <p class="text-ind-steel/65 text-sm leading-relaxed">
                     Photos help us see the work area, materials, and visible damage.
                   </p>
@@ -658,7 +658,7 @@
                     <CheckCircle size={22} weight="bold" />
                   </div>
                   <div>
-                    <h3 class="text-lg font-black text-white uppercase tracking-tight">Request Sent</h3>
+                    <h3 class="text-lg font-bold text-white tracking-tight">Request sent</h3>
                     <p class="text-ind-steel/70 text-sm leading-relaxed mt-2">
                       We have your estimate request. We will review the details and follow up at {sentEmail}.
                     </p>
@@ -671,7 +671,7 @@
                 <div class="grid lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] gap-6">
                   <div>
                     <div class="ind-metadata text-ind-steel/50 text-xs mb-3">SEND ESTIMATE REQUEST</div>
-                    <h3 class="text-xl font-black text-white uppercase tracking-tight">Send This To Us</h3>
+                    <h3 class="text-xl font-bold text-white tracking-tight">Send this to us</h3>
                     <p class="text-ind-steel/65 text-sm leading-relaxed mt-3">
                       We will review your answers and photos, then call or text with the next step.
                     </p>
