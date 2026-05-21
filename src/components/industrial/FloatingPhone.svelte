@@ -4,11 +4,18 @@
 
   let scrolled = false;
   let nearBottom = false;
+  let nearEstimate = false;
+  let isSmallScreen = false;
 
   onMount(() => {
     const reveal = setTimeout(() => { scrolled = window.scrollY > 300; }, 2000);
     const handleScroll = () => { scrolled = window.scrollY > 300; };
     window.addEventListener('scroll', handleScroll);
+
+    const mq = window.matchMedia('(max-width: 639px)');
+    const updateScreen = () => { isSmallScreen = mq.matches; };
+    updateScreen();
+    mq.addEventListener('change', updateScreen);
 
     const targets: Element[] = [];
     const contact = document.getElementById('contact');
@@ -27,14 +34,24 @@
 
     for (const t of targets) io.observe(t);
 
+    const estimate = document.getElementById('estimate');
+    const estimateIo = estimate
+      ? new IntersectionObserver((entries) => {
+          nearEstimate = entries.some((entry) => entry.isIntersecting);
+        }, { threshold: 0.05 })
+      : undefined;
+    if (estimate && estimateIo) estimateIo.observe(estimate);
+
     return () => {
       clearTimeout(reveal);
       window.removeEventListener('scroll', handleScroll);
       io.disconnect();
+      estimateIo?.disconnect();
+      mq.removeEventListener('change', updateScreen);
     };
   });
 
-  $: visible = scrolled && !nearBottom;
+  $: visible = scrolled && !nearBottom && !(isSmallScreen && nearEstimate);
 </script>
 
 {#if visible}
