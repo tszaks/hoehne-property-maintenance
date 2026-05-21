@@ -14,30 +14,39 @@ import ChatWidget from '../components/industrial/ChatWidget.svelte';
 	title="Hoehne Property Maintenance & Remodeling | Pottstown, PA"
 	description="Veteran-owned property maintenance and remodeling in Pottstown, PA. 20 years of experience. Handyman services, home renovations, painting, lawn care, snow removal. Call (610) 412-6424."
 >
-	<main class="relative bg-ind-bg selection:bg-ind-accent selection:text-black">
+	<main class="relative bg-paper selection:bg-hivis selection:text-white">
 		<Navbar client:load />
-			<Hero client:load />
-			<Services client:load />
-			<CaseStudies client:load />
-			<section class="py-20 bg-ind-surface relative z-10 border-y border-ind-border/30">
-				<div class="max-w-5xl mx-auto px-6 lg:px-12 grid lg:grid-cols-[1fr_auto] gap-8 items-center">
-					<div>
-						<div class="ind-metadata text-ind-steel mb-3 opacity-60">Project planning range</div>
-						<h2 class="text-3xl sm:text-4xl font-bold text-white tracking-tight mb-3">
-							Get a project estimate
-						</h2>
-						<p class="text-ind-steel text-sm sm:text-base max-w-xl leading-relaxed">
-							Use the estimator to pick your project details, add photos, and get a rough planning range before we visit.
-						</p>
+		<Hero client:load />
+		<Services client:load />
+		<CaseStudies client:load />
+
+		<!-- Estimator handoff section -->
+		<section class="py-20 lg:py-24 bg-paper-deep relative z-10 border-y border-ink/15 overflow-hidden">
+			<div class="absolute inset-0 ind-gridpaper opacity-50 pointer-events-none"></div>
+			<div class="max-w-[1100px] mx-auto px-5 lg:px-10 relative grid lg:grid-cols-[1fr_auto] gap-8 items-end">
+				<div class="max-w-2xl">
+					<div class="section-divider mb-6">
+						<span class="marker">§ 03.5</span>
+						<span class="line"></span>
+						<span class="marker text-hivis-deep">Project planning</span>
 					</div>
-					<a href="/estimate" class="ind-button inline-flex items-center justify-center px-8 py-4 text-sm font-semibold">
-						Start estimate
-					</a>
+					<h2 class="font-display text-ink font-bold tracking-tight leading-[0.95] mb-4"
+						style="font-size: clamp(2rem, 4vw, 3.25rem); font-variation-settings: 'SOFT' 30, 'opsz' 144;">
+						Get a project<br/><span class="italic" style="font-weight: 500;">estimate.</span>
+					</h2>
+					<p class="text-ink-soft text-base lg:text-lg leading-relaxed max-w-xl">
+						Use the estimator to pick your project details, add photos, and get a rough planning range before we visit.
+					</p>
 				</div>
-			</section>
-			<Contact client:load />
-			<Footer client:load />
-		</main>
+				<a href="/estimate" class="ind-button inline-flex items-center justify-center px-7 py-4 text-sm font-semibold tracking-wide shrink-0">
+					Start estimate →
+				</a>
+			</div>
+		</section>
+
+		<Contact client:load />
+		<Footer client:load />
+	</main>
 	<FloatingPhone client:load />
 	<ChatWidget client:load />
 </IndustrialLayout>

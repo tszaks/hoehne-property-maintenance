@@ -1,42 +1,60 @@
 @import "tailwindcss";
 
+/* ==========================================================================
+   HOEHNE — Field Journal
+   A craftsman's editorial workshop journal.
+   Warm cream paper · deep ink · hi-vis safety orange · serif authority.
+   ========================================================================== */
+
 :root {
-  --background-ind: #11100e;
-  /* Soft near-black, less harsh than pure ink */
-  --foreground-ind: #f4f0ea;
-  /* Warm off-white text */
-  --accent-ind: #a85f3a;
-  /* Muted warm rust, not safety orange */
-  --accent-ind-soft: #bf7650;
-  /* Lighter variant for hovers and gradients */
-  --surface-ind: #1b1815;
-  /* Slightly lighter dark for cards */
-  --border-ind: #302a24;
-  /* Subtle borders */
-  --steel-ind: #b3aaa0;
-  /* Warmer neutral gray */
-  --muted-ind: #776d63;
-  /* Quiet body text */
+  --paper:        #F2EBDC;   /* warm cream */
+  --paper-deep:   #E8DFC9;   /* aged paper */
+  --paper-tape:   #EFE4CD;   /* old masking tape */
+  --ink:          #16140F;   /* deep warm black */
+  --ink-soft:     #2B271F;   /* secondary body */
+  --rule:         #1C1A14;   /* horizontal rules */
+  --steel:        #5C5147;   /* warm taupe (muted body) */
+  --steel-soft:   #8A7D6F;   /* extra muted */
+  --hivis:        #FF5A1F;   /* safety cone orange */
+  --hivis-deep:   #D9430E;   /* active orange */
+  --hivis-soft:   rgba(255, 90, 31, 0.08);
+  --stamp:        #B0381A;   /* faded stamp */
 }
 
 @theme {
-  --color-ind-bg: var(--background-ind);
-  --color-ind-fg: var(--foreground-ind);
-  --color-ind-accent: var(--accent-ind);
-  --color-ind-accent-soft: var(--accent-ind-soft);
-  --color-ind-surface: var(--surface-ind);
-  --color-ind-border: var(--border-ind);
-  --color-ind-steel: var(--steel-ind);
-  --color-ind-muted: var(--muted-ind);
+  --color-ind-bg:           var(--paper);
+  --color-ind-fg:           var(--ink);
+  --color-ind-accent:       var(--hivis);
+  --color-ind-accent-soft:  var(--hivis-deep);
+  --color-ind-surface:      var(--paper-deep);
+  --color-ind-border:       rgba(28, 26, 20, 0.12);
+  --color-ind-steel:        var(--steel);
+  --color-ind-muted:        var(--steel-soft);
+
+  --color-paper:            var(--paper);
+  --color-paper-deep:       var(--paper-deep);
+  --color-ink:              var(--ink);
+  --color-ink-soft:         var(--ink-soft);
+  --color-hivis:            var(--hivis);
+  --color-hivis-deep:       var(--hivis-deep);
+  --color-steel:            var(--steel);
+
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body:    'DM Sans', system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono', ui-monospace, monospace;
 }
 
+/* ---- Base ---- */
 .industrial-theme {
-  background-color: var(--background-ind);
-  color: var(--foreground-ind);
-  font-family: 'Inter', sans-serif;
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-feature-settings: "ss01", "cv11";
   overflow-x: hidden;
   line-height: 1.55;
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .industrial-theme h1,
@@ -45,253 +63,361 @@
 .industrial-theme h4,
 .industrial-theme h5,
 .industrial-theme h6 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-variation-settings: "SOFT" 30, "WONK" 0, "opsz" 144;
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
+  color: var(--ink);
 }
 
+/* ---- Paper texture overlay ---- */
 .industrial-noise {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
   pointer-events: none;
   z-index: 9998;
-  opacity: 0.025;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-  mix-blend-mode: overlay;
+  opacity: 0.10;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='nf'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23nf)'/%3E%3C/svg%3E");
+  mix-blend-mode: multiply;
 }
 
-.ind-glass {
-  background: rgba(26, 26, 26, 0.65);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+/* ---- Typography utilities ---- */
+.font-display { font-family: 'Fraunces', Georgia, serif; font-variation-settings: "SOFT" 30, "opsz" 144; }
+.font-mono    { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+
+.tag-mono {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink);
 }
 
+.ind-metadata {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--steel);
+}
+
+/* ---- Buttons (cream-paper aware) ---- */
 .ind-button {
-  background-color: var(--accent-ind);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--hivis);
   color: #fff;
+  font-family: 'DM Sans', system-ui, sans-serif;
   font-weight: 600;
-  letter-spacing: 0.01em;
-  border-radius: 8px;
-  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.18);
-  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  letter-spacing: 0.02em;
+  border-radius: 2px;
+  border: 1px solid var(--hivis-deep);
+  box-shadow: 0 2px 0 0 var(--ink), 0 4px 14px rgba(20, 16, 10, 0.18);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
 }
-
 .ind-button:hover {
-  background-color: var(--accent-ind-soft);
-  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.22);
+  background-color: var(--hivis-deep);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 0 0 var(--ink), 0 6px 18px rgba(20, 16, 10, 0.22);
+}
+.ind-button:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 0 0 var(--ink), 0 2px 8px rgba(20, 16, 10, 0.15);
 }
 
 .ind-button-outline {
-  background: transparent;
-  color: var(--foreground-ind);
-  border: 1px solid var(--border-ind);
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  border-radius: 8px;
-  transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
-}
-
-.ind-button-outline:hover {
-  border-color: var(--accent-ind);
-  color: var(--accent-ind);
-  background-color: rgba(168, 95, 58, 0.08);
-}
-
-/* 1. Crosshairs & Grid Intersections */
-.ind-crosshair {
-  position: absolute;
-  width: 1rem;
-  height: 1rem;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  pointer-events: none;
-  z-index: 10;
+  background-color: transparent;
+  color: var(--ink);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border-radius: 2px;
+  border: 1px solid var(--ink);
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.ind-button-outline:hover {
+  background-color: var(--ink);
+  color: var(--paper);
 }
 
+/* ---- Surfaces ---- */
+.ind-steel-plate,
+.ind-panel {
+  background: var(--paper-deep);
+  border: 1px solid rgba(28, 26, 20, 0.14);
+  border-radius: 2px;
+}
+
+.ind-glass {
+  background: rgba(242, 235, 220, 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(28, 26, 20, 0.10);
+}
+
+/* ---- Blueprint grid ---- */
+.ind-blueprint,
+.ind-gridpaper {
+  background-image:
+    linear-gradient(rgba(28, 26, 20, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(28, 26, 20, 0.055) 1px, transparent 1px);
+  background-size: 32px 32px;
+  background-position: center center;
+}
+
+/* ---- Architectural rules with cap marks ---- */
+.cap-rule {
+  position: relative;
+  height: 1px;
+  background: var(--ink);
+  width: 100%;
+}
+.cap-rule::before,
+.cap-rule::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  width: 1px;
+  height: 9px;
+  background: var(--ink);
+}
+.cap-rule::before { left: 0; }
+.cap-rule::after  { right: 0; }
+
+/* ---- Crosshairs ---- */
+.ind-crosshair {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  pointer-events: none;
+  z-index: 5;
+}
 .ind-crosshair::before,
 .ind-crosshair::after {
   content: '';
   position: absolute;
-  background-color: var(--border-ind);
+  background-color: var(--ink);
+  opacity: 0.65;
 }
+.ind-crosshair::before { left: 0; right: 0; top: 50%; height: 1px; }
+.ind-crosshair::after  { top: 0; bottom: 0; left: 50%; width: 1px; }
 
-.ind-crosshair::before {
-  width: 100%;
-  height: 1px;
-}
-
-.ind-crosshair::after {
-  height: 100%;
-  width: 1px;
-}
-
-/* 2. Eyebrow label (used sparingly) */
-.ind-metadata {
-  font-family: 'Inter', system-ui, sans-serif;
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--steel-ind);
-  opacity: 0.75;
-}
-
-/* 3. Exposed Fasteners */
-.ind-fastener {
+/* ---- Corner registration brackets ---- */
+.bracket-tl, .bracket-tr, .bracket-bl, .bracket-br {
   position: absolute;
-  width: 3px;
-  height: 3px;
-  background-color: var(--steel-ind);
-  border-radius: 50%;
-  opacity: 0.5;
+  width: 22px; height: 22px;
+  pointer-events: none;
 }
+.bracket-tl { top: 0;    left: 0;  border-top: 2px solid var(--hivis);    border-left: 2px solid var(--hivis); }
+.bracket-tr { top: 0;    right: 0; border-top: 2px solid var(--hivis);    border-right: 2px solid var(--hivis); }
+.bracket-bl { bottom: 0; left: 0;  border-bottom: 2px solid var(--hivis); border-left: 2px solid var(--hivis); }
+.bracket-br { bottom: 0; right: 0; border-bottom: 2px solid var(--hivis); border-right: 2px solid var(--hivis); }
 
-/* 5. Subtle Blueprint Overlay */
-.ind-blueprint {
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 40px 40px;
-  background-position: center center;
-}
-
-/* 6. Measurement Ticks / Rulers */
-.ind-ruler-x {
-  height: 4px;
-  background-image: linear-gradient(90deg, var(--border-ind) 1px, transparent 1px);
-  background-size: 20px 4px;
-}
-
-.ind-ruler-y {
-  width: 4px;
-  background-image: linear-gradient(var(--border-ind) 1px, transparent 1px);
-  background-size: 4px 20px;
-}
-
-
-/* 8. Staggered grid cascade */
-@keyframes grid-cascade-in {
-  from {
-    opacity: 0;
-    transform: scale(0.92) translateY(30px);
-    filter: blur(4px);
-  }
-
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-    filter: blur(0);
-  }
-}
-
-/* 9. Reveal Line Animation */
-.ind-reveal-line {
+/* ---- Stamp badges ---- */
+.stamp {
   position: relative;
-  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--hivis-deep);
+  border: 2px solid var(--hivis-deep);
+  padding: 0.55rem 0.9rem;
+  border-radius: 4px;
+  transform: rotate(-4deg);
+  font-size: 0.7rem;
+  white-space: nowrap;
+  background: rgba(255, 90, 31, 0.04);
+}
+.stamp::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border: 1px solid var(--hivis-deep);
+  border-radius: 6px;
+  opacity: 0.4;
+}
+.stamp.stamp-ink {
+  color: var(--ink);
+  border-color: var(--ink);
+  background: rgba(20, 16, 10, 0.03);
+}
+.stamp.stamp-ink::before { border-color: var(--ink); }
+
+/* ---- Ticket number badge ---- */
+.ticket-num {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: var(--hivis);
+  padding: 4px 10px;
+  border: 1px solid var(--hivis);
+  border-radius: 999px;
+  background: var(--hivis-soft);
+  text-transform: uppercase;
 }
 
+/* ---- Masking tape (for photo corners) ---- */
+.tape {
+  position: absolute;
+  background: rgba(255, 210, 130, 0.92);
+  width: 96px;
+  height: 22px;
+  box-shadow: 0 3px 10px rgba(20, 16, 10, 0.18);
+  border: 1px solid rgba(180, 130, 60, 0.25);
+}
+.tape::before, .tape::after {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 5px;
+  background-image: linear-gradient(45deg, rgba(0,0,0,0.07) 25%, transparent 25%, transparent 50%, rgba(0,0,0,0.07) 50%, rgba(0,0,0,0.07) 75%, transparent 75%);
+  background-size: 5px 5px;
+}
+.tape::before { left: 0; }
+.tape::after  { right: 0; }
+.tape.tape-orange {
+  background: var(--hivis);
+  border-color: var(--hivis-deep);
+}
+
+/* ---- Section divider (chunky horizontal rule with caps) ---- */
+.section-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 2rem 0;
+}
+.section-divider .line {
+  flex: 1;
+  height: 1px;
+  background: var(--ink);
+  opacity: 0.85;
+  position: relative;
+}
+.section-divider .line::before,
+.section-divider .line::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  width: 1px;
+  height: 9px;
+  background: var(--ink);
+}
+.section-divider .line::before { left: 0; }
+.section-divider .line::after  { right: 0; }
+.section-divider .marker {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  color: var(--ink);
+  text-transform: uppercase;
+}
+
+/* ---- Animations ---- */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes stamp-in {
+  0%   { opacity: 0; transform: rotate(-12deg) scale(1.6); }
+  60%  { opacity: 1; transform: rotate(-4deg) scale(0.94); }
+  100% { opacity: 1; transform: rotate(-4deg) scale(1); }
+}
+
+@keyframes ticker-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-fade-up   { animation: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.animate-stamp-in  { animation: stamp-in 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) 0.4s both; }
+.animate-stamp-in.no-rotate { transform-origin: center; }
+
+/* ---- Reveal line ---- */
+.ind-reveal-line { position: relative; overflow: hidden; }
 .ind-reveal-line::after {
   content: '';
   position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 1px;
-  background: var(--accent-ind);
+  bottom: 0; left: 0;
+  width: 100%; height: 1px;
+  background: var(--hivis);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
+.ind-reveal-line.is-visible::after { transform: scaleX(1); }
 
-.ind-reveal-line.is-visible::after {
-  transform: scaleX(1);
+/* ---- Inputs ---- */
+.industrial-theme input,
+.industrial-theme select,
+.industrial-theme textarea {
+  background: #FAF4E5;
+  border: 1px solid rgba(28, 26, 20, 0.20);
+  color: var(--ink);
+  border-radius: 2px;
+  font-family: 'DM Sans', system-ui, sans-serif;
+}
+.industrial-theme input::placeholder,
+.industrial-theme textarea::placeholder { color: var(--steel-soft); }
+.industrial-theme input:focus,
+.industrial-theme select:focus,
+.industrial-theme textarea:focus {
+  border-color: var(--hivis);
+  outline: 2px solid rgba(255, 90, 31, 0.22);
+  outline-offset: 1px;
 }
 
-/* 10. Image Curtain Reveal */
-.ind-curtain-reveal {
-  position: relative;
-  overflow: hidden;
-}
-
-.ind-curtain-reveal::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: var(--accent-ind);
-  z-index: 5;
-  transform: translateX(-101%);
-}
-
-.ind-curtain-reveal.is-visible::before {
-  animation: curtain-wipe 1.2s cubic-bezier(0.77, 0, 0.175, 1) forwards;
-}
-
-@keyframes curtain-wipe {
-  0% {
-    transform: translateX(-101%);
-  }
-
-  50% {
-    transform: translateX(0);
-  }
-
-  100% {
-    transform: translateX(101%);
-  }
-}
-
-/* 11. Footer Rule Expansion */
-.ind-footer-rule {
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 1.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.ind-footer-rule.is-visible {
-  transform: scaleX(1);
-}
-
-/* 12. Rivet / Bolt Patterns (kept for legacy callers; rendered as a quiet dot) */
-.ind-rivet {
-  position: absolute;
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: var(--border-ind);
-  opacity: 0.5;
+/* ---- Big "Hoehne" backdrop wordmark utility ---- */
+.backdrop-wordmark {
+  font-family: 'Fraunces', Georgia, serif;
+  font-variation-settings: "SOFT" 30, "opsz" 144, "WONK" 0;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 0.85;
+  color: var(--ink);
+  opacity: 0.05;
+  user-select: none;
   pointer-events: none;
 }
 
-/* 13. Clean panel. Subtle border, no bevel. */
-.ind-steel-plate {
-  background: var(--surface-ind);
-  border: 1px solid var(--border-ind);
-  border-radius: 10px;
+/* ---- Marquee ticker ---- */
+.ticker {
+  display: flex;
+  overflow: hidden;
+  position: relative;
+}
+.ticker-track {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+  white-space: nowrap;
+  animation: ticker-scroll 45s linear infinite;
+  flex-shrink: 0;
 }
 
-.ind-panel {
-  background: var(--surface-ind);
-  border: 1px solid var(--border-ind);
-  border-radius: 8px;
-}
+/* ---- Selection ---- */
+::selection { background: var(--hivis); color: #fff; }
 
-/* 14. Grid Paper / Technical Drawing Background */
-.ind-gridpaper {
-  background-image:
-    linear-gradient(rgba(216, 201, 180, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(216, 201, 180, 0.035) 1px, transparent 1px);
-  background-size: 40px 40px;
-}
-
-/* Mobile Optimizations */
+/* ---- Mobile ---- */
 @media (max-width: 768px) {
   .industrial-theme { font-size: 16px; }
-  input, select, textarea { font-size: 16px !important; } /* Prevent zoom on iOS */
-  .ind-hero-title { font-size: 3.5rem !important; line-height: 0.9 !important; }
+  input, select, textarea { font-size: 16px !important; }
+  .ind-hero-title { font-size: 3rem !important; line-height: 0.92 !important; }
 }
-/* Touch targets */
 a, button { min-height: 44px; min-width: 44px; }
+.no-min, a.no-min, button.no-min { min-height: 0; min-width: 0; }

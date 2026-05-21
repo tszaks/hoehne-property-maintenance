@@ -183,12 +183,12 @@
     <!-- Header -->
     <div class="flex items-center justify-between px-4 py-3 bg-ind-bg border-b border-ind-border/50 shrink-0">
       <div>
-        <div class="text-white font-semibold text-sm tracking-tight">Project estimator</div>
+        <div class="text-ink font-semibold text-sm tracking-tight">Project estimator</div>
         <div class="ind-metadata text-ind-steel/50 text-xs">Hoehne Property Maintenance</div>
       </div>
       <button
         onclick={toggle}
-        class="text-ind-steel hover:text-white transition-colors p-1"
+        class="text-ind-steel hover:text-ink transition-colors p-1"
         aria-label="Close chat"
       >
         <X size={18} />
@@ -206,7 +206,7 @@
           <div
             class="max-w-[85%] text-sm leading-relaxed px-3 py-2
               {msg.role === 'user'
-                ? 'bg-ind-accent text-black font-medium'
+                ? 'bg-ind-accent text-ink font-medium'
                 : 'bg-ind-bg border border-ind-border/50 text-ind-steel'}"
           >
             {#if msg.imageUrl}
@@ -255,10 +255,10 @@
         <div class="flex items-center gap-3">
           <img src={photoDataUrl} alt={photoName || 'Selected project'} class="h-12 w-12 object-cover border border-ind-border/60" />
           <div class="min-w-0 flex-1">
-            <div class="text-white text-xs font-bold truncate">{photoName || 'Project photo attached'}</div>
+            <div class="text-ink text-xs font-bold truncate">{photoName || 'Project photo attached'}</div>
             <div class="text-[0.65rem] text-ind-steel/50 uppercase tracking-widest">Photo ready</div>
           </div>
-          <button type="button" onclick={clearPhoto} class="text-ind-steel hover:text-white p-1" aria-label="Remove photo">
+          <button type="button" onclick={clearPhoto} class="text-ind-steel hover:text-ink p-1" aria-label="Remove photo">
             <X size={14} />
           </button>
         </div>
@@ -291,13 +291,13 @@
         onkeydown={handleKey}
         disabled={loading}
         placeholder="Ask about your project..."
-        class="flex-1 bg-transparent text-white text-sm px-4 focus:outline-none placeholder:text-ind-steel/30 disabled:opacity-50"
+        class="flex-1 bg-transparent text-ink text-sm px-4 focus:outline-none placeholder:text-ind-steel/30 disabled:opacity-50"
         style="min-height: 44px;"
       />
       <button
         onclick={send}
         disabled={loading || (!input.trim() && !photoDataUrl)}
-        class="px-4 text-ind-accent hover:text-white disabled:opacity-30 transition-colors"
+        class="px-4 text-ind-accent hover:text-ink disabled:opacity-30 transition-colors"
         style="min-height: 44px;"
         aria-label="Send message"
       >
@@ -311,7 +311,7 @@
 {#if toggleVisible}
   <button
     onclick={toggle}
-    class="chat-toggle fixed z-[10000] flex items-center gap-2 px-4 py-3 bg-ind-accent text-white font-semibold text-sm hover:bg-ind-accent/90 transition-colors shadow-lg shadow-ind-accent/20 whitespace-nowrap"
+    class="chat-toggle fixed z-[10000] flex items-center gap-2 px-4 py-3 bg-hivis text-white font-semibold text-sm hover:bg-ind-accent/90 transition-colors shadow-lg shadow-ind-accent/20 whitespace-nowrap"
     aria-label="Open project estimator chat"
   >
     <ChatCircle size={18} weight="fill" />

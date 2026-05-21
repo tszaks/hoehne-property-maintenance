@@ -344,7 +344,7 @@
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
     <div class="mb-8 lg:mb-12">
       <div class="ind-metadata mb-4">Project estimate · Photos · Local range</div>
-      <h1 class="text-3xl sm:text-4xl md:text-6xl font-bold text-white tracking-tight max-w-4xl leading-[1.02]">
+      <h1 class="text-3xl sm:text-4xl md:text-6xl font-bold text-ink tracking-tight max-w-4xl leading-[1.02]">
         Get a rough project estimate
       </h1>
       <p class="text-ind-steel text-sm mt-5 max-w-2xl leading-relaxed">
@@ -360,7 +360,7 @@
               type="button"
               onclick={() => goToStep(index)}
               aria-current={currentStep === index ? 'step' : undefined}
-              class="scroll-mt-24 min-w-0 text-center sm:text-left border px-1.5 sm:px-3 py-3 transition-colors bg-ind-bg {currentStep === index ? 'border-ind-accent text-white' : 'border-ind-border/45 text-ind-steel hover:border-ind-accent/60'}"
+              class="scroll-mt-24 min-w-0 text-center sm:text-left border px-1.5 sm:px-3 py-3 transition-colors bg-ind-bg {currentStep === index ? 'border-ind-accent text-ink' : 'border-ind-border/45 text-ind-steel hover:border-ind-accent/60'}"
             >
               <span class="block text-[0.62rem] font-black uppercase tracking-widest text-ind-steel/50">{String(index + 1).padStart(2, '0')}</span>
               <span class="block text-[0.6rem] sm:text-xs font-black uppercase tracking-normal sm:tracking-wide mt-1 truncate">{step.label}</span>
@@ -381,7 +381,7 @@
         <div class="mt-5 sm:mt-6 border-t border-ind-border/25 pt-5 min-w-0">
           <div class="mb-6 sm:mb-7 min-w-0">
             <div class="ind-metadata text-ind-steel/50 text-xs mb-2">STEP {currentStep + 1} / {steps.length}</div>
-            <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-white tracking-tight leading-tight">{currentStepInfo.title}</h2>
+            <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-ink tracking-tight leading-tight">{currentStepInfo.title}</h2>
             <p class="text-ind-steel/65 text-sm mt-2 max-w-2xl leading-relaxed">{currentStepInfo.help}</p>
           </div>
 
@@ -394,7 +394,7 @@
                     <button
                       type="button"
                       onclick={() => chooseService(service.id)}
-                      class="min-w-0 text-left border px-4 py-3 min-h-[60px] sm:min-h-[64px] transition-colors bg-ind-bg {selected.id === service.id ? 'border-ind-accent text-white' : 'border-ind-border/45 text-ind-steel hover:border-ind-accent/60'}"
+                      class="min-w-0 text-left border px-4 py-3 min-h-[60px] sm:min-h-[64px] transition-colors bg-ind-bg {selected.id === service.id ? 'border-ind-accent text-ink' : 'border-ind-border/45 text-ind-steel hover:border-ind-accent/60'}"
                     >
                       <span class="block text-xs font-black uppercase tracking-wide">{service.shortLabel}</span>
                       <span class="block text-[0.68rem] text-ind-steel/60 mt-1 leading-snug">{service.label}</span>
@@ -427,7 +427,7 @@
                     max={selected.maxQuantity}
                     step={selected.step}
                     bind:value={quantity}
-                    class="w-full bg-ind-bg border border-ind-border/50 text-white text-sm px-4 py-3 focus:outline-none focus:border-ind-accent"
+                    class="w-full bg-ind-bg border border-ind-border/50 text-ink text-sm px-4 py-3 focus:outline-none focus:border-ind-accent"
                   />
                   <span class="block text-[0.68rem] text-ind-steel/50 mt-2">{selected.quantityUnit}</span>
                 </label>
@@ -444,7 +444,7 @@
                     <button
                       type="button"
                       onclick={() => chooseOption('scope', option.id)}
-                      class="w-full min-w-0 text-left border px-4 py-3 min-h-[64px] transition-colors bg-ind-bg {scopeId === option.id ? 'border-ind-accent text-white' : 'border-ind-border/45 text-ind-steel hover:border-ind-accent/60'}"
+                      class="w-full min-w-0 text-left border px-4 py-3 min-h-[64px] transition-colors bg-ind-bg {scopeId === option.id ? 'border-ind-accent text-ink' : 'border-ind-border/45 text-ind-steel hover:border-ind-accent/60'}"
                     >
                       <span class="block text-xs font-black uppercase tracking-wide">{option.label}</span>
                       <span class="block text-[0.68rem] text-ind-steel/60 mt-1 leading-snug">{option.sub}</span>
@@ -461,7 +461,7 @@
                       <button
                         type="button"
                         onclick={() => chooseOption('condition', option.id)}
-                        class="w-full min-w-0 text-left border px-4 py-3 min-h-[64px] transition-colors bg-ind-bg {conditionId === option.id ? 'border-ind-accent text-white' : 'border-ind-border/45 text-ind-steel hover:border-ind-accent/60'}"
+                        class="w-full min-w-0 text-left border px-4 py-3 min-h-[64px] transition-colors bg-ind-bg {conditionId === option.id ? 'border-ind-accent text-ink' : 'border-ind-border/45 text-ind-steel hover:border-ind-accent/60'}"
                       >
                         <span class="block text-xs font-black uppercase tracking-wide">{option.label}</span>
                         <span class="block text-[0.68rem] text-ind-steel/60 mt-1 leading-snug">{option.sub}</span>
@@ -477,7 +477,7 @@
                       <button
                         type="button"
                         onclick={() => chooseOption('finish', option.id)}
-                        class="w-full min-w-0 text-left border px-4 py-3 min-h-[64px] transition-colors bg-ind-bg {finishId === option.id ? 'border-ind-accent text-white' : 'border-ind-border/45 text-ind-steel hover:border-ind-accent/60'}"
+                        class="w-full min-w-0 text-left border px-4 py-3 min-h-[64px] transition-colors bg-ind-bg {finishId === option.id ? 'border-ind-accent text-ink' : 'border-ind-border/45 text-ind-steel hover:border-ind-accent/60'}"
                       >
                         <span class="block text-xs font-black uppercase tracking-wide">{option.label}</span>
                         <span class="block text-[0.68rem] text-ind-steel/60 mt-1 leading-snug">{option.sub}</span>
@@ -499,7 +499,7 @@
                       <button
                         type="button"
                         onclick={() => chooseOption('homeAge', option.id)}
-                        class="w-full min-w-0 text-left border px-4 py-3 min-h-[64px] transition-colors bg-ind-bg {homeAgeId === option.id ? 'border-ind-accent text-white' : 'border-ind-border/45 text-ind-steel hover:border-ind-accent/60'}"
+                        class="w-full min-w-0 text-left border px-4 py-3 min-h-[64px] transition-colors bg-ind-bg {homeAgeId === option.id ? 'border-ind-accent text-ink' : 'border-ind-border/45 text-ind-steel hover:border-ind-accent/60'}"
                       >
                         <span class="block text-xs font-black uppercase tracking-wide">{option.label}</span>
                         <span class="block text-[0.68rem] text-ind-steel/60 mt-1 leading-snug">{option.sub}</span>
@@ -515,7 +515,7 @@
                       <button
                         type="button"
                         onclick={() => chooseOption('homeType', option.id)}
-                        class="w-full min-w-0 text-left border px-4 py-3 min-h-[64px] transition-colors bg-ind-bg {homeTypeId === option.id ? 'border-ind-accent text-white' : 'border-ind-border/45 text-ind-steel hover:border-ind-accent/60'}"
+                        class="w-full min-w-0 text-left border px-4 py-3 min-h-[64px] transition-colors bg-ind-bg {homeTypeId === option.id ? 'border-ind-accent text-ink' : 'border-ind-border/45 text-ind-steel hover:border-ind-accent/60'}"
                       >
                         <span class="block text-xs font-black uppercase tracking-wide">{option.label}</span>
                         <span class="block text-[0.68rem] text-ind-steel/60 mt-1 leading-snug">{option.sub}</span>
@@ -531,7 +531,7 @@
                   type="text"
                   bind:value={location}
                   placeholder="Pottstown, 19464..."
-                  class="w-full bg-ind-bg border border-ind-border/50 text-white text-sm px-4 py-3 focus:outline-none focus:border-ind-accent placeholder:text-ind-steel/30"
+                  class="w-full bg-ind-bg border border-ind-border/50 text-ink text-sm px-4 py-3 focus:outline-none focus:border-ind-accent placeholder:text-ind-steel/30"
                 />
                 <span class="block text-[0.68rem] text-ind-steel/50 mt-2">This helps with travel, parking, and local rules.</span>
               </label>
@@ -548,7 +548,7 @@
                       <button
                         type="button"
                         onclick={() => chooseOption('access', option.id)}
-                        class="w-full min-w-0 text-left border px-4 py-3 min-h-[64px] transition-colors bg-ind-bg {accessId === option.id ? 'border-ind-accent text-white' : 'border-ind-border/45 text-ind-steel hover:border-ind-accent/60'}"
+                        class="w-full min-w-0 text-left border px-4 py-3 min-h-[64px] transition-colors bg-ind-bg {accessId === option.id ? 'border-ind-accent text-ink' : 'border-ind-border/45 text-ind-steel hover:border-ind-accent/60'}"
                       >
                         <span class="block text-xs font-black uppercase tracking-wide">{option.label}</span>
                         <span class="block text-[0.68rem] text-ind-steel/60 mt-1 leading-snug">{option.sub}</span>
@@ -564,7 +564,7 @@
                       <button
                         type="button"
                         onclick={() => chooseOption('urgency', option.id)}
-                        class="w-full min-w-0 text-left border px-4 py-3 min-h-[64px] transition-colors bg-ind-bg {urgencyId === option.id ? 'border-ind-accent text-white' : 'border-ind-border/45 text-ind-steel hover:border-ind-accent/60'}"
+                        class="w-full min-w-0 text-left border px-4 py-3 min-h-[64px] transition-colors bg-ind-bg {urgencyId === option.id ? 'border-ind-accent text-ink' : 'border-ind-border/45 text-ind-steel hover:border-ind-accent/60'}"
                       >
                         <span class="block text-xs font-black uppercase tracking-wide">{option.label}</span>
                         <span class="block text-[0.68rem] text-ind-steel/60 mt-1 leading-snug">{option.sub}</span>
@@ -581,7 +581,7 @@
                     <button
                       type="button"
                       onclick={() => chooseOption('trade', option.id)}
-                      class="w-full min-w-0 text-left border px-4 py-3 min-h-[64px] transition-colors bg-ind-bg {tradeId === option.id ? 'border-ind-accent text-white' : 'border-ind-border/45 text-ind-steel hover:border-ind-accent/60'}"
+                      class="w-full min-w-0 text-left border px-4 py-3 min-h-[64px] transition-colors bg-ind-bg {tradeId === option.id ? 'border-ind-accent text-ink' : 'border-ind-border/45 text-ind-steel hover:border-ind-accent/60'}"
                     >
                       <span class="block text-xs font-black uppercase tracking-wide">{option.label}</span>
                       <span class="block text-[0.68rem] text-ind-steel/60 mt-1 leading-snug">{option.sub}</span>
@@ -596,7 +596,7 @@
             <div id="photo-review" class="scroll-mt-24 border border-ind-border/40 bg-ind-bg p-5">
               <div class="grid md:grid-cols-[1fr_auto] gap-5 items-start">
                 <div>
-                  <h3 class="text-lg font-bold text-white tracking-tight mb-2">Add photos</h3>
+                  <h3 class="text-lg font-bold text-ink tracking-tight mb-2">Add photos</h3>
                   <p class="text-ind-steel/65 text-sm leading-relaxed">
                     Photos help us see the work area, materials, and visible damage.
                   </p>
@@ -633,10 +633,10 @@
                 <div class="mt-5 grid md:grid-cols-[96px_1fr_auto] gap-4 items-center border-t border-ind-border/25 pt-4">
                   <img src={photoDataUrl} alt={photoName || 'Attached project'} class="h-24 w-24 object-cover border border-ind-border/60" />
                   <div class="min-w-0">
-                    <div class="text-white text-sm font-black truncate">{photoName || 'Project photo attached'}</div>
+                    <div class="text-ink text-sm font-black truncate">{photoName || 'Project photo attached'}</div>
                     <div class="ind-metadata text-ind-steel/50 text-xs mt-1">Ready to check</div>
                   </div>
-                  <button type="button" onclick={clearPhoto} disabled={photoLoading} class="text-ind-steel hover:text-white p-2 transition-colors disabled:opacity-40" aria-label="Remove photo">
+                  <button type="button" onclick={clearPhoto} disabled={photoLoading} class="text-ind-steel hover:text-ink p-2 transition-colors disabled:opacity-40" aria-label="Remove photo">
                     <X size={18} />
                   </button>
                 </div>
@@ -658,7 +658,7 @@
                     <CheckCircle size={22} weight="bold" />
                   </div>
                   <div>
-                    <h3 class="text-lg font-bold text-white tracking-tight">Request sent</h3>
+                    <h3 class="text-lg font-bold text-ink tracking-tight">Request sent</h3>
                     <p class="text-ind-steel/70 text-sm leading-relaxed mt-2">
                       We have your estimate request. We will review the details and follow up at {sentEmail}.
                     </p>
@@ -671,7 +671,7 @@
                 <div class="grid lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] gap-6">
                   <div>
                     <div class="ind-metadata text-ind-steel/50 text-xs mb-3">SEND ESTIMATE REQUEST</div>
-                    <h3 class="text-xl font-bold text-white tracking-tight">Send this to us</h3>
+                    <h3 class="text-xl font-bold text-ink tracking-tight">Send this to us</h3>
                     <p class="text-ind-steel/65 text-sm leading-relaxed mt-3">
                       We will review your answers and photos, then call or text with the next step.
                     </p>
@@ -686,7 +686,7 @@
                           autocomplete="name"
                           bind:value={customerName}
                           required
-                          class="w-full bg-ind-surface border border-ind-border/55 text-white text-sm px-4 py-3 focus:outline-none focus:border-ind-accent placeholder:text-ind-steel/30"
+                          class="w-full bg-ind-surface border border-ind-border/55 text-ink text-sm px-4 py-3 focus:outline-none focus:border-ind-accent placeholder:text-ind-steel/30"
                         />
                       </label>
                       <label class="block">
@@ -696,7 +696,7 @@
                           autocomplete="tel"
                           bind:value={customerPhone}
                           required
-                          class="w-full bg-ind-surface border border-ind-border/55 text-white text-sm px-4 py-3 focus:outline-none focus:border-ind-accent placeholder:text-ind-steel/30"
+                          class="w-full bg-ind-surface border border-ind-border/55 text-ink text-sm px-4 py-3 focus:outline-none focus:border-ind-accent placeholder:text-ind-steel/30"
                         />
                       </label>
                     </div>
@@ -709,7 +709,7 @@
                           autocomplete="email"
                           bind:value={customerEmail}
                           required
-                          class="w-full bg-ind-surface border border-ind-border/55 text-white text-sm px-4 py-3 focus:outline-none focus:border-ind-accent placeholder:text-ind-steel/30"
+                          class="w-full bg-ind-surface border border-ind-border/55 text-ink text-sm px-4 py-3 focus:outline-none focus:border-ind-accent placeholder:text-ind-steel/30"
                         />
                       </label>
                       <label class="block">
@@ -720,7 +720,7 @@
                           bind:value={location}
                           placeholder="Street, town, or ZIP"
                           required
-                          class="w-full bg-ind-surface border border-ind-border/55 text-white text-sm px-4 py-3 focus:outline-none focus:border-ind-accent placeholder:text-ind-steel/30"
+                          class="w-full bg-ind-surface border border-ind-border/55 text-ink text-sm px-4 py-3 focus:outline-none focus:border-ind-accent placeholder:text-ind-steel/30"
                         />
                       </label>
                     </div>
@@ -731,7 +731,7 @@
                         bind:value={projectNotes}
                         rows="3"
                         placeholder="Timing, access, materials, or anything we should know."
-                        class="w-full resize-none bg-ind-surface border border-ind-border/55 text-white text-sm px-4 py-3 focus:outline-none focus:border-ind-accent placeholder:text-ind-steel/30"
+                        class="w-full resize-none bg-ind-surface border border-ind-border/55 text-ink text-sm px-4 py-3 focus:outline-none focus:border-ind-accent placeholder:text-ind-steel/30"
                       ></textarea>
                     </label>
 
@@ -757,7 +757,7 @@
               type="button"
               onclick={prevStep}
               disabled={currentStep === 0}
-              class="border border-ind-border/50 px-5 py-3 text-xs font-black uppercase tracking-wider transition-colors {currentStep === 0 ? 'text-ind-steel/30 cursor-not-allowed' : 'text-ind-steel hover:text-white hover:border-ind-accent/70'}"
+              class="border border-ind-border/50 px-5 py-3 text-xs font-black uppercase tracking-wider transition-colors {currentStep === 0 ? 'text-ind-steel/30 cursor-not-allowed' : 'text-ind-steel hover:text-ink hover:border-ind-accent/70'}"
             >
               Back
             </button>
@@ -779,7 +779,7 @@
         <div class="flex items-center justify-between gap-4 mb-5">
           <div>
             <div class="ind-metadata text-ind-steel/50 text-xs mb-1">ESTIMATE RANGE</div>
-            <div class="text-white text-sm font-black uppercase tracking-wide">{estimate.profile.label}</div>
+            <div class="text-ink text-sm font-black uppercase tracking-wide">{estimate.profile.label}</div>
           </div>
           <div class="text-right">
             <div class="text-ind-accent font-black text-lg leading-none">Ready</div>
@@ -794,14 +794,14 @@
         </div>
 
         <details class="border-b border-ind-border/25 pb-5 mb-6">
-          <summary class="cursor-pointer ind-metadata text-ind-steel/60 hover:text-white text-xs list-none">
+          <summary class="cursor-pointer ind-metadata text-ind-steel/60 hover:text-ink text-xs list-none">
             What this includes
           </summary>
           <div class="space-y-3 mt-4">
             {#each estimate.lineItems as item}
               <div class="grid grid-cols-[1fr_auto] gap-3 border-b border-ind-border/20 pb-2">
                 <div>
-                  <div class="text-white text-xs font-bold leading-snug">{item.label}</div>
+                  <div class="text-ink text-xs font-bold leading-snug">{item.label}</div>
                   <div class="text-[0.62rem] text-ind-steel/45 uppercase tracking-widest mt-1">{categoryLabel(item.category)}</div>
                 </div>
                 <div class="text-ind-steel text-xs font-bold whitespace-nowrap">
