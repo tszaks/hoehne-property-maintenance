@@ -140,11 +140,18 @@
   letter-spacing: 0.02em;
   border-radius: 2px;
   border: 1px solid var(--ink);
-  transition: background-color 0.15s ease, color 0.15s ease;
+  box-shadow: 0 2px 0 0 var(--ink);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease, color 0.15s ease;
 }
 .ind-button-outline:hover {
   background-color: var(--ink);
   color: var(--paper);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 0 0 var(--ink);
+}
+.ind-button-outline:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 0 0 var(--ink);
 }
 
 /* ---- Surfaces ---- */
